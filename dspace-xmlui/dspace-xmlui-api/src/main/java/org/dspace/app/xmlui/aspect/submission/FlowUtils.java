@@ -31,6 +31,7 @@ import org.dspace.content.Collection;
 import org.dspace.content.InProgressSubmission;
 import org.dspace.content.Item;
 import org.dspace.content.WorkspaceItem;
+import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.core.LogManager;
 import org.dspace.handle.HandleManager;
@@ -138,7 +139,7 @@ public class FlowUtils {
                     .get(HttpEnvironment.HTTP_REQUEST_OBJECT);
             
                 // load submission info
-                subInfo = SubmissionInfo.load(httpRequest, submission);
+                subInfo = SubmissionInfo.load(httpRequest, submission, context);
     
                 // Set the session ID
                 context.setExtraLogInfo("session_id="

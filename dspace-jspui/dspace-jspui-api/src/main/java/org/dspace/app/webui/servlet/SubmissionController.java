@@ -7,21 +7,8 @@
  */
 package org.dspace.app.webui.servlet;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.Enumeration;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
 import org.apache.log4j.Logger;
-
 import org.dspace.app.util.SubmissionInfo;
 import org.dspace.app.util.SubmissionStepConfig;
 import org.dspace.app.webui.submit.JSPStepManager;
@@ -34,8 +21,15 @@ import org.dspace.content.Bundle;
 import org.dspace.content.WorkspaceItem;
 import org.dspace.core.Context;
 import org.dspace.core.LogManager;
-import org.dspace.workflow.WorkflowItem;
 import org.dspace.submit.AbstractProcessingStep;
+import org.dspace.workflow.WorkflowItem;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.sql.SQLException;
+import java.util.Enumeration;
 
 /**
  * Submission Manager servlet for DSpace. Handles the initial submission of
@@ -139,7 +133,7 @@ public class SubmissionController extends DSpaceServlet
                         .parseInt(workspaceID));
 
                 //load submission information
-                SubmissionInfo si = SubmissionInfo.load(request, wi);
+                SubmissionInfo si = SubmissionInfo.load(request, wi, context);
                 
                 //TD: Special case - If a user is resuming a submission
                 //where the submission process now has less steps, then
@@ -183,7 +177,7 @@ public class SubmissionController extends DSpaceServlet
                         .parseInt(workflowID));
 
                 //load submission information
-                SubmissionInfo si = SubmissionInfo.load(request, wi);
+                SubmissionInfo si = SubmissionInfo.load(request, wi, context);
                 
                 // start over at beginning of first workflow step
                 setBeginningOfStep(request, true);
@@ -937,19 +931,19 @@ public class SubmissionController extends DSpaceServlet
             {
                 int workflowID = UIUtil.getIntParameter(request, "workflow_id");
                 
-                info = SubmissionInfo.load(request, WorkflowItem.find(context, workflowID));
+                info = SubmissionInfo.load(request, WorkflowItem.find(context, workflowID), context);
             }
             else if(request.getParameter("workspace_item_id") != null)
             {
                 int workspaceID = UIUtil.getIntParameter(request,
                         "workspace_item_id");
                 
-                info = SubmissionInfo.load(request, WorkspaceItem.find(context, workspaceID));
+                info = SubmissionInfo.load(request, WorkspaceItem.find(context, workspaceID), context);
             }
             else
             {
                 //by default, initialize Submission Info with no item
-                info = SubmissionInfo.load(request, null);
+                info = SubmissionInfo.load(request, null, context);
             }
             
             // We must have a submission object if after the first step,
