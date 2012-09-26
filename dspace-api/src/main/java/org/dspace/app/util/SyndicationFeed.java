@@ -7,51 +7,39 @@
  */
 package org.dspace.app.util;
 
+import com.sun.syndication.feed.module.DCModule;
+import com.sun.syndication.feed.module.DCModuleImpl;
+import com.sun.syndication.feed.module.Module;
+import com.sun.syndication.feed.module.itunes.EntryInformation;
+import com.sun.syndication.feed.module.itunes.EntryInformationImpl;
+import com.sun.syndication.feed.module.itunes.FeedInformation;
+import com.sun.syndication.feed.module.itunes.FeedInformationImpl;
+import com.sun.syndication.feed.module.itunes.types.Category;
+import com.sun.syndication.feed.module.itunes.types.Duration;
+import com.sun.syndication.feed.module.itunes.types.Subcategory;
+import com.sun.syndication.feed.synd.*;
+import com.sun.syndication.io.FeedException;
+import com.sun.syndication.io.SyndFeedOutput;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.dspace.app.util.syndicationmodule.ItunesUModuleImpl;
+import org.dspace.content.*;
+import org.dspace.core.ConfigurationManager;
+import org.dspace.core.Constants;
+import org.dspace.handle.HandleManager;
+import org.w3c.dom.Document;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
-
-import org.dspace.content.Bitstream;
-import org.dspace.content.Collection;
-import org.dspace.content.Community;
-import org.dspace.content.DCDate;
-import org.dspace.content.DCValue;
-import org.dspace.content.DSpaceObject;
-import org.dspace.content.Item;
-import org.dspace.core.ConfigurationManager;
-import org.dspace.core.Constants;
-import org.dspace.handle.HandleManager;
-
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.feed.synd.SyndFeedImpl;
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndEntryImpl;
-import com.sun.syndication.feed.synd.SyndEnclosure;
-import com.sun.syndication.feed.synd.SyndEnclosureImpl;
-import com.sun.syndication.feed.synd.SyndImage;
-import com.sun.syndication.feed.synd.SyndImageImpl;
-import com.sun.syndication.feed.synd.SyndPerson;
-import com.sun.syndication.feed.synd.SyndPersonImpl;
-import com.sun.syndication.feed.synd.SyndContent;
-import com.sun.syndication.feed.synd.SyndContentImpl;
-import com.sun.syndication.feed.module.DCModuleImpl;
-import com.sun.syndication.feed.module.DCModule;
-import com.sun.syndication.feed.module.Module;
-import com.sun.syndication.feed.module.itunes.*;
-import com.sun.syndication.feed.module.itunes.types.Duration;
-import com.sun.syndication.io.SyndFeedOutput;
-import com.sun.syndication.io.FeedException;
-
-import org.apache.log4j.Logger;
-import org.dspace.content.Bundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Invoke ROME library to assemble a generic model of a syndication
@@ -127,6 +115,9 @@ public class SyndicationFeed
     // affects Bitstream retrieval URL and I18N keys
     private String uiType = null;
 
+    // Media type of content request, if specified (audio vs video).
+    private String mediaType = null;
+
     private HttpServletRequest request = null;
 
     /**
@@ -198,7 +189,7 @@ public class SyndicationFeed
             objectURL = resolveURL(request, dso);
             if (logo != null)
             {
-                logoURL = urlOfBitstream(request, logo);
+                logoURL = urlOfBitstream(request, logo, "logo.png");
             }
         }
         feed.setTitle(labels.containsKey(MSG_FEED_TITLE) ?
@@ -223,6 +214,35 @@ public class SyndicationFeed
             feed.setImage(image);
         }
 
+        if(podcastFeed) {
+            //Set feed level information for podcast
+            FeedInformation feedInformation = new FeedInformationImpl();
+
+            Category itunesCategory = new Category();
+            itunesCategory.setName("Education");
+            Subcategory itunesSubCategory = new Subcategory();
+            itunesSubCategory.setName("Higher Education");
+            itunesCategory.setSubcategory(itunesSubCategory);
+
+            ArrayList<Category> feedCategoryList = new ArrayList<Category>();
+            feedCategoryList.add(itunesCategory);
+            feedInformation.setCategories(feedCategoryList);
+
+            feedInformation.setOwnerName(ConfigurationManager.getProperty("dspace.name"));
+            feedInformation.setOwnerEmailAddress(ConfigurationManager.getProperty("mail.admin"));
+
+            if (logoURL != null)
+            {
+                // Set itunes:image
+                try {
+                    URL uriLogo = new URL(logoURL);
+                    feedInformation.setImage(uriLogo);
+                } catch (MalformedURLException e) {}
+            }
+
+            feed.getModules().add(feedInformation);
+        }
+
         // add entries for items
         if (items != null)
         {
@@ -234,6 +254,36 @@ public class SyndicationFeed
                     continue;
                 }
                 Item item = (Item)itemDSO;
+
+                if(getMediaType() != null) {
+                    String mediaType = getMediaType();
+
+                    //TODO also make a decision about bitstreams with media types
+                    Integer numberContentMatchingType = 0;
+
+                    DCValue[] externalMedia = item.getMetadata(externalSourceField);
+                    if(externalMedia.length > 0)
+                    {
+                        for(int i = 0; i< externalMedia.length; i++)
+                        {
+                            if(mediaType.equals("audio")) {
+                                if(externalMedia[i].value.trim().endsWith(".mp3")) {
+                                    numberContentMatchingType++;
+                                }
+                            } else if(mediaType.equals("video")) {
+                                if(externalMedia[i].value.trim().endsWith(".m4v")) {
+                                    numberContentMatchingType++;
+                                }
+                            }
+                        }
+                    }
+
+                    if(numberContentMatchingType == 0) {
+                        //Request wanted a mediaType, but this Item has no files matching that type, so skip from feed.
+                        continue;
+                    }
+                }
+
                 boolean hasDate = false;
                 SyndEntry entry = new SyndEntryImpl();
                 entries.add(entry);
@@ -363,6 +413,7 @@ public class SyndicationFeed
                     // Add enclosure(s)
                     List<SyndEnclosure> enclosures = new ArrayList();
                     try {
+                        // TODO Check mediaType of real bitstreams
                         Bundle[] bunds = item.getBundles("ORIGINAL");
                         if (bunds[0] != null) {
                             Bitstream[] bits = bunds[0].getBitstreams();
@@ -372,7 +423,7 @@ public class SyndicationFeed
                                     SyndEnclosure enc = new SyndEnclosureImpl();
                                     enc.setType(bits[i].getFormat().getMIMEType());
                                     enc.setLength(bits[i].getSize());
-                                    enc.setUrl(urlOfBitstream(request, bits[i]));
+                                    enc.setUrl(urlOfBitstream(request, bits[i], ""));
                                     enclosures.add(enc);
                                 } else {
                                     continue;
@@ -386,9 +437,35 @@ public class SyndicationFeed
                         {
                             for(int i = 0; i< externalMedia.length; i++)
                             {
+                                if(getMediaType() != null) {
+                                    String mediaType = getMediaType();
+
+                                    //TODO need to specify formats and mimes better
+                                    if(mediaType.equals("audio")) {
+                                        if(! externalMedia[i].value.trim().endsWith(".mp3")) {
+                                            // AUDIO, not MP3 ==  Sorry, this one can't be added.
+                                            continue;
+                                        }
+                                    } else if(mediaType.equals("video")) {
+                                        if(! externalMedia[i].value.trim().endsWith(".m4v")) {
+                                            // VIDEO, not M4V == Sorry, this one can't be added.
+                                            continue;
+                                        }
+                                    }
+                                }
+
+
                                 SyndEnclosure enc = new SyndEnclosureImpl();
-                                enc.setType("audio/x-mpeg");        //We can't determine MIME of external file, so just picking one.
-                                enc.setLength(1);
+
+                                if(externalMedia[i].value.endsWith(".mp3")) {
+                                    enc.setType("audio/mpeg");
+                                } else if(externalMedia[i].value.endsWith(".m4v")) {
+                                    enc.setType("video/x-m4v");
+                                } else {
+                                    enc.setType("audio/x-mpeg");        //We can't determine MIME of external file, so just picking one.
+                                }
+
+                                enc.setLength(1);                       // Set the enclosure length from the duration (we might have that...)
                                 enc.setUrl(externalMedia[i].value);
                                 enclosures.add(enc);
                             }
@@ -402,6 +479,7 @@ public class SyndicationFeed
                     // Get iTunes specific fields: author, subtitle, summary, duration, keywords
                     EntryInformation itunes = new EntryInformationImpl();
 
+                    //TODO Allow for multiple authors seperated...
                     String author = getOneDC(item, authorField);
                     if (author != null && author.length() > 0) {
                         itunes.setAuthor(author);                               // <itunes:author>
@@ -413,11 +491,28 @@ public class SyndicationFeed
                         itunes.setSummary(db.toString());                       // <itunes:summary>
                     }
 
-                    String extent = getOneDC(item, "dc.format.extent");         // assumed that user will enter this field with length of song in seconds
+                    String extent = getOneDC(item, "dc.format.extent");         // <itunes:duration>
                     if (extent != null && extent.length() > 0) {
-                        extent = extent.split(" ")[0];
-                        Integer duration = Integer.parseInt(extent);
-                        itunes.setDuration(new Duration(duration));             // <itunes:duration>
+                        // The values for this field could be in any odd format.
+                        // Audio Duration: 00:45:23, Video Duration: 00:45:23, Duration: 00:45:23, 00:45:23, 12354
+
+                        // num      not-WS     num
+                        String numericalComponentRegex = "[0-9]" + "(\\S*)" + "[0-9]";
+
+                        Pattern pattern = Pattern.compile(numericalComponentRegex);
+                        Matcher matcher = pattern.matcher(extent);
+                        if(matcher.find()) {
+                            String numericalComponent = matcher.toString().trim();
+                            Duration duration;
+                            if(numericalComponent.contains(":")) {
+                                //00:45:23
+                                duration = new Duration(numericalComponent);
+                            } else {
+                                Integer seconds = Integer.parseInt(numericalComponent);
+                                duration = new Duration(0, 0, seconds);
+                            }
+                            itunes.setDuration(duration);
+                        }
                     }
 
                     String subject = getOneDC(item, "dc.subject");
@@ -427,7 +522,11 @@ public class SyndicationFeed
                         itunes.setKeywords(subjects);                           // <itunes:keywords>
                     }
 
+                    ItunesUModuleImpl itunesU = new ItunesUModuleImpl();
+                    itunesU.setCategoryCode(112);   //112 = Education
+
                     entry.getModules().add(itunes);
+                    entry.getModules().add(itunesU);
                 }
             }
             feed.setEntries(entries);
@@ -447,6 +546,21 @@ public class SyndicationFeed
         {
             feed.setImage(null);
         }
+    }
+
+    /**
+     * Specify which media-types you'd like to only have returned in the feed.
+     * @param mediaType Should be audio or video. Otherwise it won't be set.
+     */
+    public void setMediaType(String mediaType) {
+        mediaType = mediaType.toLowerCase();
+        if(mediaType.equals("audio") || mediaType.equals("video")) {
+            this.mediaType = mediaType;
+        }
+    }
+
+    public String getMediaType() {
+        return this.mediaType;
     }
 
     /**
@@ -503,12 +617,13 @@ public class SyndicationFeed
     }
 
     // returns absolute URL to download content of bitstream (which might not belong to any Item)
-    private String urlOfBitstream(HttpServletRequest request, Bitstream logo)
+    // If there is no name, then allow a fallback string for filename
+    private String urlOfBitstream(HttpServletRequest request, Bitstream logo, String fallBackFileName)
     {
         String name = logo.getName();
         return resolveURL(request,null) +
-                 (uiType.equalsIgnoreCase(UITYPE_XMLUI) ?"/bitstream/id/":"/retrieve/") +
-                 logo.getID()+"/"+(name == null?"":name);
+                (uiType.equalsIgnoreCase(UITYPE_XMLUI) ?"/bitstream/id/":"/retrieve/") +
+                logo.getID()+"/"+(name == null?fallBackFileName:name);
     }
 
     /**
