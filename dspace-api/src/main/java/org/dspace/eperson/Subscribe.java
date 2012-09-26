@@ -7,25 +7,7 @@
  */
 package org.dspace.eperson;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.TimeZone;
-
-import javax.mail.MessagingException;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.*;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.dspace.authorize.AuthorizeException;
@@ -34,17 +16,20 @@ import org.dspace.content.Collection;
 import org.dspace.content.DCDate;
 import org.dspace.content.DCValue;
 import org.dspace.content.Item;
-import org.dspace.core.ConfigurationManager;
-import org.dspace.core.Context;
-import org.dspace.core.Email;
-import org.dspace.core.I18nUtil;
-import org.dspace.core.LogManager;
+import org.dspace.core.*;
 import org.dspace.handle.HandleManager;
 import org.dspace.search.Harvest;
 import org.dspace.search.HarvestedItemInfo;
 import org.dspace.storage.rdbms.DatabaseManager;
 import org.dspace.storage.rdbms.TableRow;
 import org.dspace.storage.rdbms.TableRowIterator;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Class defining methods for sending new item e-mail alerts to users
@@ -433,7 +418,8 @@ public class Subscribe
                             emailText.append(labels.getString("org.dspace.eperson.Subscribe.untitled"));
                         }
     
-                        DCValue[] authors = hii.item.getDC("contributor", Item.ANY,
+                        //@TODO Use configuration to distinguish between using dc.contributor vs dc.creator
+                        DCValue[] authors = hii.item.getDC("creator", Item.ANY,
                                 Item.ANY);
     
                         if (authors.length > 0)
