@@ -7,16 +7,6 @@
  */
 package org.dspace.content;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.MissingResourceException;
-
 import org.apache.log4j.Logger;
 import org.dspace.app.util.AuthorizeUtil;
 import org.dspace.authorize.AuthorizeConfiguration;
@@ -25,13 +15,9 @@ import org.dspace.authorize.AuthorizeManager;
 import org.dspace.authorize.ResourcePolicy;
 import org.dspace.browse.BrowseException;
 import org.dspace.browse.IndexBrowse;
-import org.dspace.browse.ItemCounter;
 import org.dspace.browse.ItemCountException;
-import org.dspace.core.ConfigurationManager;
-import org.dspace.core.Constants;
-import org.dspace.core.Context;
-import org.dspace.core.I18nUtil;
-import org.dspace.core.LogManager;
+import org.dspace.browse.ItemCounter;
+import org.dspace.core.*;
 import org.dspace.eperson.Group;
 import org.dspace.event.Event;
 import org.dspace.handle.HandleManager;
@@ -41,6 +27,16 @@ import org.dspace.storage.rdbms.TableRowIterator;
 import org.dspace.workflow.WorkflowItem;
 import org.dspace.xmlworkflow.storedcomponents.CollectionRole;
 import org.dspace.xmlworkflow.storedcomponents.XmlWorkflowItem;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.MissingResourceException;
 
 /**
  * Class representing a collection.
@@ -354,6 +350,37 @@ public class Collection extends DSpaceObject
                 myQuery,getID());
 
         return new ItemIterator(ourContext, rows);
+    }
+
+    /**
+     *
+     * @return year,count a
+     * @throws SQLException
+     */
+    public TableRowIterator getItemsAvailablePerYear() throws SQLException {
+        String query = "SELECT \n" +
+                "  EXTRACT(YEAR FROM to_date(text_value, 'YYYY')) as year, cast(count(*) as varchar(10)) as count\n" +
+                "FROM \n" +
+                "  public.collection2item, \n" +
+                "  public.item, \n" +
+                "  public.metadatavalue, \n" +
+                "  public.metadatafieldregistry\n" +
+                "WHERE \n" +
+                "  collection2item.collection_id = ? AND\n" +
+                "  collection2item.item_id = item.item_id AND\n" +
+                "  metadatavalue.item_id = item.item_id AND\n" +
+                "  metadatafieldregistry.metadata_field_id = metadatavalue.metadata_field_id AND\n" +
+                "  item.in_archive = true AND \n" +
+                "  metadatafieldregistry.element = 'date' AND \n" +
+                "  metadatafieldregistry.qualifier = 'available'\n" +
+                "group by to_date(text_value, 'YYYY') order by to_date(text_value, 'YYYY') asc;";
+
+        TableRowIterator rows = DatabaseManager.query(ourContext, query, this.getID());
+        // 2007, 50
+        // 2008, 98
+        // ...
+
+        return rows;
     }
 
     /**
@@ -1437,6 +1464,67 @@ public class Collection extends DSpaceObject
 
         return itemcount;
      }
+
+    /**
+     * Determine how many bitstreams are contained within this collection.
+     * @param bundleName (Optional) Specify a bundle name to restrict the search to just those within this bundle
+     * @return Number of bitstreams in this collection
+     */
+    public int countBitstreams(String bundleName) {
+        String query = "SELECT count(*) FROM public.collection2item,public.item2bundle,public.bundle2bitstream, public.bitstream,public.bundle" +
+                " WHERE item2bundle.bundle_id = bundle2bitstream.bundle_id" +
+                " AND item2bundle.item_id = collection2item.item_id" +
+                " AND bundle2bitstream.bitstream_id = bitstream.bitstream_id" +
+                " AND bundle.bundle_id = item2bundle.bundle_id" +
+                " AND collection2item.collection_id = ?";
+
+
+        // If bundle is specified, then we need to limit our search to just those within the bundle.
+        if (bundleName.length() > 0) {
+            query = query.concat(" AND bundle.\"name\" = ?");
+        }
+
+        int bitstreamCount = 0;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+
+        try {
+            statement = ourContext.getDBConnection().prepareStatement(query);
+            statement.setInt(1, getID());
+            log.info("Query: "+query);
+            if(bundleName.length() > 0) {
+                statement.setString(2, bundleName);
+            }
+            log.info("Query2: "+query);
+
+            rs = statement.executeQuery();
+            if (rs != null) {
+                rs.next();
+                bitstreamCount = rs.getInt(1);
+            }
+        } catch (SQLException sqlE) {
+            log.error(sqlE.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+
+        } finally
+        {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqle) {
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException sqle) {
+                }
+            }
+        }
+        return bitstreamCount;
+    }
      
     public DSpaceObject getAdminObject(int action) throws SQLException
     {
