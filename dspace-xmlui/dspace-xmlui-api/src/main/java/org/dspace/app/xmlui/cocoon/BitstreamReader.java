@@ -7,16 +7,6 @@
  */
 package org.dspace.app.xmlui.cocoon;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.sql.SQLException;
-import java.util.Map;
-
-import javax.mail.internet.MimeUtility;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.avalon.excalibur.pool.Recyclable;
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.ProcessingException;
@@ -29,6 +19,7 @@ import org.apache.cocoon.environment.http.HttpEnvironment;
 import org.apache.cocoon.environment.http.HttpResponse;
 import org.apache.cocoon.reading.AbstractReader;
 import org.apache.cocoon.util.ByteRange;
+import org.apache.log4j.Logger;
 import org.dspace.app.xmlui.utils.AuthenticationUtil;
 import org.dspace.app.xmlui.utils.ContextUtil;
 import org.dspace.authorize.AuthorizeException;
@@ -41,13 +32,19 @@ import org.dspace.content.Item;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
+import org.dspace.core.LogManager;
+import org.dspace.disseminate.CitationDocument;
 import org.dspace.handle.HandleManager;
 import org.dspace.usage.UsageEvent;
 import org.dspace.utils.DSpace;
 import org.xml.sax.SAXException;
 
-import org.apache.log4j.Logger;
-import org.dspace.core.LogManager;
+import javax.mail.internet.MimeUtility;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * The BitstreamReader will query DSpace for a particular bitstream and transmit
@@ -311,8 +308,56 @@ public class BitstreamReader extends AbstractReader implements Recyclable
                 
             // Success, bitstream found and the user has access to read it.
             // Store these for later retreval:
-            this.bitstreamInputStream = bitstream.retrieve();
-            this.bitstreamSize = bitstream.getSize();
+
+            //Due to the OSU Knowledge Bank policy of intercepting views to the original bitstream to instead show a
+            // citation altered version of the object, we need to check if this resource falls under the
+            // "show watermarked alternative" umbrella. At which time we will not return the "bitstream", but will
+            // instead on-the-fly generate the citation rendition.
+
+            // What will trigger a redirect/intercept?
+            // 1) Intercepting Enabled
+            // 2) This User is not an admin
+            // 3) This object is citation-able
+            boolean isCitationEnabled = ConfigurationManager.getBooleanProperty("webui.citation.enabled", false);
+            boolean isUserAdmin = AuthorizeManager.isAdmin(context);
+
+            CitationDocument citationDocument = new CitationDocument();
+
+            if (isCitationEnabled && !isUserAdmin && citationDocument.canGenerateCitationVersion(bitstream)) {
+                // on-the-fly citation generator
+                log.info(item.getHandle() + " - " + bitstream.getName() + " is citable.");
+                
+                File citedDocument = null;
+                FileInputStream fileInputStream = null;
+                
+                try {
+                    //Create the cited document
+                    citedDocument = citationDocument.makeCitedDocument(bitstream);
+                    if(citedDocument == null) {
+                        log.error("CitedDocument was null");
+                    } else {
+                        log.info("CitedDocument was ok," + citedDocument.getAbsolutePath());
+                    }
+                    
+                    
+                    fileInputStream = new FileInputStream(citedDocument);
+                    if(fileInputStream == null) {
+                        log.error("Error opening fileInputStream: ");
+                    }
+                    
+                    this.bitstreamInputStream = fileInputStream;
+                    this.bitstreamSize = citedDocument.length();
+                    
+                } catch (Exception e) {
+                    log.error("Caught an error with intercepting the citation document:" + e.getMessage());
+                }
+                
+                
+            } else {
+                this.bitstreamInputStream = bitstream.retrieve();
+                this.bitstreamSize = bitstream.getSize();
+            }
+
             this.bitstreamMimeType = bitstream.getFormat().getMIMEType();
             this.bitstreamName = bitstream.getName();
             if (context.getCurrentUser() == null)
@@ -343,7 +388,16 @@ public class BitstreamReader extends AbstractReader implements Recyclable
             else
             {
                 // In-case there is no bitstream name...
-                bitstreamName = "bitstream";
+                if(name != null && name.length() > 0) {
+                    bitstreamName = name;
+                    if(name.endsWith(".jpg")) {
+                        bitstreamMimeType = "image/jpeg";
+                    } else if(name.endsWith(".png")) {
+                        bitstreamMimeType = "image/png";
+                    }
+                } else {
+                    bitstreamName = "bitstream";
+                }
             }
             
             // Log that the bitstream has been viewed, this is none-cached and the complexity
@@ -572,6 +626,9 @@ public class BitstreamReader extends AbstractReader implements Recyclable
                 }
                 response.setHeader("Content-Disposition", "attachment;filename=" + name);
         }
+
+        // Set the response MIME type
+        response.setHeader("Content-Type", this.bitstreamMimeType);
 
         ByteRange byteRange = null;
 

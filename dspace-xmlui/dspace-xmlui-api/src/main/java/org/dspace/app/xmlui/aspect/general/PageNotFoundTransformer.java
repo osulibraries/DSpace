@@ -7,14 +7,11 @@
  */
 package org.dspace.app.xmlui.aspect.general;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.SQLException;
-
 import org.apache.cocoon.ResourceNotFoundException;
 import org.apache.cocoon.caching.CacheableProcessingComponent;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
+import org.apache.cocoon.environment.http.HttpEnvironment;
 import org.apache.cocoon.util.HashUtil;
 import org.apache.excalibur.source.SourceValidity;
 import org.apache.excalibur.source.impl.validity.NOPValidity;
@@ -27,9 +24,13 @@ import org.dspace.app.xmlui.wing.element.Body;
 import org.dspace.app.xmlui.wing.element.Division;
 import org.dspace.app.xmlui.wing.element.PageMeta;
 import org.dspace.authorize.AuthorizeException;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
 
 /**
  * This special comonent checks to see if the body element is empty (has no sub elements) and if
@@ -159,11 +160,20 @@ public class PageNotFoundTransformer extends AbstractDSpaceTransformer implement
         {
             Division notFound = body.addDivision("page-not-found","primary");
             
-            notFound.setHead(T_head);
-            
-            notFound.addPara(T_para1); 
+            HttpServletRequest httpRequest = (HttpServletRequest) objectModel.get(HttpEnvironment.HTTP_REQUEST_OBJECT);
 
-            notFound.addPara().addXref(contextPath + "/",T_go_home);
+            if(httpRequest.getPathInfo().contains("submit"))
+            {
+				//@TODO Make this i18n
+                notFound.setHead("You've been logged out");
+                notFound.addPara("Unfortunately, the system has logged you out; to continue your submissions please log back in. Your submission-in-progress is in your Unfinished Submissions, and will resume from the last step you have completed. Information entered since then could not be saved.");
+                notFound.addPara().addXref(contextPath + "/submissions", "Submissions");
+            } else
+            {
+                notFound.setHead(T_head);
+                notFound.addPara(T_para1);
+                notFound.addPara().addXref(contextPath + "/",T_go_home);
+            }
 
             throw new ResourceNotFoundException("Page cannot be found");
 

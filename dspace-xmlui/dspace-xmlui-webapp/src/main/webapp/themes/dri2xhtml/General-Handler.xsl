@@ -15,21 +15,27 @@
     Version: Manakin-1.1 and up (basically, those version making use of the Virtual Object Store)
 -->    
 
+<!-- bds: added rdf and cc namespaces for CC-License linking section -->
+<!-- PMD: There are some minor OSU customizations within this stylesheet, but anything major would be in OSU-Local.-->
 <xsl:stylesheet 
     xmlns:dri="http://di.tamu.edu/DRI/1.0/"
     xmlns:i18n="http://apache.org/cocoon/i18n/2.1"
     xmlns:mets="http://www.loc.gov/METS/"
     xmlns:xlink="http://www.w3.org/TR/xlink/"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+    xmlns:dim="http://www.dspace.org/xmlns/dspace/dim"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:cc="http://creativecommons.org/ns#"
     xmlns="http://www.w3.org/1999/xhtml"
-    exclude-result-prefixes="i18n dri mets xlink xsl">
-    
+    exclude-result-prefixes="i18n dri mets xlink xsl dim rdf cc">
+
     <xsl:output indent="yes"/>
     
 
     
     
     <!-- Generate the thunbnail, if present, from the file section -->
+    <!-- bds: Overridden in OSU-Local -->
     <xsl:template match="mets:fileSec" mode="artifact-preview">
         <xsl:if test="mets:fileGrp[@USE='THUMBNAIL']">
             <div class="artifact-preview">
@@ -50,8 +56,8 @@
     <xsl:template match="mets:fileGrp[@USE='CONTENT']">
         <xsl:param name="context"/>
         <xsl:param name="primaryBitstream" select="-1"/>
-        
-        <h2><i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-head</i18n:text></h2>
+        <!-- bds: this is the most common place for file-list items to be built -->
+        <!-- <h2><i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-head</i18n:text></h2> -->
         <table class="ds-table file-list">
             <tr class="ds-table-header-row">
                 <th><i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-file</i18n:text></th>
@@ -153,7 +159,12 @@
                             <xsl:attribute name="href">
                                 <xsl:value-of select="mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
                             </xsl:attribute>
-                            <img alt="Thumbnail">
+                            <img>
+				<!-- Accessibility fix for alt tags for images -->
+                                <xsl:attribute name="alt">
+                                    <xsl:text>Thumbnail of </xsl:text>
+                                    <xsl:value-of select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='title']"/>
+                                </xsl:attribute>
                                 <xsl:attribute name="src">
                                     <xsl:value-of select="$context/mets:fileSec/mets:fileGrp[@USE='THUMBNAIL']/
                                         mets:file[@GROUPID=current()/@GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
@@ -203,7 +214,7 @@
       <i18n:text i18n:key="{$mimetype-key}"><xsl:value-of select="$mimetype"/></i18n:text>
     </xsl:template>
 
-
+    <!-- This gets overridden in OSULOCAL -->
     <!-- Generate the license information from the file section -->
     <xsl:template match="mets:fileGrp[@USE='CC-LICENSE' or @USE='LICENSE']">
         <div class="license-info">
@@ -225,8 +236,11 @@
     <xsl:template match="mets:fileGrp[@USE='LOGO']">
         <div class="ds-logo-wrapper">
             <img src="{mets:file/mets:FLocat[@LOCTYPE='URL']/@xlink:href}" class="logo">
-                <xsl:attribute name="alt">xmlui.dri2xhtml.METS-1.0.collection-logo-alt</xsl:attribute>
-                <xsl:attribute name="attr" namespace="http://apache.org/cocoon/i18n/2.1">alt</xsl:attribute>
+                <xsl:attribute name="alt">
+		    <!-- Add Accessibility alt tag to image-->
+                    <xsl:value-of select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='title']"/>
+                    <xsl:text> logo</xsl:text>
+                </xsl:attribute>
             </img>
         </div>
     </xsl:template>

@@ -170,7 +170,8 @@ public class EditCollectionMetadataForm extends AbstractDSpaceTransformer
 	    if (thisCollection.getLogo() != null) {
 	    	metadataList.addLabel(T_label_existing_logo);
 	    	item = metadataList.addItem();
-	    	item.addFigure(contextPath + "/bitstream/id/" + thisCollection.getLogo().getID() + "/bob.jpg", null, null);
+            Bitstream collectionLogo = thisCollection.getLogo();
+	    	item.addFigure(contextPath + "/bitstream/id/" + collectionLogo.getID() + "/" + ((collectionLogo.getName() == null) ? "logo.jpg" : collectionLogo.getName()), null, null);
 	    	item.addButton("submit_delete_logo").setValue(T_submit_delete_logo);
 	    }
 	    

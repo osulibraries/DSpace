@@ -7,48 +7,43 @@
  */
 package org.dspace.app.xmlui.aspect.artifactbrowser;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletResponse;
 import org.apache.cocoon.caching.CacheableProcessingComponent;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.http.HttpEnvironment;
 import org.apache.cocoon.util.HashUtil;
 import org.apache.excalibur.source.SourceValidity;
+import org.dspace.app.sfx.SFXFileReader;
+import org.dspace.app.util.GoogleMetadata;
+import org.dspace.app.util.Util;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.DSpaceValidity;
 import org.dspace.app.xmlui.utils.HandleUtil;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.ReferenceSet;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.Collection;
-import org.dspace.content.DCValue;
-import org.dspace.content.DSpaceObject;
+import org.dspace.authorize.AuthorizeManager;
+import org.dspace.content.*;
 import org.dspace.content.Item;
-import org.dspace.app.util.GoogleMetadata;
 import org.dspace.content.crosswalk.CrosswalkException;
 import org.dspace.content.crosswalk.DisseminationCrosswalk;
+import org.dspace.core.ConfigurationManager;
+import org.dspace.core.Constants;
 import org.dspace.core.PluginManager;
 import org.jdom.Element;
 import org.jdom.Text;
 import org.jdom.output.XMLOutputter;
 import org.xml.sax.SAXException;
-import org.dspace.core.ConfigurationManager;
-import org.dspace.app.sfx.SFXFileReader;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.*;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Display a single item.
@@ -154,14 +149,19 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
 
         // Set the page title
         String title = getItemTitle(item);
+        
+        String titleSuffix = "";
+        if(showFullItem(objectModel)) {
+            titleSuffix = "  - Full Metadata";
+        }
 
         if (title != null)
         {
-            pageMeta.addMetadata("title").addContent(title);
+            pageMeta.addMetadata("title").addContent(title + titleSuffix);
         }
         else
         {
-            pageMeta.addMetadata("title").addContent(item.getHandle());
+            pageMeta.addMetadata("title").addContent(item.getHandle() + titleSuffix);
         }
 
         pageMeta.addTrailLink(contextPath + "/",T_dspace_home);
@@ -197,6 +197,40 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
             for (Entry<String, String> m : gmd.getMappings())
             {
                 pageMeta.addMetadata(m.getKey()).addContent(m.getValue());
+            }
+        }
+        
+        boolean openGraphEnabled = ConfigurationManager.getBooleanProperty("opengraph-metadata.enable", true);
+        if(openGraphEnabled) {
+            // Add the FaceBook / OpenGraph Metadata fields and values to DRI/meta
+            //TODO Use config file + opengraph class to perform mapping
+            addMetadataFieldToTag(pageMeta, item, "dc.title", "og:title");
+            addMetadataFieldToTag(pageMeta, item, "dc.type", "og:type");
+            addMetadataFieldToTag(pageMeta, item, "dc.description", "og:description");
+            addMetadataFieldToTag(pageMeta, item, "dc.language", "og:language");
+            
+            String handle = item.getHandle();
+            if(handle != null && handle.length() > 0) {
+                pageMeta.addMetadata("og:url").addContent("http://hdl.handle.net/" + handle);
+            }
+
+            // Look for image bitstreams, and add them to og:images
+            Bundle[] originalBundles = item.getBundles("ORIGINAL");
+            if(originalBundles != null && originalBundles.length >0) {
+                Bundle firstOriginalBundle = originalBundles[0];
+                Bitstream[] originalBitstreams = firstOriginalBundle.getBitstreams();
+                
+                for(Bitstream bitstream : originalBitstreams) {
+                    if(
+                        bitstream.getFormat().getMIMEType().contains("image") && 
+                        AuthorizeManager.authorizeActionBoolean(context, bitstream, Constants.READ)
+                    ) {
+                        String pathToBitstream = getPathToBitstream(bitstream, item);
+                        if(pathToBitstream.length() > 0) {
+                            pageMeta.addMetadata("og:image").addContent(pathToBitstream);
+                        }
+                    }
+                }
             }
         }
 
@@ -301,12 +335,21 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
 
         // Refrence the actual Item
         ReferenceSet appearsInclude = referenceSet.addReference(item).addReferenceSet(ReferenceSet.TYPE_DETAIL_LIST,null,"hierarchy");
+        /* Disabling the funky include-remote-stuff method to list the collections this item appears in.
         appearsInclude.setHead(T_head_parent_collections);
 
         // Reference all collections the item appears in.
         for (Collection collection : item.getCollections())
         {
             appearsInclude.addReference(collection);
+        }
+        */
+
+        org.dspace.app.xmlui.wing.element.List appearsIn = division.addList("appearsIn");
+        appearsIn.setHead(T_head_parent_collections);
+        for (Collection collection : item.getCollections())
+        {
+            appearsIn.addItemXref(contextPath+"/handle/"+collection.getHandle(), collection.getName());
         }
 
         showfullPara = division.addPara(null,"item-view-toggle item-view-toggle-bottom");
@@ -357,6 +400,48 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
             title = null;
         }
         return title;
+    }
+    
+    public String getConcatenatedMetadata(DCValue[] metadataValues) {
+        String fullValue="";
+        for(DCValue metadata : metadataValues) {
+            if(fullValue.length() > 0) {
+                fullValue+=";";
+            }
+            fullValue+=metadata.value;
+        }
+        return fullValue;
+    }
+    
+    public void addMetadataFieldToTag(PageMeta pageMeta, Item item, String metadataKey, String tagKey) throws WingException{
+        DCValue[] metadataFieldValues = item.getMetadata(metadataKey);
+        
+        if(metadataFieldValues != null && metadataFieldValues.length>0) {
+            String concatendatedMetadata = getConcatenatedMetadata(metadataFieldValues);
+            pageMeta.addMetadata(tagKey).addContent(concatendatedMetadata);
+        }
+    }
+    
+    public String getPathToBitstream(Bitstream bitstream, Item item) {
+        StringBuilder path = new StringBuilder();
+        path.append(ConfigurationManager.getProperty("dspace.url"));
+
+        if (item.getHandle() != null) {
+            path.append("/bitstream/");
+            path.append(item.getHandle());
+            path.append("/");
+            path.append(bitstream.getSequenceID());
+        } else {
+            path.append("/retrieve/");
+            path.append(bitstream.getID());
+        }
+
+        path.append("/");
+        try {
+            path.append(Util.encodeBitstreamName(bitstream.getName(), Constants.DEFAULT_ENCODING));
+        } catch (UnsupportedEncodingException e) {
+        }
+        return path.toString();
     }
 
     /**

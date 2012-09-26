@@ -50,7 +50,12 @@
             <ref bean="dspace.eventService"/>
         </property>
     </bean>
-          
+    <!-- Elastic Search -->
+    <bean class="org.dspace.statistics.ElasticSearchLoggerEventListener">
+        <property name="eventService">
+            <ref bean="dspace.eventService" />
+        </property>
+    </bean>  
     <!-- 
     Uncomment to enable TabFileUsageEventListener 
     <bean class="org.dspace.app.statistics.TabFileUsageEventListener">

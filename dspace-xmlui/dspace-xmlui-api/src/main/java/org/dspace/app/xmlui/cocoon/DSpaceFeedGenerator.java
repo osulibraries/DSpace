@@ -85,8 +85,9 @@ import com.sun.syndication.io.FeedException;
  */
 
 public class DSpaceFeedGenerator extends AbstractGenerator
-                implements Configurable, CacheableProcessingComponent, Recyclable
+                implements Configurable, CacheableProcessingComponent, Recyclable, Serializable
 {
+    private static final long serialVersionUID = 2L;	//@TODO If serialize neccessary?
     private static final Logger log = Logger.getLogger(DSpaceFeedGenerator.class);
 
     /** The feed's requested format */
@@ -94,6 +95,9 @@ public class DSpaceFeedGenerator extends AbstractGenerator
     
     /** The feed's scope, null if no scope */
     private String handle = null;
+
+    /** Media type of content (if available) */
+    private String mediaType = null;
     
     /** number of DSpace items per feed */
     private static final int ITEM_COUNT = ConfigurationManager.getIntProperty("webui.feed.items");
@@ -127,7 +131,7 @@ public class DSpaceFeedGenerator extends AbstractGenerator
      */
     public Serializable getKey()
     {
-        String key = "key:" + this.handle + ":" + this.format;
+        String key = "key:" + this.handle + ":" + this.format + ":" + this.mediaType;
         return HashUtil.hash(key);
     }
 
@@ -162,6 +166,8 @@ public class DSpaceFeedGenerator extends AbstractGenerator
                 {
                     validity.add(item);
                 }
+
+                validity.add(mediaType);
 
                 this.validity = validity.complete();
             }
@@ -198,6 +204,7 @@ public class DSpaceFeedGenerator extends AbstractGenerator
         
         this.format = par.getParameter("feedFormat", null);
         this.handle = par.getParameter("handle",null);
+        this.mediaType = par.getParameter("mediaType", null);
     }
     
     
@@ -228,6 +235,11 @@ public class DSpaceFeedGenerator extends AbstractGenerator
             }
         
             SyndicationFeed feed = new SyndicationFeed(SyndicationFeed.UITYPE_XMLUI);
+
+            if(mediaType != null) {
+                feed.setMediaType(mediaType);
+            }
+
             feed.populate(ObjectModelHelper.getRequest(objectModel),
                           dso, getRecentlySubmittedItems(context,dso), FeedUtils.i18nLabels);
             feed.setType(this.format);
@@ -328,6 +340,7 @@ public class DSpaceFeedGenerator extends AbstractGenerator
     {
         this.format = null;
         this.handle = null;
+        this.mediaType = null;
         this.validity = null;
         this.recentSubmissionItems = null;
         super.recycle();

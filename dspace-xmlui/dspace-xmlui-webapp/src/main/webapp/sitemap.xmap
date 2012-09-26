@@ -93,6 +93,7 @@
                         <map:transformer name="LDAPLogin" src="org.dspace.app.xmlui.aspect.eperson.LDAPLogin"/>
                         <map:transformer name="notice" src="org.dspace.app.xmlui.aspect.general.NoticeTransformer"/>
                         <map:transformer name="NamespaceFilter" src="org.dspace.app.xmlui.cocoon.NamespaceFilterTransformer"/>
+                        <map:transformer name="RestrictedItem" src="org.dspace.app.xmlui.aspect.artifactbrowser.RestrictedItem"/>
                 </map:transformers>
                 <map:matchers default="wildcard">
                         <map:matcher logger="sitemap.matcher.wildcard" name="wildcard"
@@ -120,6 +121,7 @@
                                 <map:parameter name="ignore-missing-tables" value="true"/>
                         </map:matcher>
                         <map:matcher name="request" src="org.apache.cocoon.matching.RequestParameterMatcher"/>
+                        <map:matcher name="StatisticsAuthorizedMatcher" src="org.dspace.app.xmlui.aspect.statistics.StatisticsAuthorizedMatcher"/>
                 </map:matchers>
                 <map:selectors>
                         <map:selector name="browser" src="org.apache.cocoon.selection.BrowserSelector"
@@ -175,6 +177,8 @@
                                 <!-- The statement below tells the selector to unroll as much exceptions as possible -->
                                 <exception class="java.lang.Throwable" unroll="true"/>
                         </map:selector>
+                        <!-- AuthenticatedSelector for forcing user to login if not authorized - PMD -->
+                        <map:selector name="AuthenticatedSelector" src="org.dspace.app.xmlui.aspect.general.AuthenticatedSelector"/>
                 </map:selectors>
                 <map:readers default="resource">
                     <map:reader name="resource" src="org.apache.cocoon.reading.ResourceReader"
@@ -184,6 +188,16 @@
                     <map:reader name="BitstreamReader" src="org.dspace.app.xmlui.cocoon.BitstreamReader"/>
                     <map:reader name="ExportReader" src="org.dspace.app.xmlui.cocoon.ItemExportDownloadReader"/>
                     <map:reader name="MetadataExportReader" src="org.dspace.app.xmlui.cocoon.MetadataExportReader"/>
+
+                    <!-- OSUKB Dashboard / Statistics Pages -->
+                    <map:reader name="CollectionInfo" src="org.dspace.app.xmlui.aspect.dashboard.CollectionInfo"/>
+                    <map:reader name="CommunityInfo" src="org.dspace.app.xmlui.aspect.dashboard.CommunityInfo"/>
+                    <map:reader name="ContentStatistics" src="org.dspace.app.xmlui.aspect.dashboard.ContentStatistics"/>
+                    <map:reader name="GrowthStatistics" src="org.dspace.app.xmlui.aspect.dashboard.GrowthStatistics"/>
+                    <map:reader name="HierarchyInfo" src="org.dspace.app.xmlui.aspect.dashboard.HierarchyInfo"/>
+                    <map:reader name="CSVOutputter" src="org.dspace.app.xmlui.aspect.dashboard.CSVOutputter"/>
+
+
                     <map:reader name="OpenURLReader" src="org.dspace.app.xmlui.cocoon.OpenURLReader"/>
                     <map:reader name="SitemapReader" src="org.dspace.app.xmlui.cocoon.SitemapReader"/>
                     <map:reader name="ConcatenationReader" src="org.dspace.app.xmlui.cocoon.ConcatenationReader"/>
@@ -194,6 +208,7 @@
                         <map:action name="StartAuthentication" src="org.dspace.app.xmlui.aspect.eperson.StartAuthenticationAction"/>
                         <map:action name="DSpacePropertyFileReader" src="org.dspace.app.xmlui.cocoon.DSpacePropertyFileReader" />
                         <map:action name="PropertyFileReader" src="org.dspace.app.xmlui.cocoon.PropertyFileReader" />
+                        <map:action name="ClearCache" src="org.apache.cocoon.acting.ClearCacheAction" />
                 </map:actions>
                 <map:pipes default="caching">
                         <map:pipe name="noncaching" src="org.apache.cocoon.components.pipeline.impl.NonCachingProcessingPipeline">
@@ -220,6 +235,14 @@
         <!-- =========================== Pipelines ================================= -->
         <map:pipelines>
 
+                <map:pipeline type="noncaching" internal-only="false">
+                    <map:match pattern="clearcache">
+                        <map:act type="ClearCache">
+                            <map:generate src="status" type="status"/>
+                            <map:serialize type="xml"/>
+                        </map:act>
+                    </map:match>
+                </map:pipeline>
 
                 <!-- Bitstream pipeline -->
                 <map:pipeline type="noncaching">
@@ -323,6 +346,7 @@
                                 Bitstreams not attached to to items (community / collection logos)
                                 
                                 /bitstream/id/[bitstreamID]/[ignored]
+                                /bitstream/id/[bitstreamID]/name
                         -->
                         <map:match pattern="bitstream/id/*/**">
                                 <map:select type="browser">
@@ -330,11 +354,13 @@
                                     <map:read type="BitstreamReader">
                                             <map:parameter name="userAgent" value="spider"/>
                                             <map:parameter name="bitstreamID" value="{1}"/>
+                                            <map:parameter name="name"  value="{2}"/>
                                     </map:read>
                                   </map:when>
                                   <map:otherwise>
                                     <map:read type="BitstreamReader">
                                             <map:parameter name="bitstreamID" value="{1}"/>
+                                            <map:parameter name="name" value="{2}"/>
                                     </map:read>
                                   </map:otherwise>
                                 </map:select>
@@ -375,6 +401,83 @@
                                     <map:parameter name="handle" value="{1}/{2}" />
                                 </map:read>
                         </map:match>
+
+
+                        <!-- OSU KB Statistics Pages -->
+                        <map:match pattern="collection-info">
+                            <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
+                                <map:read type="CollectionInfo"/>
+                            </map:match>
+                        </map:match>
+
+                        <map:match pattern="community-info">
+                            <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
+                                <map:read type="CommunityInfo"/>
+                            </map:match>
+                        </map:match>
+
+                        <map:match pattern="content-statistics">
+                            <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
+                                <map:read type="ContentStatistics"/>
+                            </map:match>
+                        </map:match>
+
+                        <map:match pattern="growth-statistics">
+                            <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
+                                <map:read type="GrowthStatistics"/>
+                            </map:match>
+                        </map:match>
+
+                        <map:match pattern="hierarchy-info">
+                            <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
+                                <map:read type="HierarchyInfo"/>
+                            </map:match>
+                        </map:match>
+
+                        <map:match pattern="handle/*/*/stats/csv">
+                            <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
+                                <map:read type="CSVOutputter"/>
+                            </map:match>
+
+                            <map:match type="StatisticsAuthorizedMatcher" pattern="!READ">
+                                <map:select type="AuthenticatedSelector">
+                                    <map:when test="eperson">
+                                        <map:transform type="RestrictedItem"/>
+                                        <map:serialize/>
+                                    </map:when>
+                                    <map:otherwise>
+                                        <map:act type="StartAuthentication">
+                                            <map:parameter name="header" value="xmlui.ArtifactBrowser.RestrictedItem.auth_header"/>
+                                            <map:parameter name="message" value="xmlui.ArtifactBrowser.RestrictedItem.auth_message"/>
+                                        </map:act>
+                                        <map:serialize/>
+                                    </map:otherwise>
+                                </map:select>
+                            </map:match>
+                        </map:match>
+
+                        <map:match pattern="handle/*/*/stats/csv/*">
+                            <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
+                                <map:read type="CSVOutputter"/>
+                            </map:match>
+
+                            <map:match type="StatisticsAuthorizedMatcher" pattern="!READ">
+                                <map:select type="AuthenticatedSelector">
+                                    <map:when test="eperson">
+                                        <map:transform type="RestrictedItem"/>
+                                        <map:serialize/>
+                                    </map:when>
+                                    <map:otherwise>
+                                        <map:act type="StartAuthentication">
+                                            <map:parameter name="header" value="xmlui.ArtifactBrowser.RestrictedItem.auth_header"/>
+                                            <map:parameter name="message" value="xmlui.ArtifactBrowser.RestrictedItem.auth_message"/>
+                                        </map:act>
+                                        <map:serialize/>
+                                    </map:otherwise>
+                                </map:select>
+                            </map:match>
+                        </map:match>
+
 
                         <map:match pattern="JSON/discovery/**">
                             <map:mount check-reload="no" src="aspects/json-solr.xmap" uri-prefix="JSON/discovery/"/>
@@ -461,6 +564,20 @@
                     </map:match>
 
                     <!-- Syndication feeds for whole repo or community/collection -->
+                    <map:match pattern="feed/*/**/mediaType/*">
+                        <map:generate type="DSpaceFeedGenerator">
+                            <map:parameter name="feedFormat" value="{1}"/>
+                            <map:parameter name="handle" value="{2}"/>
+                            <map:parameter name="mediaType" value="{3}"/>
+                        </map:generate>
+                        <map:act type="locale">
+                            <map:transform type="i18n">
+                                <map:parameter name="locale" value="{locale}"/>
+                            </map:transform>
+                        </map:act>
+                        <map:serialize type="xml"/>
+                    </map:match>
+
                     <map:match pattern="feed/*/**">
                         <map:generate type="DSpaceFeedGenerator">
                             <map:parameter name="feedFormat" value="{1}"/>

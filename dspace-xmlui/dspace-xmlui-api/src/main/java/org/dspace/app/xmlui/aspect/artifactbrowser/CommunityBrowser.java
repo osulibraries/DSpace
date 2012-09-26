@@ -7,13 +7,6 @@
  */
 package org.dspace.app.xmlui.aspect.artifactbrowser;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Stack;
-
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.ProcessingException;
 import org.apache.cocoon.caching.CacheableProcessingComponent;
@@ -26,12 +19,7 @@ import org.dspace.app.xmlui.utils.DSpaceValidity;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.ReferenceSet;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.Reference;
-import org.dspace.app.xmlui.wing.element.PageMeta;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.browse.ItemCountException;
 import org.dspace.browse.ItemCounter;
@@ -41,8 +29,14 @@ import org.dspace.content.DSpaceObject;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
 import org.dspace.core.LogManager;
-
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * Display a list of Communities and collections.
@@ -291,7 +285,7 @@ public class CommunityBrowser extends AbstractDSpaceTransformer implements Cache
         }
         
         String url = contextPath + "/handle/"+dso.getHandle();
-        list.addItem().addHighlight("bold").addXref(url, name);
+        list.addItem()./*addHighlight("bold").*/addXref(url, name, "community");
         
         List subList = null;
         
@@ -305,7 +299,7 @@ public class CommunityBrowser extends AbstractDSpaceTransformer implements Cache
             {
                 String collectionName = ((Collection) collectionNode.getDSO()).getMetadata("name");
                 String collectionUrl = contextPath + "/handle/"+collectionNode.getDSO().getHandle();
-                subList.addItemXref(collectionUrl, collectionName);
+                subList.addItemXref(collectionUrl, collectionName, "collection");
             }
         }
         
