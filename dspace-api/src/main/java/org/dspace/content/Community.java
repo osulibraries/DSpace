@@ -7,13 +7,6 @@
  */
 package org.dspace.content;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.MissingResourceException;
-
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
 import org.dspace.app.util.AuthorizeUtil;
@@ -21,8 +14,8 @@ import org.dspace.authorize.AuthorizeConfiguration;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.authorize.ResourcePolicy;
-import org.dspace.browse.ItemCounter;
 import org.dspace.browse.ItemCountException;
+import org.dspace.browse.ItemCounter;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.core.I18nUtil;
@@ -33,6 +26,13 @@ import org.dspace.handle.HandleManager;
 import org.dspace.storage.rdbms.DatabaseManager;
 import org.dspace.storage.rdbms.TableRow;
 import org.dspace.storage.rdbms.TableRowIterator;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.MissingResourceException;
 
 /**
  * Class representing a community
@@ -252,8 +252,11 @@ public class Community extends DSpaceObject
      */
     public static Community[] findAll(Context context) throws SQLException
     {
+        //Local needs require case-insensitive ordering.
+        // @TODO Should be configurable
+        // @TODO Need to consider performance of altering order of already indexed field.
         TableRowIterator tri = DatabaseManager.queryTable(context, "community",
-                "SELECT * FROM community ORDER BY name");
+                "SELECT * FROM community ORDER BY upper(name)");
 
         List<Community> communities = new ArrayList<Community>();
 
@@ -305,10 +308,13 @@ public class Community extends DSpaceObject
     public static Community[] findAllTop(Context context) throws SQLException
     {
         // get all communities that are not children
+        //Local needs require case-insensitive ordering.
+        // @TODO Should be configurable
+        // @TODO Need to consider performance of altering order of already indexed field.
         TableRowIterator tri = DatabaseManager.queryTable(context, "community",
                 "SELECT * FROM community WHERE NOT community_id IN "
                         + "(SELECT child_comm_id FROM community2community) "
-                        + "ORDER BY name");
+                        + "ORDER BY upper(name)");
 
         List<Community> topCommunities = new ArrayList<Community>();
 
@@ -617,11 +623,14 @@ public class Community extends DSpaceObject
         List<Collection> collections = new ArrayList<Collection>();
 
         // Get the table rows
+        //Local needs require case-insensitive ordering.
+        // @TODO Should be configurable
+        // @TODO Need to consider performance of altering order of already indexed field.
         TableRowIterator tri = DatabaseManager.queryTable(
         	ourContext,"collection",
             "SELECT collection.* FROM collection, community2collection WHERE " +
             "community2collection.collection_id=collection.collection_id " +
-            "AND community2collection.community_id= ? ORDER BY collection.name",
+            "AND community2collection.community_id= ? ORDER BY upper(collection.name)",
             getID());
 
         // Make Collection objects
