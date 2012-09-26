@@ -7,10 +7,6 @@
  */
 package org.dspace.authorize;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dspace.content.DSpaceObject;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
@@ -19,6 +15,10 @@ import org.dspace.eperson.Group;
 import org.dspace.storage.rdbms.DatabaseManager;
 import org.dspace.storage.rdbms.TableRow;
 import org.dspace.storage.rdbms.TableRowIterator;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AuthorizeManager handles all authorization checks for DSpace. For better
@@ -436,6 +436,17 @@ public class AuthorizeManager
         {
             return Group.isMember(c, 1);
         }
+    }
+
+    /**
+     * Find out if the current user is a super admin.
+     * @param c
+     * @return
+     * @throws SQLException
+     */
+    public static boolean isSuperAdmin(Context c) throws SQLException
+    {
+        return Group.isMember(c, 1);
     }
 
     ///////////////////////////////////////////////

@@ -7,23 +7,17 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.collection;
 
-import java.sql.SQLException;
-
 import org.dspace.app.xmlui.aspect.administrative.FlowContainerUtils;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.Item;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Text;
-import org.dspace.app.xmlui.wing.element.TextArea;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
+import org.dspace.content.Bitstream;
 import org.dspace.content.Collection;
+
+import java.sql.SQLException;
 
 
 /**
@@ -100,7 +94,10 @@ public class EditCollectionMetadataForm extends AbstractDSpaceTransformer
 	    options.addItem().addHighlight("bold").addXref(baseURL+"&submit_metadata",T_options_metadata);
 	    options.addItem().addXref(baseURL+"&submit_roles",T_options_roles);
 	    options.addItem().addXref(baseURL+"&submit_harvesting",T_options_harvest);
-            options.addItem().addXref(baseURL+"&submit_curate",T_options_curate);
+            if(AuthorizeManager.isSuperAdmin(context)) {
+                options.addItem().addXref(baseURL+"&submit_curate",T_options_curate);
+            }
+            options.addItem().addXref(contextPath+"/handle/"+thisCollection.getHandle(), "Go To This Collection");
 	    
 	    
 	    // The grand list of metadata options
