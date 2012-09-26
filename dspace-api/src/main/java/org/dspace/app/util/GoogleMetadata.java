@@ -7,32 +7,27 @@
  */
 package org.dspace.app.util;
 
-import java.sql.SQLException;
-import org.dspace.content.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import org.apache.log4j.Logger;
+import org.dspace.authorize.AuthorizeManager;
+import org.dspace.content.Bitstream;
+import org.dspace.content.Bundle;
+import org.dspace.content.DCValue;
+import org.dspace.content.Item;
 import org.dspace.core.ConfigurationManager;
-
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.handle.HandleManager;
-
 import org.jdom.Element;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -1002,8 +997,12 @@ public class GoogleMetadata
             Bundle[] contentBundles = item.getBundles("ORIGINAL");
             if (contentBundles.length > 0) {
                 Bitstream[] bitstreams = contentBundles[0].getBitstreams();
-                if (bitstreams.length == 1) {
-                    if (bitstreams[0].getFormat().getMIMEType().equals("application/pdf")) {
+                if (
+                        (bitstreams.length == 1) &&
+                        (bitstreams[0].getFormat().getMIMEType().equals("application/pdf")) &&
+                        AuthorizeManager.authorizeActionBoolean(new Context(), bitstreams[0], Constants.READ)
+                   )
+                {
                         StringBuilder path = new StringBuilder();
                         path.append(ConfigurationManager.getProperty("dspace.url"));
 
@@ -1020,7 +1019,6 @@ public class GoogleMetadata
                         path.append("/");
                         path.append(Util.encodeBitstreamName(bitstreams[0].getName(), Constants.DEFAULT_ENCODING));
                         return path.toString();
-                    }
                 }
             }
         } catch (UnsupportedEncodingException ex) {
