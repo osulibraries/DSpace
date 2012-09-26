@@ -7,24 +7,13 @@
  */
 package org.dspace.search;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.TokenMgrError;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -35,6 +24,12 @@ import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.core.LogManager;
 import org.dspace.sort.SortOption;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 // issues
 // need to filter query string for security
@@ -112,6 +107,7 @@ public class DSQuery
         //querystring = workAroundLuceneBug(querystring); // logicals changed to && ||, etc.
         querystring = stripHandles(querystring); // remove handles from query string
         querystring = stripAsterisk(querystring); // remove asterisk from beginning of string
+        querystring = stripInterspersedDash(querystring);   // remove all dashes from between terms. Leaves negators.
 
         try
         {
@@ -283,6 +279,16 @@ public class DSQuery
                       .replaceAll("\\s\\*", " ")
                       .replaceAll("\\(\\*", "(")
                       .replaceAll(":\\*", ":");
+    }
+
+    /**
+     * Remove a dash that is inbetween terms. Don't want it to be interpreted as a negator. Negator should touch a term.
+     * @param myQuery
+     * @return
+     */
+    static String stripInterspersedDash(String myQuery)
+    {
+        return myQuery.replaceAll(" - ", " ");
     }
 
     /**
