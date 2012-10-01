@@ -220,15 +220,13 @@
 
       <!--Step 5 will be to select a Creative Commons License-->
       <!-- Uncomment this step to allow the user to select a Creative Commons license -->
-       <!--
       <step>
         <heading>submit.progressbar.CClicense</heading>
         <processing-class>org.dspace.submit.step.CCLicenseStep</processing-class>
         <jspui-binding>org.dspace.app.webui.submit.step.JSPCCLicenseStep</jspui-binding>
-		<xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.CCLicenseStep</xmlui-binding>
-		<workflow-editable>false</workflow-editable>
-      </step>
-      -->
+        <xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.CCLicenseStep</xmlui-binding>
+        <workflow-editable>false</workflow-editable>
+     </step>
 
       <!--Step 6 will be to Sign off on the License-->
       <step>
@@ -238,7 +236,15 @@
 		<xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.LicenseStep</xmlui-binding>
 		<workflow-editable>false</workflow-editable>
       </step>
-
+     
+      <!--Step 7 will be to Upload the proxy license item-->
+      <step>
+        <heading>submit.progressbar.proxy-license</heading>
+        <processing-class>org.dspace.submit.step.UploadLicenseStep</processing-class>
+        <jspui-binding>org.dspace.app.webui.submit.step.JSPUploadLicenseStep</jspui-binding>
+        <xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.UploadLicenseStep</xmlui-binding>
+        <workflow-editable>true</workflow-editable>
+      </step>
 
      
    </submission-process>
