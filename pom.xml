@@ -95,7 +95,10 @@
         <profile>
             <id>dspace</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace</module>
@@ -108,7 +111,10 @@
         <profile>
             <id>dspace-api</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-api</module>
@@ -121,7 +127,10 @@
         <profile>
             <id>dspace-stats</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-stats</module>
@@ -134,7 +143,10 @@
         <profile>
             <id>dspace-discovery</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-discovery</module>
@@ -147,7 +159,10 @@
         <profile>
             <id>dspace-oai</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-oai</module>
@@ -161,7 +176,10 @@
 
             <id>dspace-jspui</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-jspui</module>
@@ -175,7 +193,10 @@
         <profile>
             <id>dspace-sword</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-sword</module>
@@ -188,7 +209,10 @@
         <profile>
             <id>dspace-swordv2</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-swordv2</module>
@@ -201,7 +225,10 @@
         <profile>
             <id>dspace-sword-client</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-sword-client</module>
@@ -214,7 +241,10 @@
         <profile>
             <id>dspace-xmlui</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-xmlui</module>
@@ -227,7 +257,10 @@
         <profile>
             <id>dspace-lni</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>dspace-lni</module>
@@ -307,7 +340,10 @@
       <profile>
         <id>skiptests</id>
         <activation>
-            <activeByDefault>true</activeByDefault>
+            <!--<activeByDefault>true</activeByDefault>-->
+            <property>
+                <name>!dummy</name>
+            </property>
          </activation>
         <properties>
          <maven.test.skip>true</maven.test.skip>

@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<profilesXml>
+    <!-- Copy this profiles-default.xml to profiles.xml and fill in the variable fields for environment specifics.
+        This only works with MAVEN-2, maven3 has dropped support for profiles.xml
+    -->
+
+    <!-- Ensure that your profile is used by doing: mvn -Denv=dev package
+            (or -Denv=prod or -Denv=staging) -->
+
+    <!-- Configuration Defaults-->
+    <profiles>
+        <profile>
+            <id>default-environment</id>
+            <activation>
+                <!-- Make this profile "activeByDefault", using workaround at: http://jira.codehaus.org/browse/MNG-4533 -->
+                <property>
+                    <name>!dummy</name>
+                </property>
+            </activation>
+            <properties>
+                <dspace.dir>/dspace</dspace.dir>
+
+                <dspace.database.name>postgres</dspace.database.name>
+                <dspace.database.driver>org.postgresql.Driver</dspace.database.driver>
+                <dspace.database.url>jdbc:postgresql://localhost:5432/dspace</dspace.database.url>
+                <dspace.database.username>dspace</dspace.database.username>
+                <dspace.database.password>dspace</dspace.database.password>
+
+                <dspace.mail.server.disabled>false</dspace.mail.server.disabled>
+                <dspace.webui.browse.render-scientific-formulas>false</dspace.webui.browse.render-scientific-formulas>
+
+                <dspace.xmlui.user.assumelogin>false</dspace.xmlui.user.assumelogin>
+                <dspace.xmlui.theme.allowoverrides>false</dspace.xmlui.theme.allowoverrides>
+                <dspace.xmlui.google.analytics.key>UA-XXXXXX-X</dspace.xmlui.google.analytics.key>
+
+                <dspace.statistics.elasticsearch.clusterName>dspaceelastic</dspace.statistics.elasticsearch.clusterName>
+                <dspace.statistics.elasticsearch.indexName>unset</dspace.statistics.elasticsearch.indexName>
+                <dspace.statistics.elasticsearch.indexType>stats</dspace.statistics.elasticsearch.indexType>
+            </properties>
+        </profile>
+
+        <!-- Production -->
+        <profile>
+            <id>env-prod</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>prod</value>
+                </property>
+            </activation>
+            <properties>
+                <dspace.hostname>production.example.edu</dspace.hostname>
+                <!-- ... -->
+            </properties>
+        </profile>
+
+        <!-- Staging -->
+        <profile>
+            <id>env-staging</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>staging</value>
+                </property>
+            </activation>
+            <properties>
+                <dspace.hostname>staging.example.edu</dspace.hostname>
+                <!-- ... -->
+            </properties>
+        </profile>
+
+        <!-- Development -->
+        <profile>
+            <id>env-dev</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+            <properties>
+                <dspace.hostname>localhost</dspace.hostname>
+                <!-- ... -->
+            </properties>
+        </profile>
+    </profiles>
+</profilesXml>

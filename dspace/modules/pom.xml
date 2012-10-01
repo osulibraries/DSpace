@@ -35,7 +35,10 @@
         <profile>
             <id>dspace-xmlui</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>xmlui</module>
@@ -44,7 +47,10 @@
         <profile>
             <id>dspace-lni</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>lni</module>
@@ -53,7 +59,10 @@
         <profile>
             <id>dspace-oai</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>oai</module>
@@ -62,7 +71,10 @@
         <profile>
             <id>dspace-jspui</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>jspui</module>
@@ -71,7 +83,10 @@
         <profile>
             <id>dspace-sword</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>sword</module>
@@ -80,7 +95,10 @@
         <profile>
             <id>dspace-swordv2</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>swordv2</module>
@@ -89,7 +107,10 @@
         <profile>
             <id>dspace-solr</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!--<activeByDefault>true</activeByDefault>-->
+                <property>
+                    <name>!dummy</name>
+                </property>
             </activation>
             <modules>
                 <module>solr</module>
