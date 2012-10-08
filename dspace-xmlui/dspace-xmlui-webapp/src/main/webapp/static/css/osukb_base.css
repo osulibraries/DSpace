@@ -328,6 +328,8 @@ tr.ds-table-row.even {
   position: relative;
   color: inherit;
   margin: 0; }
+  #ds-body h2.ds-div-head {
+    clear: both; }
 
 #ds-options {
   float: left;
