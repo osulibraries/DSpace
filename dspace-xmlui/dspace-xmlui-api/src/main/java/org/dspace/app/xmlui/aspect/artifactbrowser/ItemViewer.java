@@ -179,7 +179,9 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
         while(itemIterator.hasNext()) {
             currentID = itemIterator.nextID();
             if(currentID == ourItemID) {
-                previousItem = Item.find(context, lastID);
+                if(lastID != null) {
+                    previousItem = Item.find(context, lastID);
+                }
                 if(itemIterator.hasNext()) {
                     nextItem = itemIterator.next();
                 }
