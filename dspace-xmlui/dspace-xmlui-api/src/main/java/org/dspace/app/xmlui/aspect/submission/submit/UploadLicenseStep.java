@@ -39,39 +39,26 @@
  */
 package org.dspace.app.xmlui.aspect.submission.submit;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-import java.util.Map;
-
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.ProcessingException;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.log4j.Logger;
-import org.dspace.app.xmlui.utils.UIException;
+import org.dspace.app.util.Util;
 import org.dspace.app.xmlui.aspect.submission.AbstractSubmissionStep;
+import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Button;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.Radio;
-import org.dspace.app.xmlui.wing.element.CheckBox;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.File;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
-import org.dspace.app.xmlui.wing.element.Text;
-import org.dspace.app.util.Util;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.Bitstream;
-import org.dspace.content.BitstreamFormat;
-import org.dspace.content.Bundle;
-import org.dspace.content.Collection;
+import org.dspace.content.*;
 import org.dspace.content.Item;
 import org.dspace.workflow.WorkflowItem;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * This is a step of the item submission processes. The upload
@@ -94,9 +81,9 @@ public class UploadLicenseStep extends AbstractSubmissionStep
 
 	/** Language Strings for Uploading **/
     protected static final Message T_head =
-        message("xmlui.Submission.submit.UploadStep.head");
+        message("xmlui.Submission.submit.UploadLicenseStep.head");
     protected static final Message T_file =
-        message("xmlui.Submission.submit.UploadStep.file");
+        message("xmlui.Submission.submit.UploadLicenseStep.file");
     protected static final Message T_file_help =
         message("xmlui.Submission.submit.UploadStep.file_help");
     protected static final Message T_file_error =
@@ -108,7 +95,7 @@ public class UploadLicenseStep extends AbstractSubmissionStep
     protected static final Message T_description_help =
         message("xmlui.Submission.submit.UploadStep.description_help");
     protected static final Message T_submit_upload =
-        message("xmlui.Submission.submit.UploadStep.submit_upload");
+        message("xmlui.Submission.submit.UploadLicenseStep.submit_upload");
     protected static final Message T_head2 =
         message("xmlui.Submission.submit.UploadStep.head2");
     protected static final Message T_column0 =

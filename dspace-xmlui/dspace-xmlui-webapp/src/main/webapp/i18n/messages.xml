@@ -735,6 +735,11 @@
 	<message key="xmlui.Submission.submit.LicenseStep.decision_checkbox">I Grant the License</message>
 	<message key="xmlui.Submission.submit.LicenseStep.decision_error">You must grant this license to complete your submission. If you are unable to grant this license at this time you may save your work and return later or remove the submission by clicking the 'Save &amp; Exit' button below.</message>
 
+    <!-- org.dspace.app.xmlui.Submission.submit.UploadLicenseStep -->
+    <message key="xmlui.Submission.submit.UploadLicenseStep.head">Proxy License</message>
+    <message key="xmlui.Submission.submit.UploadLicenseStep.file">Upload Proxy License</message>
+    <message key="xmlui.Submission.submit.UploadLicenseStep.submit_upload">Upload Proxy License file &amp; add another</message>
+
 	<!-- org.dspace.app.xmlui.Submission.submit.RemovedStep -->
 	<message key="xmlui.Submission.submit.RemovedStep.head">Submission removed</message>
 	<message key="xmlui.Submission.submit.RemovedStep.info1">Your submission has been cancelled, and the incomplete item removed from the system.</message>
