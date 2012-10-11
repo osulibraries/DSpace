@@ -3,3 +3,4 @@ modules/
 overlays/
 .idea/
 *.iml
+.sass-cache/
