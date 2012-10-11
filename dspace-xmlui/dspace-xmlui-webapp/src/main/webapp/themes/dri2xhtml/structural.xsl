@@ -73,6 +73,10 @@
         Specifically, adding a static page will need to override the DRI, to directly add content.
     -->
     <xsl:variable name="request-uri" select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='request'][@qualifier='URI']"/>
+
+    <!-- Grab the previous / next item handles if they are available -->
+    <xsl:variable name="previousItemHandle" select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='previousItemHandle']"/>
+    <xsl:variable name="nextItemHandle" select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='nextItemHandle']"/>
     
     <!--
     This style sheet will be written in several stages:

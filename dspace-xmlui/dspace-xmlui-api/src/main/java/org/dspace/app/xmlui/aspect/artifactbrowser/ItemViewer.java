@@ -168,6 +168,36 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
         HandleUtil.buildHandleTrail(item,pageMeta,contextPath);
         pageMeta.addTrail().addContent(T_trail);
 
+        //Previous and next items
+        Collection[] collections = item.getCollections();
+        Collection collection = collections[0];
+        ItemIterator itemIterator = collection.getItems();
+        Item previousItem = null;
+        Item nextItem = null;
+        Integer lastID = null, currentID;
+        int ourItemID = item.getID();
+        while(itemIterator.hasNext()) {
+            currentID = itemIterator.nextID();
+            if(currentID == ourItemID) {
+                previousItem = Item.find(context, lastID);
+                if(itemIterator.hasNext()) {
+                    nextItem = itemIterator.next();
+                }
+                break;
+            } else {
+                // Not current
+                lastID = currentID;
+            }
+        }
+
+        if(previousItem != null) {
+            pageMeta.addMetadata("previousItemHandle").addContent(previousItem.getHandle());
+        }
+
+        if(nextItem != null) {
+            pageMeta.addMetadata("nextItemHandle").addContent(nextItem.getHandle());
+        }
+
         // Add SFX link
         String sfxserverUrl = ConfigurationManager.getProperty("sfx.server.url");
         if (sfxserverUrl != null && sfxserverUrl.length() > 0)
