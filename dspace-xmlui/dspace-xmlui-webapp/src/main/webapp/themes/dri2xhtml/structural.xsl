@@ -596,7 +596,7 @@
                 <xsl:when test="/dri:document/dri:meta/dri:userMeta/@authenticated = 'yes'">
                     <div id="ds-user-box">
                         <p>
-                            <a class="icon-user">
+                            <a class="font-icon-user">
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="/dri:document/dri:meta/dri:userMeta/
                                                   dri:metadata[@element='identifier' and @qualifier='url']"/>
@@ -609,7 +609,7 @@
                                               dri:metadata[@element='identifier' and @qualifier='lastName']"/>
                             </a>
                             <xsl:text> | </xsl:text>
-                            <a class="icon-logout">
+                            <a class="font-icon-logout">
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="/dri:document/dri:meta/dri:userMeta/
                                                   dri:metadata[@element='identifier' and @qualifier='logoutURL']"/>
@@ -622,7 +622,7 @@
                 <xsl:otherwise>
                     <div id="ds-user-box">
                         <p>
-                            <a class="icon-login">
+                            <a class="font-icon-login">
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="/dri:document/dri:meta/dri:userMeta/
                                         dri:metadata[@element='identifier' and @qualifier='loginURL']"/>
@@ -765,7 +765,7 @@
                         </xsl:if>
                     </fieldset>
                 </form>
-                <a class="icon-cog">
+                <a class="font-icon-cog">
                     <xsl:attribute name="href">
                         <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='search'][@qualifier='advancedURL']"/>
                     </xsl:attribute>

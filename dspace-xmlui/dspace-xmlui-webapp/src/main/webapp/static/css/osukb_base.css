@@ -143,7 +143,8 @@ body {
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
-  color: #3d473c; }
+  color: #3d473c;
+  line-height: 19px; }
   h1 a:link,
   h1 a:visited, h2 a:link, h2 a:visited, h3 a:link, h3 a:visited, h4 a:link, h4 a:visited, h5 a:link, h5 a:visited, h6 a:link, h6 a:visited {
     color: inherit; }
@@ -408,8 +409,8 @@ tr.ds-table-row.even {
   font-weight: normal;
   font-style: normal; }
 
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
+[class^="font-icon-"]:before,
+[class*=" font-icon-"]:before {
   font-family: "fontello";
   font-style: normal;
   font-weight: normal;
@@ -421,20 +422,20 @@ tr.ds-table-row.even {
   text-align: center;
   line-height: 1em; }
 
-#ds-user-box [class^="icon-"]:hover:before,
-#ds-user-box [class*=" icon-"]:hover:before {
+#ds-user-box [class^="font-icon-"]:hover:before,
+#ds-user-box [class*=" font-icon-"]:hover:before {
   border-bottom: 1px solid #990000; }
 
-.icon-login:before {
+.font-icon-login:before {
   content: "\e740"; }
 
-.icon-logout:before {
+.font-icon-logout:before {
   content: "\e741"; }
 
-.icon-user:before {
+.font-icon-user:before {
   content: "👤"; }
 
-.icon-cog:before {
+.font-icon-cog:before {
   content: "\2699"; }
 
 #grey-bar {
@@ -478,7 +479,9 @@ tr.ds-table-row.even {
   color: #6f6f6f; }
   #ds-global-search-scope label {
     margin: 2px 10px 0 0;
-    vertical-align: middle; }
+    vertical-align: middle;
+    display: inline;
+    font-size: 11px; }
   #ds-global-search-scope input {
     vertical-align: middle;
     margin: 0 3px 0 0; }
