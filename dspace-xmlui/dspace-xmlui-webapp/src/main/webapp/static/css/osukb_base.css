@@ -609,7 +609,8 @@ tr.ds-table-row.even {
   position: relative; }
 #ds-options h4 {
   margin: 0.5em 0;
-  color: #202020; }
+  color: #202020;
+  font-size: 17px; }
 #ds-options ul {
   margin: 0;
   padding: 0; }
