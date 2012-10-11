@@ -677,7 +677,7 @@
                 >
                 <img>
                      <xsl:attribute name="src">
-                        <xsl:value-of select="concat($theme-path,'/images/cc-ship.gif')"/>
+                        <xsl:value-of select="concat($context-path,'/static/images/cc-ship.gif')"/>
                      </xsl:attribute>
                      <xsl:attribute name="alt">
                          <xsl:value-of select="$ccLicenseName"/>
