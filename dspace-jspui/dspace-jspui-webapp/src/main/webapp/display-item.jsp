@@ -30,11 +30,14 @@
 
 <%@ taglib uri="http://www.dspace.org/dspace-tags.tld" prefix="dspace" %>
 
+<%@ page import="org.dspace.app.webui.util.UIUtil" %>
 <%@ page import="org.dspace.content.Collection" %>
+<%@ page import="org.dspace.content.Community" %>
 <%@ page import="org.dspace.content.DCValue" %>
 <%@ page import="org.dspace.content.Item" %>
 <%@ page import="org.dspace.core.ConfigurationManager" %>
 <%@ page import="org.dspace.handle.HandleManager" %>
+<%@ page import="org.dspace.eperson.Group"     %>
 <%@ page import="org.dspace.license.CreativeCommons" %>
 
 <%
@@ -200,9 +203,21 @@
     }
 %>
 
+<%
+    if (handle != null)
+    {
+%>
+<%
+                    boolean restrictedStats = ConfigurationManager.getBooleanProperty("statistics.item.authorization.admin", false);
+                    if(!restrictedStats || admin_button) {
+              %>
 <div align="center">
     <a class="statisticsLink" href="<%= request.getContextPath() %>/handle/<%= handle %>/statistics"><fmt:message key="jsp.display-item.display-statistics"/></a>
 </div>
+        <% } %>
+<%
+    }
+%>
 
 <%
     if (workspace_id != null)
