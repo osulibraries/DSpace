@@ -1030,6 +1030,8 @@ fieldset.ds-form-list {
     font-size: 115%;
     font-weight: bolder;
     margin-left: 10px;
+    width: auto;
+    padding: 0 10px;
     border: 1px solid #777777; }
 fieldset.thick legend {
   color: #990000;
