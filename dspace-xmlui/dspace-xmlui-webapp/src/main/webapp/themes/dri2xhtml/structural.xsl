@@ -2601,6 +2601,48 @@ Disable Choice
                             with the value 'submit'. No reset buttons for now...
                     -->
 
+            <xsl:when test="contains(@rend, 'reorder')">
+                <button type="submit" class="btn btn-primary">
+                    <xsl:call-template name="fieldAttributes"/>
+                    <xsl:attribute name="type">submit</xsl:attribute>
+
+                    <!-- bds: Disabled buttons, like in the submission steps progress bar,
+-                        should do nothing. Setting type='button' does the trick. -->
+                    <xsl:if test="contains(@rend, 'disabled')">
+                        <xsl:attribute name="disabled">disabled</xsl:attribute>
+                    </xsl:if>
+
+                    <xsl:attribute name="value">
+                        <xsl:choose>
+                            <xsl:when test="./dri:value[@type='raw']">
+                                <xsl:value-of select="./dri:value[@type='raw']"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="./dri:value[@type='default']"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:attribute>
+
+                    <xsl:choose>
+                        <xsl:when test="contains(@rend, 'disabled')">
+                            &#160;
+                        </xsl:when>
+                        <xsl:when test="contains(@rend, 'reorder-up')">
+                            <i class="icon-chevron-up"><xsl:text>&#160;</xsl:text></i>
+                        </xsl:when>
+                        <xsl:when test="contains(@rend, 'reorder-down')">
+                            <i class="icon-chevron-down"><xsl:text>&#160;</xsl:text></i>
+                        </xsl:when>
+                    </xsl:choose>
+
+                    <xsl:if test="dri:value/i18n:text">
+                        <xsl:attribute name="i18n:attr">value</xsl:attribute>
+                    </xsl:if>
+                    <xsl:apply-templates />
+
+                </button>
+            </xsl:when>
+
             <xsl:otherwise>
                 <input>
                     <xsl:call-template name="fieldAttributes"/>

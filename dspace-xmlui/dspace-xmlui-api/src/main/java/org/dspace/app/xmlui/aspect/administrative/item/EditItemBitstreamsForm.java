@@ -7,30 +7,20 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.item;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 import org.apache.commons.lang.StringUtils;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Button;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.CheckBox;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.Highlight;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.Bitstream;
 import org.dspace.content.BitstreamFormat;
 import org.dspace.content.Bundle;
 import org.dspace.content.Item;
 import org.dspace.core.Constants;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Show a list of the item's bitstreams allowing the user to delete them, 
@@ -214,13 +204,15 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
                     //Add the +1 to make it more human readable
                     cell.addHidden("order_" + bitstream.getID()).setValue(String.valueOf(bitstreamIndex + 1));
                     showBitstreamUpdateOrderButton = true;
-                    Button upButton = cell.addButton("submit_order_" + bundle.getID() + "_" + bitstream.getID() + "_up", ((bitstreamIndex == 0) ? "disabled" : "") + " icon-button arrowUp ");
+
+                    Button upButton = cell.addButton("submit_order_" + bundle.getID() + "_" + bitstream.getID() + "_up", ((bitstreamIndex == 0) ? "disabled" : "") + " reorder-up ");
                     if((bitstreamIndex == 0)){
                         upButton.setDisabled();
                     }
                     upButton.setValue(T_order_up);
                     upButton.setHelp(T_order_up);
-                    Button downButton = cell.addButton("submit_order_" + bundle.getID() + "_" + bitstream.getID() + "_down", (bitstreamIndex == (bitstreams.length - 1) ? "disabled" : "") + " icon-button arrowDown ");
+
+                    Button downButton = cell.addButton("submit_order_" + bundle.getID() + "_" + bitstream.getID() + "_down", (bitstreamIndex == (bitstreams.length - 1) ? "disabled" : "") + " reorder-down ");
                     if(bitstreamIndex == (bitstreams.length - 1)){
                         downButton.setDisabled();
                     }

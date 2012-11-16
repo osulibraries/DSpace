@@ -36,6 +36,7 @@ public class JQueryLoaderReader extends AbstractReader {
         byte[] buffer = new byte[8192];
 
         ObjectModelHelper.getResponse(objectModel).setHeader("Content-Length", String.valueOf(script.length()));
+        ObjectModelHelper.getResponse(objectModel).setHeader("Content-Type", "application/javascript");
         int length;
         while ((length = inputStream.read(buffer)) > -1)
         {
