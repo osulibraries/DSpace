@@ -115,6 +115,8 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
 		header.addCellContent(T_column5);
 		header.addCellContent(T_column6);
 		header.addCellContent(T_column7);
+        
+        final int COLUMN_LENGTH = 7;
 
 		Bundle[] bundles = item.getBundles();
 
@@ -122,7 +124,7 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
 		for (Bundle bundle : bundles)
 		{
 
-			Cell bundleCell = files.addRow("bundle_head_" + bundle.getID(), Row.ROLE_DATA, "").addCell(1, 5);
+			Cell bundleCell = files.addRow("bundle_head_" + bundle.getID(), Row.ROLE_DATA, "").addCell(1, COLUMN_LENGTH);
 			bundleCell.addContent(T_bundle_label.parameterize(bundle.getName()));
 
 			Bitstream[] bitstreams = bundle.getBitstreams();
@@ -228,17 +230,17 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
             }
 		}
 
-		Cell addBitstreamHeader = files.addRow(Row.ROLE_HEADER).addCell(1, 5);
+		Cell addBitstreamHeader = files.addRow(Row.ROLE_HEADER).addCell(1, COLUMN_LENGTH);
                 addBitstreamHeader.addContent(T_add_bitstream_label);
 		if (AuthorizeManager.authorizeActionBoolean(context, item, Constants.ADD))
 		{
-			Cell cell = files.addRow().addCell("", Row.ROLE_DATA, 1, 5, "add_bitstream");
+			Cell cell = files.addRow().addCell("", Row.ROLE_DATA, 1, COLUMN_LENGTH, "add_bitstream");
 			cell.addXref(contextPath+"/admin/item?administrative-continue="+knot.getId()+"&submit_add",T_submit_add);
 		}
 		else
 		{
-			Cell cell = files.addRow().addCell("", Row.ROLE_DATA, 1, 5, "add_bitstream");
-			cell.addHighlight("fade").addContent(T_no_upload);
+			Cell cell = files.addRow().addCell("", Row.ROLE_DATA, 1, COLUMN_LENGTH, "add_bitstream");
+			cell.addHighlight("muted").addContent(T_no_upload);
 		}
 
 		
