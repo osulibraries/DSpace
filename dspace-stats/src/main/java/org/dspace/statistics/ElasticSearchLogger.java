@@ -323,6 +323,12 @@ public class ElasticSearchLogger {
 
             // Save the location information if valid, save the event without
             // location information if not valid
+            if(locationService == null) {
+                log.error("Location Service was null");
+            }
+            if(ip == null) {
+                log.error("IP was null");
+            }
             Location location = locationService.getLocation(ip);
             if (location != null
                     && !("--".equals(location.countryCode)
