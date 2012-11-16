@@ -182,13 +182,13 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
                     row.addCell().addContent(format);
                 }
 
-                Highlight highlight = row.addCell().addHighlight("fade");
+                Highlight highlight = row.addCell().addHighlight("muted");
                 highlight.addContent("[");
                 highlight.addXref(viewURL, T_view_link);
                 highlight.addContent("]");
 
                 // Provide a link to delete just this one
-                Highlight deleteLink = row.addCell().addHighlight("fade");
+                Highlight deleteLink = row.addCell().addHighlight("muted");
                 deleteLink.addContent("[");
 
                 if (AuthorizeManager.authorizeActionBoolean(context, item, Constants.REMOVE))
