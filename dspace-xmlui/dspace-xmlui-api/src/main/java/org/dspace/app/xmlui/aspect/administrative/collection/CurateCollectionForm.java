@@ -7,29 +7,22 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.collection;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-import java.util.Map;
-import org.xml.sax.SAXException;
-
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.ProcessingException;
 import org.apache.cocoon.environment.SourceResolver;
-
 import org.dspace.app.xmlui.aspect.administrative.FlowCurationUtils;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Select;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.Collection;
-import org.dspace.core.ConfigurationManager;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.util.Map;
 
 /**
  *
@@ -98,11 +91,12 @@ public class CurateCollectionForm extends AbstractDSpaceTransformer {
 	    Division main = body.addInteractiveDivision("collection-curate",contextPath+"/admin/collection",Division.METHOD_MULTIPART,"primary administrative collection");
 	    main.setHead(T_main_head.parameterize(thisCollection.getName()));
 
-            List options = main.addList("options",List.TYPE_SIMPLE,"horizontal");
-            options.addItem().addXref(baseURL+"&submit_metadata",T_options_metadata);
-            options.addItem().addXref(baseURL+"&submit_roles",T_options_roles);
+        List options = main.addList("options",List.TYPE_SIMPLE,"horizontal");
+        options.addItem().addXref(baseURL+"&submit_metadata",T_options_metadata);
+        options.addItem().addXref(baseURL+"&submit_roles",T_options_roles);
 	    options.addItem().addXref(baseURL+"&submit_harvesting",T_options_harvest);
-            options.addItem().addHighlight("bold").addXref(baseURL+"&submit_curate",T_options_curate);
+        options.addItem().addHighlight("bold").addXref(baseURL+"&submit_curate",T_options_curate);
+        options.addItem().addXref(contextPath+"/handle/"+thisCollection.getHandle(), "Go To This Collection");
 
 	    List curationTaskList = main.addList("curationTaskList", "form");
         String curateGroup = "";
