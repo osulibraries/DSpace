@@ -1824,7 +1824,7 @@
     <message key="xmlui.reportgenerator.Navigation.view">Generate Report</message>
     <message key="xmlui.statistics.trail">Statistics</message>
 
-
+    <message key="xmlui.statistics.Navigation.elasticsearch.view">View Statistics</message>
 
 
 
