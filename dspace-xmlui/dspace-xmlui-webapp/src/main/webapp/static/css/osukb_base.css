@@ -940,8 +940,6 @@ input.ds-button-field {
   padding: 1px 8px; }
 input.ds-delete-button {
   margin: 3px 3px 0 0; }
-input.ds-text-field {
-  padding: 1px; }
 
 ul.ds-progress-list li.button input.ds-button-field {
   font-size: smaller;
