@@ -7,12 +7,6 @@
  */
 package org.dspace.app.xmlui.aspect.artifactbrowser;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.util.HashUtil;
@@ -25,29 +19,28 @@ import org.dspace.app.xmlui.utils.HandleUtil;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.ReferenceSet;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Select;
-import org.dspace.app.xmlui.wing.element.Table;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Cell;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.Collection;
 import org.dspace.content.Community;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
+import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.core.LogManager;
-import org.dspace.core.Constants;
 import org.dspace.handle.HandleManager;
 import org.dspace.search.DSQuery;
 import org.dspace.search.QueryArgs;
 import org.dspace.search.QueryResults;
-import org.dspace.sort.SortOption;
 import org.dspace.sort.SortException;
+import org.dspace.sort.SortOption;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is an abstract search page. It is a collection of search methods that
@@ -580,13 +573,14 @@ public abstract class AbstractSearch extends AbstractDSpaceTransformer
     protected void buildSearchControls(Division div)
             throws WingException
     {
-        Table controlsTable = div.addTable("search-controls", 1, 3);
+        Table controlsTable = div.addTable("search-controls", 1, 3, "table");
         Row controlsRow = controlsTable.addRow(Row.ROLE_DATA);
 
         // Create a control for the number of records to display
         Cell rppCell = controlsRow.addCell();
         rppCell.addContent(T_rpp);
         Select rppSelect = rppCell.addSelect("rpp");
+        rppSelect.setSize(RESULTS_PER_PAGE_PROGRESSION.length);
         for (int i : RESULTS_PER_PAGE_PROGRESSION)
         {
             rppSelect.addOption((i == getParameterRpp()), i, Integer.toString(i));
@@ -598,6 +592,7 @@ public abstract class AbstractSearch extends AbstractDSpaceTransformer
             // Create a drop down of the different sort columns available
             sortCell.addContent(T_sort_by);
             Select sortSelect = sortCell.addSelect("sort_by");
+            sortSelect.setSize(SortOption.getSortOptions().size());
             sortSelect.addOption(false, 0, T_sort_by_relevance);
             for (SortOption so : SortOption.getSortOptions())
             {
@@ -617,6 +612,7 @@ public abstract class AbstractSearch extends AbstractDSpaceTransformer
         Cell orderCell = controlsRow.addCell();
         orderCell.addContent(T_order);
         Select orderSelect = orderCell.addSelect("order");
+        orderSelect.setSize(2);
         orderSelect.addOption(SortOption.ASCENDING.equals(getParameterOrder()), SortOption.ASCENDING, T_order_asc);
         orderSelect.addOption(SortOption.DESCENDING.equals(getParameterOrder()), SortOption.DESCENDING, T_order_desc);
 
