@@ -592,7 +592,7 @@ public abstract class AbstractSearch extends AbstractDSpaceTransformer
             // Create a drop down of the different sort columns available
             sortCell.addContent(T_sort_by);
             Select sortSelect = sortCell.addSelect("sort_by");
-            sortSelect.setSize(SortOption.getSortOptions().size());
+            sortSelect.setSize(1 + SortOption.getSortOptions().size());
             sortSelect.addOption(false, 0, T_sort_by_relevance);
             for (SortOption so : SortOption.getSortOptions())
             {
