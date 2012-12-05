@@ -70,6 +70,40 @@
         -->
 	<xsl:template match="mets:fileSec" mode="artifact-preview"></xsl:template>
 
+    <!-- Including this, because I need to change <ul class="ds-artifact-list"> to <ul class="thumbnail"> -->
+    <xsl:template match="dri:referenceSet[@type = 'summaryList']" priority="2">
+        <xsl:apply-templates select="dri:head"/>
+        <!-- Here we decide whether we have a hierarchical list or a flat one -->
+        <xsl:choose>
+            <xsl:when test="descendant-or-self::dri:referenceSet/@rend='hierarchy' or ancestor::dri:referenceSet/@rend='hierarchy'">
+                <ul>
+                    <xsl:apply-templates select="*[not(name()='head')]" mode="summaryList"/>
+                </ul>
+            </xsl:when>
+            <xsl:otherwise>
+                <ul class="thumbnails">
+                    <xsl:apply-templates select="*[not(name()='head')]" mode="summaryList"/>
+                </ul>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <!-- including this because I need to change li.ds-artifact-item to li.span2 -->
+    <xsl:template match="dri:reference" mode="summaryList">
+        <xsl:variable name="externalMetadataURL">
+            <xsl:text>cocoon:/</xsl:text>
+            <xsl:value-of select="@url"/>
+            <xsl:text>?sections=dmdSec,fileSec,structMap</xsl:text>
+        </xsl:variable>
+        <li>
+            <xsl:attribute name="class">
+                <xsl:text>span2</xsl:text>
+            </xsl:attribute>
+            <xsl:apply-templates select="document($externalMetadataURL)" mode="summaryList"/>
+            <xsl:apply-templates />
+        </li>
+    </xsl:template>
+
 	<!--
         From DIM-Handler.xsl
         Changes:
@@ -85,20 +119,21 @@
                 DIV#artifact-preview
                     IMG.thumbnail title=TITLE, alt=Thumbnail of TITLE src=THUMBNAIL
         -->
-        <a>
-            <xsl:attribute name="href">
-                <xsl:choose>
-                    <xsl:when test="$itemWithdrawn">
-                        <xsl:value-of select="ancestor::mets:METS/@OBJEDIT" />
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="ancestor::mets:METS/@OBJID" />
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
+        <div class="thumbnail">
+            <a>
+                <xsl:attribute name="href">
+                    <xsl:choose>
+                        <xsl:when test="$itemWithdrawn">
+                            <xsl:value-of select="ancestor::mets:METS/@OBJEDIT" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="ancestor::mets:METS/@OBJID" />
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
 
-            <div class="artifact-preview">
-                <img class="thumbnail">
+                <!--<img src="http://placehold.it/300x200" alt=""/>-->
+                <img class="img-rounded">
                     <!-- bds: title attribute gives mouse-over -->
                     <xsl:attribute name="title">
                         <xsl:value-of select="dim:field[@element='title'][1]/node()"/>
@@ -121,76 +156,56 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </img>
-            </div>
-        </a>
+
+                <!--<h3>Thumbnail label</h3>-->
+                <div class="caption">
+                    <p>
+                        <xsl:variable name="artifactTitle">
+                            <xsl:value-of select="dim:field[@element='title'][1]/node()"/>
+                        </xsl:variable>
+
+                        <xsl:choose>
+                            <xsl:when test="dim:field[@element='title']">
+                                <xsl:choose>
+                                    <xsl:when test="string-length($artifactTitle) >= 40">
+                                        <xsl:value-of select="substring($artifactTitle,1,40)"/>... </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:value-of select="$artifactTitle"/>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <i18n:text>xmlui.dri2xhtml.METS-1.0.no-title</i18n:text>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </p>
+
+                    <!--  <p>Thumbnail caption...</p> -->
+                    <small>
+                        <xsl:choose>
+                            <xsl:when test="$browseMode = '3'">
+                                <xsl:text>(accessioned </xsl:text>
+                                <span class="dateAccepted">
+                                    <xsl:value-of select="substring(dim:field[@element='date' and @qualifier='accessioned']/node(),1,10)"/>
+                                </span>
+                                <xsl:text>)</xsl:text>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:if test="dim:field[@element='date' and @qualifier='issued']">
+                                    <xsl:text>(</xsl:text>
+                                    <span class="issued">
+                                        <xsl:value-of select="substring(dim:field[@element='date' and @qualifier='issued']/node(),1,10)"/>
+                                    </span>
+                                    <xsl:text>)</xsl:text>
+                                </xsl:if>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </small>
+                </div>
+            </a>
+        </div>
 
 
-        <!-- item title -->
-        <!--
-            A.fancy-box-link title=TITLE   ->ITEM
-                text(TITLE)
-            SPAN.publisher-date
-                (
-                SPAN.date    text(DATE)
-                )
-        -->
-        <a>
-            <xsl:variable name="artifactTitle">
-                <xsl:value-of select="dim:field[@element='title'][1]/node()"/>
-            </xsl:variable>
-            <xsl:attribute name="href">
-                <xsl:choose>
-                    <xsl:when test="$itemWithdrawn">
-                        <xsl:value-of select="ancestor::mets:METS/@OBJEDIT" />
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="ancestor::mets:METS/@OBJID" />
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
-            <xsl:attribute name="class">
-                <xsl:text>fancy-box-link</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="title">
-                <xsl:value-of select="dim:field[@element='title'][1]/node()"/>
-            </xsl:attribute>
-            <xsl:choose>
-                <xsl:when test="dim:field[@element='title']">
-                    <xsl:choose>
-                        <xsl:when test="string-length($artifactTitle) >= 40">
-                            <xsl:value-of select="substring($artifactTitle,1,40)"/>... </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:value-of select="$artifactTitle"/>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:when>
-                <xsl:otherwise>
-                    <i18n:text>xmlui.dri2xhtml.METS-1.0.no-title</i18n:text>
-                </xsl:otherwise>
-            </xsl:choose>
-        </a>
-
-        <!-- bds: add issue date or submit date depending on the type of browse that is happening -->
-        <span class="metadata-date">
-            <xsl:choose>
-                <xsl:when test="$browseMode = '3'">
-                    <xsl:text>(accessioned </xsl:text>
-                    <span class="dateAccepted">
-                        <xsl:value-of select="substring(dim:field[@element='date' and @qualifier='accessioned']/node(),1,10)"/>
-                    </span>
-                    <xsl:text>)</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:if test="dim:field[@element='date' and @qualifier='issued']">
-                        <xsl:text>(</xsl:text>
-                        <span class="issued">
-                            <xsl:value-of select="substring(dim:field[@element='date' and @qualifier='issued']/node(),1,10)"/>
-                        </span>
-                        <xsl:text>)</xsl:text>
-                    </xsl:if>
-                </xsl:otherwise>
-            </xsl:choose>
-        </span>
 	</xsl:template>
 
 
