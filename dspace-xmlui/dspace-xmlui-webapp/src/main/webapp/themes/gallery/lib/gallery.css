@@ -222,3 +222,7 @@ img.central_image {
 .thumbnail {
     height: 250px;
 }
+
+div.ds-static-div.primary {
+    padding: 0 10px;
+}
