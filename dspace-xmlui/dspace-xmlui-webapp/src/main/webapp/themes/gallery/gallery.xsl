@@ -88,6 +88,24 @@
         </xsl:choose>
     </xsl:template>
 
+    <!-- Change recent submissions to be ul.thumbnails instead of ds-artifact-list -->
+    <xsl:template match="dri:div[@n='collection-recent-submission'] | dri:div[@n='community-recent-submission']">
+        <xsl:apply-templates select="./dri:head"/>
+        <ul class="thumbnails">
+            <xsl:apply-templates select="./dri:referenceSet" mode="summaryList"/>
+        </ul>
+        <ul class="pager">
+            <li class="next">
+                <a>
+                    <xsl:attribute name="href">
+                        <xsl:value-of select="/dri:document/dri:body/dri:div/dri:div/dri:div/dri:list/dri:item[3]/dri:xref/@target"/>
+                    </xsl:attribute>
+                    <xsl:text>View All Submissions &#8594;</xsl:text>
+                </a>
+            </li>
+        </ul>
+    </xsl:template>
+
     <!-- including this because I need to change li.ds-artifact-item to li.span2 -->
     <xsl:template match="dri:reference" mode="summaryList">
         <xsl:variable name="externalMetadataURL">
