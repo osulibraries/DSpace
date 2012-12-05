@@ -970,7 +970,7 @@ input#aspect_submission_StepTransformer_field_submit_cancel {
   /* IE forces us to be specific */ }
 input#aspect_submission_StepTransformer_field_submit_next {
   position: absolute;
-  right: 33px;
+  right: 85px;
   bottom: 16px; }
 
 span.ds-composite-field {
