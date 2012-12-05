@@ -51,14 +51,14 @@ body {
 #ds-main-container {
   position: relative;
   margin: 0 auto;
-  width: 1000px;
+  width: 1045px;
   background: white;
   box-shadow: 0 0 3em 0.5em #acb6ac;
   z-index: 1; }
 
 #osu-nav-bar {
   position: relative;
-  width: 978px;
+  /*width: 978px */
   margin: 0 auto;
   padding: 10px 11px 14px;
   font-family: Arial, Helvetica, sans-serif;
@@ -211,7 +211,7 @@ tr.ds-table-row.even {
  *        <div id="ds-footer-links"> */
 #ds-header {
   position: relative;
-  width: 1000px;
+  /*width: 1000px */
   height: 109px;
   padding: 0;
   background: url("../images/header.jpg") no-repeat right; }
@@ -325,7 +325,7 @@ tr.ds-table-row.even {
 
 #ds-body {
   float: right;
-  width: 790px;
+  width: 835px;
   position: relative;
   color: inherit;
   margin: 0; }
@@ -622,7 +622,7 @@ tr.ds-table-row.even {
 #ds-footer {
   position: relative;
   float: left;
-  width: 976px;
+  width: 1021px;
   padding: 1em;
   font-size: 0.75em;
   border-top: 1px solid #999999;
