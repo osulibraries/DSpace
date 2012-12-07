@@ -2054,8 +2054,6 @@ Disable Authority
             </input>
         </xsl:if>
         <br/>
-        <xsl:apply-templates select="dri:help" mode="help"/>
-        <xsl:apply-templates select="dri:error" mode="error"/>
         <xsl:if test="dri:instance">
             <div class="ds-previous-values">
                 <label class="ds-form-label">Existing data in this field:</label>
