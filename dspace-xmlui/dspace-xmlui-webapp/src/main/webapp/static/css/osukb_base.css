@@ -1268,5 +1268,5 @@ select#aspect_artifactbrowser_AdvancedSearch_field_scope {
   width: 30px;
   height: 30px; }
 
-.ds-textarea-field, .submit-textarea, .ds-text-field {
+.ds-textarea-field, .submit-textarea, .ds-text-field, .navigation select, .browse select {
   width: auto; }
