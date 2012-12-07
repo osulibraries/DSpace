@@ -294,7 +294,7 @@ public class Collection extends DSpaceObject
     public static Collection[] findAll(Context context) throws SQLException
     {
         TableRowIterator tri = DatabaseManager.queryTable(context, "collection",
-                "SELECT * FROM collection ORDER BY name");
+                "SELECT * FROM collection ORDER BY upper(name)");
 
         List<Collection> collections = new ArrayList<Collection>();
 
