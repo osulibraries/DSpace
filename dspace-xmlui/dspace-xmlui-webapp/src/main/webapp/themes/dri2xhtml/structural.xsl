@@ -797,8 +797,15 @@
                 <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:trail">
                     <div>
                         <h2 class="visuallyhidden">Breadcrumbs Navigation</h2>
-                        <ul class="breadcrumb">
-                            <xsl:apply-templates select="/dri:document/dri:meta/dri:pageMeta/dri:trail"/>
+                        <ul class="nav nav-tabs">
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']"/>
+                                    <b class="caret">&#160;</b></a>
+                                <ul class="dropdown-menu">
+                                    <xsl:apply-templates select="/dri:document/dri:meta/dri:pageMeta/dri:trail"/>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                 </xsl:if>
@@ -811,13 +818,11 @@
         the last links given an additional descriptor.
     -->
     <xsl:template match="dri:trail">
-        <li>
-            <xsl:if test="position()=last()">
-                <xsl:attribute name="class">
-                    <xsl:text>active </xsl:text>
-                </xsl:attribute>
-            </xsl:if>
+        <xsl:if test="position()=last()">
+            <li class="divider">&#160;</li>
+        </xsl:if>
 
+        <li>
             <!-- Determine whether we are dealing with a link or plain text trail link -->
             <xsl:choose>
                 <xsl:when test="./@target">
@@ -832,10 +837,6 @@
                     <xsl:apply-templates />
                 </xsl:otherwise>
             </xsl:choose>
-
-            <xsl:if test="position()!=last()">
-                <span class="divider">/</span>
-            </xsl:if>
         </li>
     </xsl:template>
 
