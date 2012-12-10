@@ -68,22 +68,6 @@
                 <xsl:text>/static/osu-navbar-media/img/favicon.ico</xsl:text>
             </xsl:attribute>
         </link>
-        <!-- bds: jQuery breadcrumb trail shrinker, uses easing plugin -->
-        <!-- http://www.comparenetworks.com/developers/jqueryplugins/jbreadcrumb.html -->
-        <script type="text/javascript">
-            <xsl:attribute name="src">
-                <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='contextPath'][not(@qualifier)]"/>
-                <xsl:text>/static/js/jquery.easing.1.3.js</xsl:text>
-            </xsl:attribute>
-            <xsl:text> </xsl:text>
-        </script>
-        <script type="text/javascript">
-            <xsl:attribute name="src">
-                <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='contextPath'][not(@qualifier)]"/>
-                <xsl:text>/static/js/jquery.jBreadCrumb.1.1.js</xsl:text>
-            </xsl:attribute>
-            <xsl:text> </xsl:text>
-        </script>
         <script type="text/javascript">
             <xsl:attribute name="src">
                 <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='contextPath'][not(@qualifier)]"/>
@@ -93,7 +77,6 @@
         </script>
         <script type="text/javascript">
             $(document).ready(function() {
-                $("#breadCrumb0").jBreadCrumb();
 
                 /* Linkify All Item Metadata content */
                 $('#aspect_artifactbrowser_ItemViewer_div_item-view table.ds-includeSet-table tr.ds-table-row td span').each(function(){

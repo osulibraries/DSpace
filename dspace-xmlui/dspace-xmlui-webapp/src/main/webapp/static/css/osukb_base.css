@@ -251,74 +251,8 @@ tr.ds-table-row.even {
   background-color: inherit;
   border: none; }
 
-/* Breadcrumb Styles
- *bds: from the jQuery add-on for magic shrinking breadcrumbs
- *--------------------------------------------------------------------- */
-.breadCrumb {
-  margin: 0;
-  padding: 0;
-  float: left;
-  display: block;
-  height: 25px;
-  overflow: hidden;
-  width: 780px;
-  padding: 5px; }
-  .breadCrumb ul {
-    margin: 0;
-    padding: 0;
-    height: 21px;
-    display: block; }
-    .breadCrumb ul li {
-      white-space: nowrap;
-      display: block;
-      float: left;
-      position: relative;
-      height: 21px;
-      overflow: hidden;
-      line-height: 21px;
-      margin: 0px 6px 0px 0;
-      padding: 0px 10px 0px 0;
-      font-size: 0.8em;
-      background: url(../images/Chevron.gif) no-repeat 100% 0; }
-      .breadCrumb ul li div.chevronOverlay {
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: 2; }
-      .breadCrumb ul li span {
-        display: block;
-        overflow: hidden; }
-      .breadCrumb ul li a {
-        display: block;
-        position: relative;
-        height: 21px;
-        line-height: 21px;
-        overflow: hidden;
-        float: left; }
-      .breadCrumb ul li.last {
-        background: none;
-        margin-right: 0;
-        padding-right: 0; }
-
-/*.breadCrumb ul li.first a
- *{
- *	height: 16px !important;
- *	text-indent:-1000em;
- *	width:16px;
- *	padding: 0;
- *	margin-top: 2px;
- *	overflow: hidden;
- *	background:url(../images/IconHome.gif) no-repeat 0 0;
- *}
- *.breadCrumb ul li.first a:hover
- *{
- *	background-position: 0 -16px;
- *} */
-.chevronOverlay {
-  display: none;
-  background: url(../images/ChevronOverlay.png) no-repeat 100% 0;
-  width: 13px;
-  height: 20px; }
+.breadcrumb {
+  margin-left: 1px; }
 
 #body-and-options {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANMAAAADCAIAAACGW62hAAAAKklEQVQ4y2N48+bNty9fgGiUMcqgG+PMmTMMENYoGkX0RKMpbxQNWMoDABCmDs5+hV8fAAAAAElFTkSuQmCC) repeat-y; }

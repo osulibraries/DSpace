@@ -791,12 +791,13 @@
         <xsl:choose>
             <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']/i18n:text='xmlui.general.dspace_home'
                             or /dri:document/dri:body/dri:div[@rend='primary submission']">
+                <!-- Do not show the breadcrumbs on the homepage -->
             </xsl:when>
             <xsl:otherwise>
                 <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:trail">
-                    <div id="breadCrumb0" class="breadCrumb">
+                    <div>
                         <h2 class="visuallyhidden">Breadcrumbs Navigation</h2>
-                        <ul id="ds-trail">
+                        <ul class="breadcrumb">
                             <xsl:apply-templates select="/dri:document/dri:meta/dri:pageMeta/dri:trail"/>
                         </ul>
                     </div>
@@ -811,15 +812,12 @@
     -->
     <xsl:template match="dri:trail">
         <li>
-            <xsl:attribute name="class">
-                <xsl:text>ds-trail-link </xsl:text>
-                <xsl:if test="position()=1">
-                    <xsl:text>first-link </xsl:text>
-                </xsl:if>
-                <xsl:if test="position()=last()">
-                    <xsl:text>last-link</xsl:text>
-                </xsl:if>
-            </xsl:attribute>
+            <xsl:if test="position()=last()">
+                <xsl:attribute name="class">
+                    <xsl:text>active </xsl:text>
+                </xsl:attribute>
+            </xsl:if>
+
             <!-- Determine whether we are dealing with a link or plain text trail link -->
             <xsl:choose>
                 <xsl:when test="./@target">
@@ -834,6 +832,10 @@
                     <xsl:apply-templates />
                 </xsl:otherwise>
             </xsl:choose>
+
+            <xsl:if test="position()!=last()">
+                <span class="divider">/</span>
+            </xsl:if>
         </li>
     </xsl:template>
 
