@@ -7,23 +7,19 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.item;
 
-import java.sql.SQLException;
-
 import org.dspace.app.util.AuthorizeUtil;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Button;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.Collection;
 import org.dspace.content.Item;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
+
+import java.sql.SQLException;
 
 /**
  * Display basic meta-meta information about the item and allow the user to change 
@@ -216,7 +212,7 @@ public class EditItemStatusForm extends AbstractDSpaceTransformer {
     	Button button = item.addButton(buttonName);
     	button.setValue(buttonLabel);
 		button.setDisabled();
-		item.addHighlight("fade").addContent(T_not_allowed);
+		item.addHighlight("small").addContent(T_not_allowed);
 	}
     
     private void addCollectionAdminOnlyButton(org.dspace.app.xmlui.wing.element.Item item, Collection collection, String buttonName, Message buttonLabel) throws WingException, SQLException
@@ -229,7 +225,7 @@ public class EditItemStatusForm extends AbstractDSpaceTransformer {
     	{
     		// Only admins can create or delete
     		button.setDisabled();
-    		item.addHighlight("fade").addContent(T_collectionadmins_only);
+    		item.addHighlight("small").addContent(T_collectionadmins_only);
     	}
 	}
 	

@@ -7,21 +7,10 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.mapper;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Button;
-import org.dspace.app.xmlui.wing.element.CheckBox;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.Collection;
 import org.dspace.content.DCValue;
@@ -29,6 +18,10 @@ import org.dspace.content.Item;
 import org.dspace.content.ItemIterator;
 import org.dspace.core.Constants;
 import org.xml.sax.SAXException;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * List all items in this collection that are mapped from other collections.
@@ -90,7 +83,7 @@ public class BrowseItemForm extends AbstractDSpaceTransformer {
 			button.setDisabled();
 			actions.addButton("submit_return").setValue(T_submit_return);
 			
-			div.addPara().addHighlight("fade").addContent(T_no_remove);
+			div.addPara().addHighlight("small").addContent(T_no_remove);
 		}
 		
 		Table table = div.addTable("browse-items-table",1,1);
@@ -146,8 +139,8 @@ public class BrowseItemForm extends AbstractDSpaceTransformer {
 			button.setValue(T_submit_unmap);
 			button.setDisabled();
 			actions.addButton("submit_return").setValue(T_submit_return);
-			
-			div.addPara().addHighlight("fade").addContent(T_no_remove);
+
+			div.addPara().addHighlight("small").addContent(T_no_remove);
 		}
 		
 		

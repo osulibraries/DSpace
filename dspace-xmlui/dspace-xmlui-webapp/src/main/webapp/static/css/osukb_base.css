@@ -1273,3 +1273,6 @@ select#aspect_artifactbrowser_AdvancedSearch_field_scope {
 
 #aspect_eperson_PasswordLogin_field_login_email {
   width: 206px; }
+
+.small {
+  font-size: 85%; }

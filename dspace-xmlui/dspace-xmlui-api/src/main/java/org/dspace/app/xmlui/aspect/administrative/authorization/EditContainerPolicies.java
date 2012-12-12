@@ -7,27 +7,19 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.authorization;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.CheckBox;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.Highlight;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.authorize.ResourcePolicy;
 import org.dspace.content.Collection;
 import org.dspace.content.Community;
 import org.dspace.core.Constants;
 import org.dspace.eperson.Group;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * @author Alexey Maslov
@@ -139,7 +131,7 @@ public class EditContainerPolicies extends AbstractDSpaceTransformer
                 if (policyGroup != null) {
                     Cell groupCell = row.addCell();
                     groupCell.addContent(policyGroup.getName());
-                    Highlight groupHigh = groupCell.addHighlight("fade");
+                    Highlight groupHigh = groupCell.addHighlight("small");
                     groupHigh.addContent(" [");
                     groupHigh.addXref(baseURL + "&submit_edit_group&group_id=" + policyGroup.getID(), T_group_edit);
                     groupHigh.addContent("]");

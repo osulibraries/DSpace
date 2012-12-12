@@ -7,25 +7,13 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.collection;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
-
 import org.apache.log4j.Logger;
 import org.dspace.app.util.AuthorizeUtil;
 import org.dspace.app.xmlui.aspect.administrative.FlowContainerUtils;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Button;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.Collection;
@@ -35,6 +23,10 @@ import org.dspace.eperson.Group;
 import org.dspace.xmlworkflow.Role;
 import org.dspace.xmlworkflow.WorkflowConfigurationException;
 import org.dspace.xmlworkflow.WorkflowUtils;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
 
 /**
  * Presents the user (most likely a global administrator) with the form to edit
@@ -197,7 +189,7 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
 	    // help and directions row
 	    tableRow = rolesTable.addRow(Row.ROLE_DATA);
 	    tableRow.addCell();
-	    tableRow.addCell(1,2).addHighlight("fade offset").addContent(T_help_admins);
+	    tableRow.addCell(1,2).addHighlight("small offset").addContent(T_help_admins);
 	    
 	    /*
 	     * The collection submitters
@@ -225,7 +217,7 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
 	    // help and directions row
 	    tableRow = rolesTable.addRow(Row.ROLE_DATA);
 	    tableRow.addCell();
-	    tableRow.addCell(1,2).addHighlight("fade offset").addContent(T_help_submitters);
+	    tableRow.addCell(1,2).addHighlight("small offset").addContent(T_help_submitters);
 
 
 	    /*
@@ -254,7 +246,7 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
         // help and directions row
         tableRow = rolesTable.addRow(Row.ROLE_DATA);
         tableRow.addCell();
-        tableRow.addCell(1,2).addHighlight("fade offset").addContent(T_help_default_read);
+        tableRow.addCell(1,2).addHighlight("small offset").addContent(T_help_default_read);
 
 
          if(ConfigurationManager.getProperty("workflow","workflow.framework").equals("xmlworkflow")){
@@ -309,7 +301,7 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
     	    // help and directions row
     	    tableRow = rolesTable.addRow(Row.ROLE_DATA);
     	    tableRow.addCell();
-    	    tableRow.addCell(1,2).addHighlight("fade offset").addContent(T_help_wf_step1);
+    	    tableRow.addCell(1,2).addHighlight("small offset").addContent(T_help_wf_step1);
     	    
     	    
     	    // data row
@@ -328,7 +320,7 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
     	    // help and directions row
     	    tableRow = rolesTable.addRow(Row.ROLE_DATA);
     	    tableRow.addCell();
-    	    tableRow.addCell(1,2).addHighlight("fade offset").addContent(T_help_wf_step2);
+    	    tableRow.addCell(1,2).addHighlight("small offset").addContent(T_help_wf_step2);
     	    
     	    
     	    // data row
@@ -347,7 +339,7 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
     	    // help and directions row
     	    tableRow = rolesTable.addRow(Row.ROLE_DATA);
     	    tableRow.addCell();
-    	    tableRow.addCell(1,2).addHighlight("fade offset").addContent(T_help_wf_step3);
+    	    tableRow.addCell(1,2).addHighlight("small offset").addContent(T_help_wf_step3);
         }
 	    catch (AuthorizeException authex) {
             // add a notice, the user is not allowed to manage workflow group
@@ -379,7 +371,7 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
                     tableRow = rolesTable.addRow(Row.ROLE_DATA);
                     tableRow.addCell();
                     if (role.getDescription() != null){
-                        tableRow.addCell(1,2).addHighlight("fade offset").addContent(role.getDescription());
+                        tableRow.addCell(1,2).addHighlight("small offset").addContent(role.getDescription());
                     }
 
                 }
@@ -396,7 +388,7 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
     	{
     		// Only admins can create or delete
     		button.setDisabled();
-    		cell.addHighlight("fade").addContent(T_sysadmins_only);
+    		cell.addHighlight("small").addContent(T_sysadmins_only);
     	}
 	}
 }

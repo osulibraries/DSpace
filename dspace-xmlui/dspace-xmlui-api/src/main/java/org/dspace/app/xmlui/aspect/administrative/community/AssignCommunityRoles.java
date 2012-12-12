@@ -7,25 +7,17 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.community;
 
-import java.sql.SQLException;
-
 import org.dspace.app.util.AuthorizeUtil;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Button;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.Community;
 import org.dspace.eperson.Group;
+
+import java.sql.SQLException;
 
 /**
  * Presents the user (most likely a global administrator) with the form to edit
@@ -152,7 +144,7 @@ public class AssignCommunityRoles extends AbstractDSpaceTransformer
 	    // help and directions row
 	    tableRow = rolesTable.addRow(Row.ROLE_DATA);
 	    tableRow.addCell();
-	    tableRow.addCell(1,2).addHighlight("fade offset").addContent(T_help_admins);
+	    tableRow.addCell(1,2).addHighlight("small offset").addContent(T_help_admins);
 	    
 	    try
 	    {
@@ -181,7 +173,7 @@ public class AssignCommunityRoles extends AbstractDSpaceTransformer
     	{
     		// Only admins can create or delete
     		button.setDisabled();
-    		cell.addHighlight("fade").addContent(T_sysadmins_only);
+    		cell.addHighlight("small").addContent(T_sysadmins_only);
     	}
 	}
 }

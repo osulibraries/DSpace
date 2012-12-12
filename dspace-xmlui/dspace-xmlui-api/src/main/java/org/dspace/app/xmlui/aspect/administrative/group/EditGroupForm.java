@@ -7,31 +7,20 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.group;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
 import org.dspace.app.xmlui.aspect.administrative.FlowGroupUtils;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.Highlight;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
-import org.dspace.app.xmlui.wing.element.Text;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.Collection;
 import org.dspace.content.Community;
 import org.dspace.eperson.EPerson;
 import org.dspace.eperson.Group;
+
+import java.sql.SQLException;
+import java.util.*;
+import java.util.List;
 
 /**
  * Present the user with the group's current state. The user may select to 
@@ -523,7 +512,7 @@ public class EditGroupForm extends AbstractDSpaceTransformer
 	        		
 	        		cell.addContent(collectionName+" ");
 	        		
-	        		Highlight highlight = cell.addHighlight("fade");
+	        		Highlight highlight = cell.addHighlight("small");
 	        		highlight.addContent("[");
 	        		highlight.addXref(contextPath+"/handle/"+collection.getHandle(), T_groups_collection_link);
 	        		highlight.addContent("]");

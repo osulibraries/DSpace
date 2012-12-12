@@ -7,30 +7,21 @@
  */
 package org.dspace.app.xmlui.aspect.administrative.eperson;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Button;
-import org.dspace.app.xmlui.wing.element.CheckBox;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.Highlight;
-import org.dspace.app.xmlui.wing.element.Item;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Text;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.eperson.EPerson;
 import org.dspace.eperson.Group;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Edit an existing EPerson, display all the eperson's metadata 
@@ -386,7 +377,7 @@ public class EditEPersonForm extends AbstractDSpaceTransformer
         		Group via = findViaGroup(eperson, group);
         		if (via != null)
                 {
-                    item.addHighlight("fade").addContent(T_indirect_member.parameterize(via.getName()));
+                    item.addHighlight("small").addContent(T_indirect_member.parameterize(via.getName()));
                 }
 	        }
 	        
