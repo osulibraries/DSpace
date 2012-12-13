@@ -239,13 +239,13 @@
     <!-- Overrides GeneralHandler
         bds: this template completely replaces original to display CC-license info, logo, with links, and to NOT display other licenses -->
     <xsl:template match="mets:fileGrp[@USE='CC-LICENSE' or @USE='LICENSE']">
-        <div class="license-info">
+        <div class="clearfix">
             <xsl:if test="@USE='CC-LICENSE'">
 	        <xsl:variable name="ccLicenseName"
         	      select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='cc']" />
 	        <xsl:variable name="ccLicenseUri"
                       select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='ccuri']" />
-        	<div>
+        	<span class="span2">
 	            <a rel="license"
         	        href="{$ccLicenseUri}"
                 	alt="{$ccLicenseName}"
@@ -260,11 +260,12 @@
 	                     </xsl:attribute>
         	        </img>
 	            </a>
-        	    <span>
-                	<i18n:text>xmlui.dri2xhtml.METS-1.0.cc-license-text</i18n:text>
-	                <xsl:value-of select="$ccLicenseName"/>
-        	    </span>
-	        </div>
+		</span>
+        	<span>
+                    <i18n:text>xmlui.dri2xhtml.METS-1.0.cc-license-text</i18n:text>
+	            <xsl:value-of select="$ccLicenseName"/>
+        	</span>
+	        
             </xsl:if>
         </div>
     </xsl:template>
