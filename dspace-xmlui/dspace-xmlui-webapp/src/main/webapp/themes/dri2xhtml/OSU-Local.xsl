@@ -241,18 +241,34 @@
     <xsl:template match="mets:fileGrp[@USE='CC-LICENSE' or @USE='LICENSE']">
         <div class="license-info">
             <xsl:if test="@USE='CC-LICENSE'">
-                <!-- bds: get ccLink from METS dmdSec -->
-                <!-- note that this depends on a mod to dspace-xmlui/dspace-xmlui-api/src/main/java/org/dspace/app/xmlui/objectmanager/ItemAdapter.java
-                see https://libdws1.it.ohio-state.edu/git/kb/kb-source/commit/f2450cf33a4180b9852bdc48e04d14de39ec9148
-                -->
-                <xsl:variable name="CC_license_URL" select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@mdschema='ccLink']" />
-                <!--TODO, This is for old pre-1.8 creative commons licenses. -->
-
-                <p>This item is licensed under a <a href="{$CC_license_URL}">Creative Commons License</a></p>
-                <p><a href="{$CC_license_URL}"><img src="{$context-path}/static/images/cc-somerights.gif" border="0" alt="Creative Commons" /></a></p>
+	        <xsl:variable name="ccLicenseName"
+        	      select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='cc']" />
+	        <xsl:variable name="ccLicenseUri"
+                      select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='ccuri']" />
+        	<div>
+	            <a rel="license"
+        	        href="{$ccLicenseUri}"
+                	alt="{$ccLicenseName}"
+	                title="{$ccLicenseName}"
+        	        >
+	                <img>
+        	             <xsl:attribute name="src">
+                	        <xsl:value-of select="concat($context-path,'/static/images/cc-ship.gif')"/>
+	                     </xsl:attribute>
+        	             <xsl:attribute name="alt">
+                	         <xsl:value-of select="$ccLicenseName"/>
+	                     </xsl:attribute>
+        	        </img>
+	            </a>
+        	    <span>
+                	<i18n:text>xmlui.dri2xhtml.METS-1.0.cc-license-text</i18n:text>
+	                <xsl:value-of select="$ccLicenseName"/>
+        	    </span>
+	        </div>
             </xsl:if>
         </div>
     </xsl:template>
+
 
     <!-- Overrides General-Handler
     bds: make thumbnails point to bitstreams instead of item records
