@@ -1,69 +1,32 @@
-/*
- * UploadLicenseStep.java
+/**
+ * The contents of this file are subject to the license and copyright
+ * detailed in the LICENSE and NOTICE files at the root of the source
+ * tree and available online at
  *
- * Version: $Revision: 4777 $
- *
- * Date: $Date: 2010-02-17 16:58:08 -0500 (Wed, 17 Feb 2010) $
- *
- * Copyright (c) 2002-2009, The DSpace Foundation.  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- * - Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * - Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * - Neither the name of the DSpace Foundation nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
- * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
- * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
+ * http://www.dspace.org/license/
  */
 package org.dspace.submit.step;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.logging.Level;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
-
 import org.dspace.app.util.SubmissionInfo;
 import org.dspace.app.util.Util;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
-import org.dspace.content.Bitstream;
-import org.dspace.content.BitstreamFormat;
-import org.dspace.content.Bundle;
-import org.dspace.content.Collection;
-import org.dspace.content.FormatIdentifier;
-import org.dspace.content.Item;
+import org.dspace.content.*;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.eperson.Group;
 import org.dspace.handle.HandleManager;
 import org.dspace.submit.AbstractProcessingStep;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.logging.Level;
 
 /**
  * Upload step for DSpace. Processes the actual upload of files
@@ -155,10 +118,6 @@ public class UploadLicenseStep extends AbstractProcessingStep
             throws ServletException, IOException, SQLException,
             AuthorizeException
     {
-        /*if(!AuthorizeManager.isAdmin(context)) {
-            return STATUS_COMPLETE;
-        }*/
-
         // get button user pressed
         String buttonPressed = Util.getSubmitButton(request, NEXT_BUTTON);
 
@@ -243,6 +202,47 @@ public class UploadLicenseStep extends AbstractProcessingStep
             // bitstream
             return STATUS_EDIT_BITSTREAM;
         }
+
+        // -------------------------------------------------
+        // Step #3: Check for a change in file description
+        // -------------------------------------------------
+        String fileDescription = request.getParameter("description");
+
+        if (fileDescription != null && fileDescription.length() > 0)
+        {
+            // save this file description
+            int status = processSaveFileDescription(context, request, response,
+                    subInfo);
+
+            // if error occurred, return immediately
+            if (status != STATUS_COMPLETE)
+            {
+                return status;
+            }
+        }
+
+        // ------------------------------------------
+        // Step #4: Check for a file format change
+        // (if user had to manually specify format)
+        // ------------------------------------------
+        int formatTypeID = Util.getIntParameter(request, "format");
+        String formatDesc = request.getParameter("format_description");
+
+        // if a format id or description was found, then save this format!
+        if (formatTypeID >= 0
+                || (formatDesc != null && formatDesc.length() > 0))
+        {
+            // save this specified format
+            int status = processSaveFileFormat(context, request, response,
+                    subInfo);
+
+            // if error occurred, return immediately
+            if (status != STATUS_COMPLETE)
+            {
+                return status;
+            }
+        }
+
 
         // ---------------------------------------------------
         // Step #6: Determine if there is an error because no
@@ -348,9 +348,6 @@ public class UploadLicenseStep extends AbstractProcessingStep
     protected int processRemoveFile(Context context, Item item, int bitstreamID)
             throws IOException, SQLException, AuthorizeException
     {
-        /*if(!AuthorizeManager.isAdmin(context)) {
-            return STATUS_COMPLETE;
-        }*/
 
         Bitstream bitstream;
 
@@ -411,9 +408,6 @@ public class UploadLicenseStep extends AbstractProcessingStep
             throws ServletException, IOException, SQLException,
             AuthorizeException
     {
-        /*if(!AuthorizeManager.isAdmin(context)) {
-            return STATUS_COMPLETE;
-        }*/
 
         boolean formatKnown = true;
         boolean fileOK = false;
@@ -444,125 +438,207 @@ public class UploadLicenseStep extends AbstractProcessingStep
                 InputStream fileInputStream = (InputStream) request
                                     .getAttribute(param + "-inputstream");
 
+                //attempt to get description from attribute first, then direct from a parameter
+                String fileDescription =  (String) request.getAttribute(param + "-description");
+                if(fileDescription==null ||fileDescription.length()==0)
+                {
+                    fileDescription = request.getParameter("description");
+                }
+
                 // if information wasn't passed by User Interface, we had a problem
                 // with the upload
                 if (filePath == null || fileInputStream == null)
                     return STATUS_UPLOAD_ERROR;
 
-                if (subInfo != null)
+                if (subInfo == null)
                 {
-                    // Create the bitstream
-                    Item item = subInfo.getSubmissionItem().getItem();
-
-                    // do we already have a bundle?
-                    Bundle[] bundles = item.getBundles(PROXY_LICENSE_BUNDLE_NAME);
-
-                    if (bundles.length < 1)
-                    {
-                        // set bundle's name to LICENSE
-                        b = item.createSingleBitstream(fileInputStream, PROXY_LICENSE_BUNDLE_NAME);
-                    }
-                    else
-                    {
-                        // we have a bundle already, just add bitstream
-                        b = bundles[0].createBitstream(fileInputStream);
-                    }
-
-                    // Strip all but the last filename. It would be nice
-                    // to know which OS the file came from.
-                    String noPath = filePath;
-
-                    while (noPath.indexOf('/') > -1)
-                    {
-                        noPath = noPath.substring(noPath.indexOf('/') + 1);
-                    }
-
-                    while (noPath.indexOf('\\') > -1)
-                    {
-                        noPath = noPath.substring(noPath.indexOf('\\') + 1);
-                    }
-
-                    b.setName(noPath);
-                    b.setSource(filePath);
-
-                    // Identify the format
-                    bf = FormatIdentifier.guessFormat(context, b);
-                    b.setFormat(bf);
-
-                    // Update to DB
-                    b.update();
-                    item.update();
-
-                    if (bf == null || !bf.isInternal())
-                    {
-                        fileOK = true;
-                    }
-                    else
-                    {
-                        log.warn("Attempt to upload file format marked as internal system use only");
-
-                        // remove bitstream from bundle..
-                        // delete bundle if it's now empty
-                        Bundle[] bnd = b.getBundles();
-
-                        bnd[0].removeBitstream(b);
-
-                        Bitstream[] bitstreams = bnd[0].getBitstreams();
-
-                        // remove bundle if it's now empty
-                        if (bitstreams.length < 1)
-                        {
-                            item.removeBundle(bnd[0]);
-                            item.update();
-                        }
-
-                        subInfo.setBitstream(null);
-                    }
-
-
-                }// if subInfo not null
-                else
-                {
-                    // In any event, if we don't have the submission info, the request
-                    // was malformed
                     return STATUS_INTEGRITY_ERROR;
                 }
 
-                // as long as everything completed ok, commit changes. Otherwise show
-                // error page.
-                if (fileOK)
+                // Create the bitstream
+                Item item = subInfo.getSubmissionItem().getItem();
+
+                // do we already have a bundle?
+                Bundle[] bundles = item.getBundles(PROXY_LICENSE_BUNDLE_NAME);
+
+                if (bundles.length < 1)
                 {
-                    context.commit();
-
-                    // save this bitstream to the submission info, as the
-                    // bitstream we're currently working with
-                    subInfo.setBitstream(b);
-
-                    //if format was not identified
-                    if (bf == null)
-                    {
-                        // the bitstream format is unknown!
-                        formatKnown=false;
-                    }
+                    // set bundle's name to LICENSE
+                    b = item.createSingleBitstream(fileInputStream, PROXY_LICENSE_BUNDLE_NAME);
                 }
                 else
                 {
-                    // if we get here there was a problem uploading the file!
+                    // we have a bundle already, just add bitstream
+                    b = bundles[0].createBitstream(fileInputStream);
+                }
+
+                // Strip all but the last filename. It would be nice
+                // to know which OS the file came from.
+                String noPath = filePath;
+
+                while (noPath.indexOf('/') > -1)
+                {
+                    noPath = noPath.substring(noPath.indexOf('/') + 1);
+                }
+
+                while (noPath.indexOf('\\') > -1)
+                {
+                    noPath = noPath.substring(noPath.indexOf('\\') + 1);
+                }
+
+                b.setName(noPath);
+                b.setSource(filePath);
+                b.setDescription(fileDescription);
+
+                // Identify the format
+                bf = FormatIdentifier.guessFormat(context, b);
+                b.setFormat(bf);
+
+                // Update to DB
+                b.update();
+                item.update();
+
+                if ((bf != null) && (bf.isInternal()))
+                {
+                    log.warn("Attempt to upload file format marked as internal system use only");
+                    backoutBitstream(subInfo, b, item);
                     return STATUS_UPLOAD_ERROR;
                 }
+
+                // Check for virus - TODO
+
+                // If we got this far then everything is more or less ok.
+
+                // Comment - not sure if this is the right place for a commit here
+                // but I'm not brave enough to remove it - Robin.
+                context.commit();
+
+                // save this bitstream to the submission info, as the
+                // bitstream we're currently working with
+                subInfo.setBitstream(b);
+
+                //if format was not identified
+                if (bf == null)
+                {
+                    return STATUS_UNKNOWN_FORMAT;
+                }
+
             }//end if attribute ends with "-path"
         }//end while
 
-        if(!formatKnown)
+        return STATUS_COMPLETE;
+
+    }
+
+    /*
+     If we created a new Bitstream but now realised there is a problem then remove it.
+    */
+    private void backoutBitstream(SubmissionInfo subInfo, Bitstream b, Item item) throws SQLException, AuthorizeException, IOException
+    {
+        // remove bitstream from bundle..
+        // delete bundle if it's now empty
+        Bundle[] bnd = b.getBundles();
+
+        bnd[0].removeBitstream(b);
+
+        Bitstream[] bitstreams = bnd[0].getBitstreams();
+
+        // remove bundle if it's now empty
+        if (bitstreams.length < 1)
         {
-            //return that the bitstream format is unknown!
-            return STATUS_UNKNOWN_FORMAT;
+            item.removeBundle(bnd[0]);
+            item.update();
+        }
+
+        subInfo.setBitstream(null);
+    }
+
+    /**
+     * Process input from get file type page
+     *
+     * @param context
+     *            current DSpace context
+     * @param request
+     *            current servlet request object
+     * @param response
+     *            current servlet response object
+     * @param subInfo
+     *            submission info object
+     *
+     * @return Status or error flag which will be processed by
+     *         UI-related code! (if STATUS_COMPLETE or 0 is returned,
+     *         no errors occurred!)
+     */
+    protected int processSaveFileFormat(Context context,
+                                        HttpServletRequest request, HttpServletResponse response,
+                                        SubmissionInfo subInfo) throws ServletException, IOException,
+            SQLException, AuthorizeException
+    {
+        if (subInfo.getBitstream() != null)
+        {
+            // Did the user select a format?
+            int typeID = Util.getIntParameter(request, "format");
+
+            BitstreamFormat format = BitstreamFormat.find(context, typeID);
+
+            if (format != null)
+            {
+                subInfo.getBitstream().setFormat(format);
+            }
+            else
+            {
+                String userDesc = request.getParameter("format_description");
+
+                subInfo.getBitstream().setUserFormatDescription(userDesc);
+            }
+
+            // update database
+            subInfo.getBitstream().update();
         }
         else
         {
-            return STATUS_COMPLETE;
+            return STATUS_INTEGRITY_ERROR;
         }
 
+        return STATUS_COMPLETE;
     }
+
+    /**
+     * Process input from the "change file description" page
+     *
+     * @param context
+     *            current DSpace context
+     * @param request
+     *            current servlet request object
+     * @param response
+     *            current servlet response object
+     * @param subInfo
+     *            submission info object
+     *
+     * @return Status or error flag which will be processed by
+     *         UI-related code! (if STATUS_COMPLETE or 0 is returned,
+     *         no errors occurred!)
+     */
+    protected int processSaveFileDescription(Context context,
+                                             HttpServletRequest request, HttpServletResponse response,
+                                             SubmissionInfo subInfo) throws ServletException, IOException,
+            SQLException, AuthorizeException
+    {
+        if (subInfo.getBitstream() != null)
+        {
+            subInfo.getBitstream().setDescription(
+                    request.getParameter("description"));
+            subInfo.getBitstream().update();
+
+            context.commit();
+        }
+        else
+        {
+            return STATUS_INTEGRITY_ERROR;
+        }
+
+        return STATUS_COMPLETE;
+    }
+
 }
 
