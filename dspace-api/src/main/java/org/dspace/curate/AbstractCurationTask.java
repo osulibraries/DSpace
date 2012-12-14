@@ -7,21 +7,16 @@
  */
 package org.dspace.curate;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
-
-import org.dspace.content.Collection;
-import org.dspace.content.Community;
-import org.dspace.content.DSpaceObject;
-import org.dspace.content.Item;
-import org.dspace.content.ItemIterator;
+import org.dspace.content.*;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.handle.HandleManager;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * AbstractCurationTask encapsulates a few common patterns of task use,
@@ -63,6 +58,18 @@ public abstract class AbstractCurationTask implements CurationTask
         try
         {
             int type = dso.getType();
+
+            if(Constants.SITE == type) {
+                Context context = new Context();
+                Community[] topCommunities = Community.findAllTop(context);
+                for(int i = 0; i < topCommunities.length; i++) {
+                    Community community = topCommunities[i];
+                    distribute(community);
+
+                }
+            }
+
+
             if (Constants.ITEM == type)
             {
                 performItem((Item)dso);
