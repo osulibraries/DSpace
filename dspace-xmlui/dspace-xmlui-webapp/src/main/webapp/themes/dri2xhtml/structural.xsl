@@ -766,16 +766,17 @@
 
                                     </xsl:choose>
                                 </label>
+
+                                <a class="font-icon-cog">
+                                    <xsl:attribute name="href">
+                                        <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='search'][@qualifier='advancedURL']"/>
+                                    </xsl:attribute>
+                                    <i18n:text>xmlui.dri2xhtml.structural.search-advanced</i18n:text>
+                                </a>
                             </div>
                         </xsl:if>
                     </fieldset>
                 </form>
-                <a class="font-icon-cog">
-                    <xsl:attribute name="href">
-                        <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='search'][@qualifier='advancedURL']"/>
-                    </xsl:attribute>
-                    <i18n:text>xmlui.dri2xhtml.structural.search-advanced</i18n:text>
-                </a>
             </div>
         </div>
     </xsl:template>
