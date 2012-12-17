@@ -209,11 +209,6 @@ img.central_image {
 
 .thumbnail img {
     display: block;
-    /*  height: 100px;
-        max-width: 100%;
-    */
-    width:130px;
-    height: 86px;
     margin-left: auto;
     margin-right: auto;
 
