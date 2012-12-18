@@ -740,10 +740,9 @@
                                 </xsl:text>
                             </xsl:attribute>
                         </input>
-                        
-                        
-                        <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='container']">
-                            <div id="ds-global-search-scope">
+
+                        <div id="ds-global-search-scope">
+                            <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='container']">
                                 <label>
                                     <input id="ds-search-form-scope-all" type="radio" name="scope" value="" checked="checked"/>
                                     <i18n:text>xmlui.dri2xhtml.structural.search</i18n:text>
@@ -766,15 +765,14 @@
 
                                     </xsl:choose>
                                 </label>
-
-                                <a class="font-icon-cog">
-                                    <xsl:attribute name="href">
-                                        <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='search'][@qualifier='advancedURL']"/>
-                                    </xsl:attribute>
-                                    <i18n:text>xmlui.dri2xhtml.structural.search-advanced</i18n:text>
-                                </a>
-                            </div>
-                        </xsl:if>
+                            </xsl:if>
+                            <a class="font-icon-cog">
+                                <xsl:attribute name="href">
+                                    <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='search'][@qualifier='advancedURL']"/>
+                                </xsl:attribute>
+                                <i18n:text>xmlui.dri2xhtml.structural.search-advanced</i18n:text>
+                            </a>
+                        </div>
                     </fieldset>
                 </form>
             </div>
