@@ -203,6 +203,54 @@ public class UploadLicenseStep extends AbstractProcessingStep
             return STATUS_EDIT_BITSTREAM;
         }
 
+        // ---------------------------------------------
+        // Step #2: Process any remove file request(s)
+        // ---------------------------------------------
+        // Remove-selected requests come from Manakin
+        if (buttonPressed.equalsIgnoreCase("submit_remove_selected"))
+        {
+            // this is a remove multiple request!
+
+            if (request.getParameter("remove") != null)
+            {
+                // get all files to be removed
+                String[] removeIDs = request.getParameterValues("remove");
+
+                // remove each file in the list
+                for (int i = 0; i < removeIDs.length; i++)
+                {
+                    int id = Integer.parseInt(removeIDs[i]);
+
+                    int status = processRemoveFile(context, item, id);
+
+                    // if error occurred, return immediately
+                    if (status != STATUS_COMPLETE)
+                    {
+                        return status;
+                    }
+                }
+
+                // remove current bitstream from Submission Info
+                subInfo.setBitstream(null);
+            }
+        }
+        else if (buttonPressed.startsWith("submit_remove_"))
+        {
+            // A single file "remove" button must have been pressed
+
+            int id = Integer.parseInt(buttonPressed.substring(14));
+            int status = processRemoveFile(context, item, id);
+
+            // if error occurred, return immediately
+            if (status != STATUS_COMPLETE)
+            {
+                return status;
+            }
+
+            // remove current bitstream from Submission Info
+            subInfo.setBitstream(null);
+        }
+
         // -------------------------------------------------
         // Step #3: Check for a change in file description
         // -------------------------------------------------
