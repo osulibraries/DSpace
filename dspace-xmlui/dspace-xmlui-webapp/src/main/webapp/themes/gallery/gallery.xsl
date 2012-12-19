@@ -92,7 +92,7 @@
     <xsl:template match="dri:div[@n='collection-recent-submission'] | dri:div[@n='community-recent-submission']">
         <xsl:apply-templates select="./dri:head"/>
         <ul class="thumbnails">
-            <xsl:apply-templates select="./dri:referenceSet" mode="summaryList"/>
+            <xsl:apply-templates select="./dri:referenceSet" mode="summaryList-float"/>
         </ul>
         <ul class="pager">
             <li class="next">
@@ -107,7 +107,7 @@
     </xsl:template>
 
     <!-- including this because I need to change li.ds-artifact-item to li.span2 -->
-    <xsl:template match="dri:reference" mode="summaryList">
+    <xsl:template match="dri:reference" mode="summaryList-float">
         <xsl:variable name="externalMetadataURL">
             <xsl:text>cocoon:/</xsl:text>
             <xsl:value-of select="@url"/>
