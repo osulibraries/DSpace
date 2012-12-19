@@ -650,10 +650,10 @@
         </xsl:variable>
 
         <xsl:variable name="ccLicenseName"
-                      select="document($externalMetadataURL)//dim:field[@element='rights']"
+                      select="document($externalMetadataURL)//dim:field[@element='rights'][@qualifier='cc']"
                       />
         <xsl:variable name="ccLicenseUri"
-                      select="document($externalMetadataURL)//dim:field[@element='rights'][@qualifier='uri']"
+                      select="document($externalMetadataURL)//dim:field[@element='rights'][@qualifier='ccuri']"
                       />
         <xsl:variable name="handleUri">
                     <xsl:for-each select="document($externalMetadataURL)//dim:field[@element='identifier' and @qualifier='uri']">

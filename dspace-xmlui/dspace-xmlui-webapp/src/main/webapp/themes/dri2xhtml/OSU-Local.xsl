@@ -246,6 +246,7 @@
                 see https://libdws1.it.ohio-state.edu/git/kb/kb-source/commit/f2450cf33a4180b9852bdc48e04d14de39ec9148
                 -->
                 <xsl:variable name="CC_license_URL" select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@mdschema='ccLink']" />
+                <!--TODO, This is for old pre-1.8 creative commons licenses. -->
 
                 <p>This item is licensed under a <a href="{$CC_license_URL}">Creative Commons License</a></p>
                 <p><a href="{$CC_license_URL}"><img src="{$context-path}/static/images/cc-somerights.gif" border="0" alt="Creative Commons" /></a></p>
