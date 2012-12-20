@@ -85,6 +85,11 @@ public class CreativeCommonsMetadataMigration extends AbstractCurationTask{
                 return;
             }
 
+            if(uriField.ccItemValue(item) != null && nameField.ccItemValue(item) != null) {
+                //Fail really fast if we already have metadata values set.
+                log.info(item.getHandle() + " -- We didn't alter the item because it already had CC rights values set. (failfast)");
+                return;
+            }
 
             String licenseURL = CreativeCommons.getLicenseURL(item);
             String licenseName = licenseTextURIPairs.get(licenseURL);
@@ -108,8 +113,6 @@ public class CreativeCommonsMetadataMigration extends AbstractCurationTask{
             if(haveWeChangedAnything) {
                 item.update();
                 log.info(item.getHandle() + " -- Alter CC Metadata -- " + uriField + ":"  + licenseURL + " -- " + nameField + ":" + licenseName);
-            } else {
-                log.info(item.getHandle() + " -- We didn't alter the item because it already had CC rights values set.");
             }
 
             //Probably very expensive to do this each time.
