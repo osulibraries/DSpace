@@ -60,12 +60,10 @@ public abstract class AbstractCurationTask implements CurationTask
             int type = dso.getType();
 
             if(Constants.SITE == type) {
-                Context context = new Context();
-                Community[] topCommunities = Community.findAllTop(context);
+                Community[] topCommunities = Community.findAllTop(curator.curationContext());
                 for(int i = 0; i < topCommunities.length; i++) {
                     Community community = topCommunities[i];
                     distribute(community);
-
                 }
             }
 
