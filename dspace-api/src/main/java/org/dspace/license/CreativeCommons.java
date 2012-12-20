@@ -7,11 +7,12 @@
  */
 package org.dspace.license;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import org.apache.log4j.Logger;
+import org.dspace.authorize.AuthorizeException;
+import org.dspace.content.*;
+import org.dspace.core.ConfigurationManager;
+import org.dspace.core.Context;
+import org.dspace.core.Utils;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
@@ -19,17 +20,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import org.apache.log4j.Logger;
-import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.Bitstream;
-import org.dspace.content.BitstreamFormat;
-import org.dspace.content.Bundle;
-import org.dspace.content.DCValue;
-import org.dspace.content.Item;
-import org.dspace.core.ConfigurationManager;
-import org.dspace.core.Context;
-import org.dspace.core.Utils;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CreativeCommons
 {
@@ -465,20 +461,20 @@ public class CreativeCommons
     public static class MdField
     {
     	private String[] params = new String[4];
-    	
-    	public MdField(String fieldName)
-    	{
-    		if (fieldName != null && fieldName.length() > 0)
-    		{
-    			String[] fParams = fieldName.split("\\.");
-    			for (int i = 0; i < fParams.length; i++)
-    			{
-    				params[i] = fParams[i];
-    			}
-    			params[3] = Item.ANY;
-    		}
-    	}
-    	
+
+        public MdField(String fieldName)
+        {
+            if (fieldName != null && fieldName.length() > 0)
+            {
+                String[] fParams = fieldName.split("\\.");
+                for (int i = 0; i < fParams.length; i++)
+                {
+                    params[i] = fParams[i];
+                }
+                params[3] = getLanguage();
+            }
+        }
+
     	/**
     	 * Returns first value that matches Creative Commons 'shibboleth',
     	 * or null if no matching values.
@@ -487,7 +483,7 @@ public class CreativeCommons
     	 * @param item - the item to read
     	 * @return value - the first CC-matched value, or null if no such value
     	 */
-    	public String ccItemValue(Item item)
+    	public String ccItemValueShib(Item item)
     	{
             DCValue[] dcvalues = item.getMetadata(params[0], params[1], params[2], params[3]);
             for (DCValue dcvalue : dcvalues)
@@ -500,6 +496,22 @@ public class CreativeCommons
             }
             return null;
     	}
+
+        /**
+         * Returns metadata value for this field, else null.
+         * This method has been altered for use when Creative Commons fields get own dedicated metadata fields.
+         * @param item
+         * @return
+         */
+        public String ccItemValue(Item item)
+        {
+            DCValue[] dcvalues = item.getMetadata(params[0], params[1], params[2], params[3]);
+            for (DCValue dcvalue : dcvalues)
+            {
+                return dcvalue.value;
+            }
+            return null;
+        }
     	
     	/**
     	 * Returns the value that matches the value mapped to the passed key if any.
@@ -562,5 +574,16 @@ public class CreativeCommons
     	{
     		item.addMetadata(params[0], params[1], params[2], params[3], value);
     	}
+
+        @Override
+        public String toString() {
+            return Arrays.toString(params);
+        }
+
+        public String getLanguage() {
+            // if language isn't set, use the system's default value
+            String language = ConfigurationManager.getProperty("default.language");
+            return (language != null) ? language : "";
+        }
     }
 }
