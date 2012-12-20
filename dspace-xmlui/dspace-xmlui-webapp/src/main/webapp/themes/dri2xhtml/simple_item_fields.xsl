@@ -1360,7 +1360,7 @@
         <xsl:param name="otherPhase" />
         <xsl:choose>
 
-            <xsl:when test="dim:field[@element='rights']">
+            <xsl:when test="dim:field[@element='rights' and not(@qualifier)]">
                 <tr class="ds-table-row {$phase}">
                     <td class="field-label"><span class="bold"><i18n:text>metadata.dc.rights</i18n:text>:</span></td>
                     <td class="field-data">
@@ -1368,7 +1368,7 @@
                             <span>
                                 <xsl:copy-of select="node()"/>
                             </span>
-                            <xsl:if test="count(following-sibling::dim:field[@element='rights']) != 0">
+                            <xsl:if test="count(following-sibling::dim:field[@element='rights' and not(@qualifier)]) != 0">
                                 <br />
                             </xsl:if>
                         </xsl:for-each>
