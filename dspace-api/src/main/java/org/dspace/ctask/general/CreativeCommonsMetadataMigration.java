@@ -3,14 +3,12 @@ package org.dspace.ctask.general;
 import org.apache.log4j.Logger;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
-import org.dspace.core.Context;
 import org.dspace.curate.AbstractCurationTask;
 import org.dspace.curate.Curator;
 import org.dspace.curate.Distributive;
 import org.dspace.license.CreativeCommons;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +22,8 @@ public class CreativeCommonsMetadataMigration extends AbstractCurationTask{
     private static Logger log = Logger.getLogger(CreativeCommonsMetadataMigration.class);
 
     private Map<String, Integer> licenseTable = new HashMap<String, Integer>();
-    private Context context;
+
+    private static CreativeCommons.MdField uriField, nameField;
 
     private static final Map<String, String> licenseTextURIPairs = new HashMap<String, String>();
     static  {
@@ -57,20 +56,19 @@ public class CreativeCommonsMetadataMigration extends AbstractCurationTask{
 
     @Override
     public int perform(DSpaceObject dso) throws IOException {
+        uriField = CreativeCommons.getCCField("uri") ;
+        nameField = CreativeCommons.getCCField("name");
+        log.info("uriField toString is:[" + uriField + "]");
+        log.info("nameField toString is:[" + nameField + "]");
+
         licenseTable.clear();
-        try {
-            context = new Context();
 
+        distribute(dso);
 
-            distribute(dso);
-            formatResults();
-            return Curator.CURATE_SUCCESS;
+        //context.complete();
+        formatResults();
+        return Curator.CURATE_SUCCESS;
 
-        } catch (SQLException e) {
-            log.error("SQL error");
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return Curator.CURATE_ERROR;
-        }
     }
 
     @Override
@@ -78,7 +76,7 @@ public class CreativeCommonsMetadataMigration extends AbstractCurationTask{
     {
         try
         {
-            if(!CreativeCommons.hasLicense(context, item))
+            if(!CreativeCommons.hasLicense(curator.curationContext(), item))
             {
                 Integer count = licenseTable.get("None");
                 count = (count == null) ? 1 : count+1;
@@ -89,18 +87,36 @@ public class CreativeCommonsMetadataMigration extends AbstractCurationTask{
 
 
             String licenseURL = CreativeCommons.getLicenseURL(item);
+            String licenseName = licenseTextURIPairs.get(licenseURL);
+
             Integer count = licenseTable.get(licenseURL);
             count = (count == null) ? 1 : count+1;
             licenseTable.put(licenseURL, count);
 
-            log.info(item.getHandle() + " -- CC LicenseText of: " + licenseURL);
+            boolean haveWeChangedAnything = false;
 
+            if(uriField.ccItemValue(item) == null) {
+                uriField.addItemValue(item, licenseURL);
+                haveWeChangedAnything = true;
+            }
 
+            if(nameField.ccItemValue(item) == null) {
+                nameField.addItemValue(item, licenseName);
+                haveWeChangedAnything = true;
+            }
 
+            if(haveWeChangedAnything) {
+                item.update();
+                log.info(item.getHandle() + " -- Alter CC Metadata -- " + uriField + ":"  + licenseURL + " -- " + nameField + ":" + licenseName);
+            } else {
+                log.info(item.getHandle() + " -- We didn't alter the item because it already had CC rights values set.");
+            }
 
+            //Probably very expensive to do this each time.
+            curator.curationContext().commit();
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("ERROR: " + item.getHandle() + " -- " + e.getMessage());
             Integer count = licenseTable.get("Error");
             count = (count == null) ? 1 : count+1;
             licenseTable.put("Error", count);
