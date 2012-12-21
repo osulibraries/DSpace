@@ -225,7 +225,7 @@ body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
-  line-height: 20px;
+  /* line-height: 20px; PeterDietz 2012-12-21 remove fixed line-height for all body, since it makes things too tall */
   color: #333333;
   background-color: #ffffff;
 }
