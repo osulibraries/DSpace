@@ -76,18 +76,18 @@ public class CreativeCommonsMetadataMigration extends AbstractCurationTask{
     {
         try
         {
+            if(uriField.ccItemValue(item) != null && nameField.ccItemValue(item) != null) {
+                //Fail really fast if we already have metadata values set.
+                log.info(item.getHandle() + " -- We didn't bother to look into the Item since it already had CC rights values set. (failfast)");
+                return;
+            }
+
             if(!CreativeCommons.hasLicense(curator.curationContext(), item))
             {
                 Integer count = licenseTable.get("None");
                 count = (count == null) ? 1 : count+1;
                 licenseTable.put("None", count);
 
-                return;
-            }
-
-            if(uriField.ccItemValue(item) != null && nameField.ccItemValue(item) != null) {
-                //Fail really fast if we already have metadata values set.
-                log.info(item.getHandle() + " -- We didn't alter the item because it already had CC rights values set. (failfast)");
                 return;
             }
 
