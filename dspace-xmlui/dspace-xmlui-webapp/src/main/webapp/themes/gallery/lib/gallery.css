@@ -12,6 +12,7 @@
 	height:155px;
     width: 120px !important;
     border: 1px solid #000000;
+    line-height: 1.1em !important;
 }
 .ds-artifact-list li img {
     margin: 0 auto !important;

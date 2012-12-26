@@ -1,4 +1,3 @@
-@charset "UTF-8";
 body {
   font: sans-serif;
   font-size: 0.93em;
@@ -129,9 +128,14 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
   color: #3d473c;
-  line-height: 19px; }
+  line-height: 1.2em; }
   h1 a:link,
-  h1 a:visited, h2 a:link, h2 a:visited, h3 a:link, h3 a:visited, h4 a:link, h4 a:visited, h5 a:link, h5 a:visited, h6 a:link, h6 a:visited {
+  h1 a:visited, h2 a:link,
+  h2 a:visited, h3 a:link,
+  h3 a:visited, h4 a:link,
+  h4 a:visited, h5 a:link,
+  h5 a:visited, h6 a:link,
+  h6 a:visited {
     color: inherit; }
 
 p {
@@ -165,7 +169,7 @@ th, td {
   padding: 4px; }
 
 tr.ds-table-header-row {
-  color: inherit;
+  color: inherittop-downloads;
   background-color: #dee1de; }
   tr.ds-table-header-row.subheader {
     background-color: #99aabb; }
@@ -258,7 +262,7 @@ tr.ds-table-row.even {
       position: relative;
       height: 21px;
       overflow: hidden;
-      line-height: 21px;
+      line-height: 21px !important;
       margin: 0px 6px 0px 0;
       padding: 0px 10px 0px 0;
       font-size: 0.8em;
@@ -495,7 +499,7 @@ tr.ds-table-row.even {
 
 .input-prompt {
   position: absolute;
-  right: 57px;
+  right: 46px;
   top: 6px;
   color: #777777;
   font-size: 0.8em; }
@@ -539,7 +543,7 @@ tr.ds-table-row.even {
     background: #a5a5a5; }
 
 #ds-body h1 {
-  font-size: 1.5em;
+  font-size: 1.8em;
   padding: 8px 2px;
   margin: 40px 0 10px 14px;
   color: #990000;
@@ -551,11 +555,15 @@ tr.ds-table-row.even {
   font-weight: bolder;
   clear: both; }
 #ds-body h3 {
+  font-size: 1.3em;
   margin: 10px 0 5px;
   clear: both; }
 #ds-body h4 {
+  font-size: 1.2em;
   margin: 0px;
   color: black; }
+#ds-body li {
+  line-height: 1.3em; }
 
 .ds-option-set {
   padding: 0;
@@ -577,22 +585,23 @@ tr.ds-table-row.even {
   background: linear-gradient(to bottom, #e6e2e2 0%, #d8d6d6 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e6e2e2', endColorstr='#d8d6d6',GradientType=0 );
   border-bottom: 1px solid #b3afaf;
-  font-size: 1em;
+  font-size: 1.2em;
   color: #1e231e;
   text-shadow: 0 1px 1px white;
   margin: 0;
-  padding: 0.5em 1em;
+  padding: 0.5em 0.5em;
   position: relative; }
 #ds-options h4 {
-  margin: 0.5em 0;
+  margin: 0.6em 0 0.3em 0;
   color: #202020;
-  font-size: 17px; }
+  font-size: 1.1em; }
 #ds-options ul {
   margin: 0;
   padding: 0; }
 #ds-options li {
   margin: 0 1em;
   padding: 0;
+  line-height: 18px;
   list-style: none; }
 
 #ds-footer {
