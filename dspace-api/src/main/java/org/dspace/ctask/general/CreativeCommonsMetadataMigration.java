@@ -3,13 +3,20 @@ package org.dspace.ctask.general;
 import org.apache.log4j.Logger;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
+import org.dspace.core.Constants;
+import org.dspace.core.Context;
 import org.dspace.curate.AbstractCurationTask;
 import org.dspace.curate.Curator;
 import org.dspace.curate.Distributive;
 import org.dspace.license.CreativeCommons;
+import org.dspace.storage.rdbms.DatabaseManager;
+import org.dspace.storage.rdbms.TableRow;
+import org.dspace.storage.rdbms.TableRowIterator;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,7 +70,15 @@ public class CreativeCommonsMetadataMigration extends AbstractCurationTask{
 
         licenseTable.clear();
 
-        distribute(dso);
+        if(dso.getType() == Constants.SITE) {
+            //Use an optimized algorithm for hitting all remaining items when done at site level.
+            distributeToUnperformedItems();
+        } else {
+            //When selectively performing this task, recurse just through this subset.
+            distribute(dso);
+        }
+
+
 
         //context.complete();
         formatResults();
@@ -131,6 +146,48 @@ public class CreativeCommonsMetadataMigration extends AbstractCurationTask{
         log.info("===================================================");
         log.info(licenseTable.toString());
         log.info("===================================================");
+    }
+
+    /*
+    An alternate method to have the Database query the remaining DSpace Items, as opposed to recursive scanning EVERYTHING
+     */
+    private void distributeToUnperformedItems() throws IOException {
+        try {
+            Context context = curator.curationContext();
+
+            String unmigratedItemsQuery = "SELECT \n" +
+                    "  distinct(item.item_id) \n" +
+                    "FROM \n" +
+                    "  public.item, \n" +
+                    "  public.item2bundle, \n" +
+                    "  public.bundle\n" +
+                    "WHERE \n" +
+                    "  item.item_id = item2bundle.item_id AND\n" +
+                    "  item2bundle.bundle_id = bundle.bundle_id AND\n" +
+                    "  bundle.name = 'CC-LICENSE' AND\n" +
+                    "  item.item_id NOT IN ( \n" +
+                    "    select metadatavalue.item_id \n" +
+                    "    from \n" +
+                    "      public.metadatafieldregistry, \n" +
+                    "      public.metadatavalue\n" +
+                    "    where \n" +
+                    "      metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND\n" +
+                    "      metadatafieldregistry.element = 'rights' AND \n" +
+                    "      metadatafieldregistry.qualifier = 'ccuri'\n" +
+                    "    );";
+
+            TableRowIterator itemsTri = DatabaseManager.query(context, unmigratedItemsQuery);
+            List<TableRow> itemRowList = itemsTri.toList();
+            log.info("distributeToUnperformedItems found: " + itemRowList.size() + " items needing to be performed.");
+
+            for(TableRow itemRow : itemRowList) {
+                Integer itemID = itemRow.getIntColumn("item_id");
+                Item item = Item.find(context, itemID);
+                performItem(item);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
     }
 
 
