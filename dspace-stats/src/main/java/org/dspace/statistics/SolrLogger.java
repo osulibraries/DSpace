@@ -11,9 +11,6 @@ import com.Ostermiller.util.CSVParser;
 import com.Ostermiller.util.CSVPrinter;
 import com.maxmind.geoip.Location;
 import com.maxmind.geoip.LookupService;
-
-import java.io.*;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
@@ -42,6 +39,7 @@ import org.dspace.statistics.util.LocationUtils;
 import org.dspace.statistics.util.SpiderDetector;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.*;
 import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -331,9 +329,9 @@ public class SolrLogger
         else if (dso instanceof Collection)
         {
             Collection coll = (Collection) dso;
-            for (int i = 0; i < coll.getCommunities().length; i++)
+            Community[] communities = coll.getCommunities();
+            for (Community community : communities)
             {
-                Community community = coll.getCommunities()[i];
                 doc1.addField("owningComm", community.getID());
                 storeParents(doc1, community);
             }
@@ -341,9 +339,9 @@ public class SolrLogger
         else if (dso instanceof Item)
         {
             Item item = (Item) dso;
-            for (int i = 0; i < item.getCollections().length; i++)
+            Collection[] collections = item.getCollections();
+            for (Collection collection : collections)
             {
-                Collection collection = item.getCollections()[i];
                 doc1.addField("owningColl", collection.getID());
                 storeParents(doc1, collection);
             }
@@ -351,12 +349,13 @@ public class SolrLogger
         else if (dso instanceof Bitstream)
         {
             Bitstream bitstream = (Bitstream) dso;
-            for (int i = 0; i < bitstream.getBundles().length; i++)
+            Bundle[] bundles = bitstream.getBundles();
+
+            for (Bundle bundle : bundles)
             {
-                Bundle bundle = bitstream.getBundles()[i];
-                for (int j = 0; j < bundle.getItems().length; j++)
+                Item[] items = bundle.getItems();
+                for (Item item : items)
                 {
-                    Item item = bundle.getItems()[j];
                     doc1.addField("owningItem", item.getID());
                     storeParents(doc1, item);
                 }

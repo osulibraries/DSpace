@@ -435,22 +435,25 @@ public class ElasticSearchLogger {
             }
         } else if (dso instanceof Collection) {
             Collection coll = (Collection) dso;
-            for (Community community : coll.getCommunities()) {
+            Community[] communities = coll.getCommunities();
+            for (Community community : communities) {
                 parents.get("owningComm").add(community.getID());
                 buildParents(community, parents);
             }
         } else if (dso instanceof Item) {
             Item item = (Item) dso;
-            for (Collection collection : item.getCollections()) {
+            Collection[] collections = item.getCollections();
+            for (Collection collection : collections) {
                 parents.get("owningColl").add(collection.getID());
                 buildParents(collection, parents);
             }
         } else if (dso instanceof Bitstream) {
             Bitstream bitstream = (Bitstream) dso;
+            Bundle[] bundles = bitstream.getBundles();
 
-            for (Bundle bundle : bitstream.getBundles()) {
-                for (Item item : bundle.getItems()) {
-
+            for (Bundle bundle : bundles) {
+                Item[] items = bundle.getItems();
+                for (Item item : items) {
                     parents.get("owningItem").add(item.getID());
                     buildParents(item, parents);
                 }
