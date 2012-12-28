@@ -105,15 +105,6 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
 		Group admins = thisCollection.getAdministrators();
 		Group submitters = thisCollection.getSubmitters();
 
-        HashMap<String, Role> roles = null;
-
-        try {
-            roles = WorkflowUtils.getCollectionRoles(thisCollection);
-        } catch (WorkflowConfigurationException e) {
-            log.error(LogManager.getHeader(context, "error while getting collection roles", "Collection id: " + thisCollection.getID()));
-        } catch (IOException e) {
-            log.error(LogManager.getHeader(context, "error while getting collection roles", "Collection id: " + thisCollection.getID()));
-        }
 		Group defaultRead = null;
 		int defaultReadID = FlowContainerUtils.getCollectionDefaultRead(context, collectionID);
 		if (defaultReadID >= 0)
@@ -250,7 +241,7 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
 
 
          if(ConfigurationManager.getProperty("workflow","workflow.framework").equals("xmlworkflow")){
-             addXMLWorkflowRoles(thisCollection, baseURL, roles, rolesTable);
+             addXMLWorkflowRoles(thisCollection, baseURL, rolesTable);
          }else{
              addOriginalWorkflowRoles(thisCollection, baseURL, rolesTable);
          }
@@ -349,7 +340,18 @@ public class AssignCollectionRoles extends AbstractDSpaceTransformer
         }
     }
 
-    private void addXMLWorkflowRoles(Collection thisCollection, String baseURL, HashMap<String, Role> roles, Table rolesTable) throws WingException, SQLException {
+    private void addXMLWorkflowRoles(Collection thisCollection, String baseURL, Table rolesTable) throws WingException, SQLException {
+        HashMap<String, Role> roles = null;
+
+        try {
+            //TODO, this is a request to XML Workflow
+            roles = WorkflowUtils.getCollectionRoles(thisCollection);
+        } catch (WorkflowConfigurationException e) {
+            log.error(LogManager.getHeader(context, "error while getting collection roles", "Collection id: " + thisCollection.getID()));
+        } catch (IOException e) {
+            log.error(LogManager.getHeader(context, "error while getting collection roles", "Collection id: " + thisCollection.getID()));
+        }
+
         Row tableRow;
         if(roles != null){
             //ROLES: show group name instead of role name

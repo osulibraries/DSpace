@@ -7,17 +7,6 @@
  */
 package org.dspace.app.xmlui.aspect.administrative;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.servlet.multipart.Part;
 import org.dspace.app.xmlui.utils.UIException;
@@ -28,23 +17,33 @@ import org.dspace.authorize.ResourcePolicy;
 import org.dspace.browse.BrowseException;
 import org.dspace.content.Collection;
 import org.dspace.content.Community;
-import org.dspace.harvest.HarvestedCollection;
 import org.dspace.content.Item;
 import org.dspace.content.ItemIterator;
-import org.dspace.harvest.OAIHarvester;
-import org.dspace.harvest.OAIHarvester.HarvestScheduler;
 import org.dspace.content.crosswalk.CrosswalkException;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.curate.Curator;
 import org.dspace.eperson.Group;
+import org.dspace.harvest.HarvestedCollection;
+import org.dspace.harvest.OAIHarvester;
+import org.dspace.harvest.OAIHarvester.HarvestScheduler;
 import org.dspace.xmlworkflow.Role;
 import org.dspace.xmlworkflow.WorkflowConfigurationException;
 import org.dspace.xmlworkflow.WorkflowUtils;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility methods to processes actions on Communities and Collections.
@@ -529,22 +528,27 @@ public class FlowContainerUtils
 		{
 			collection.removeSubmitters();
 		}
-        else{
-            WorkflowUtils.deleteRoleGroup(context, collectionID, roleName);
-		}
-//		else if (ROLE_WF_STEP1.equals(roleName))
-//		{
-//			collection.setWorkflowGroup(1, null);
-//		}
-//		else if (ROLE_WF_STEP2.equals(roleName))
-//		{
-//			collection.setWorkflowGroup(2, null);
-//		}
-//		else if (ROLE_WF_STEP3.equals(roleName))
-//		{
-//			collection.setWorkflowGroup(3, null);
-//
-//		}
+        else
+        {
+            if(ConfigurationManager.getProperty("workflow", "workflow.framework").equals("xmlworkflow"))
+            {
+                WorkflowUtils.deleteRoleGroup(context, collectionID, roleName);
+            } else
+            {
+                if (ROLE_WF_STEP1.equals(roleName))
+                {
+                    collection.setWorkflowGroup(1, null);
+                }
+                else if (ROLE_WF_STEP2.equals(roleName))
+                {
+                    collection.setWorkflowGroup(2, null);
+                }
+                else if (ROLE_WF_STEP3.equals(roleName))
+                {
+                    collection.setWorkflowGroup(3, null);
+                }
+            }
+        }
 
 		// Second, remove all authorizations for this role by searching for all policies that this
 		// group has on the collection and remove them otherwise the delete will fail because 
