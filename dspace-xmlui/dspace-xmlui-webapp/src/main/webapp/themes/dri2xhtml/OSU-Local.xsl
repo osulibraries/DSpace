@@ -262,8 +262,14 @@
 	            </a>
 		</span>
         	<span class="span6">
-                    <i18n:text>xmlui.dri2xhtml.METS-1.0.cc-license-text</i18n:text>
-	            <xsl:value-of select="$ccLicenseName"/>
+                    <i18n:text>xmlui.dri2xhtml.METS-1.0.cc-license-text</i18n:text><br />
+	            <a rel="license"
+        	        href="{$ccLicenseUri}"
+                	alt="{$ccLicenseName}"
+	                title="{$ccLicenseName}"
+        	        >
+	                <xsl:value-of select="$ccLicenseName"/>
+                    </a>
         	</span>
 	        
             </xsl:if>
