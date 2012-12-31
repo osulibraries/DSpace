@@ -7,17 +7,6 @@
  */
 package org.dspace.content;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dspace.app.util.AuthorizeUtil;
@@ -27,19 +16,24 @@ import org.dspace.authorize.AuthorizeManager;
 import org.dspace.authorize.ResourcePolicy;
 import org.dspace.browse.BrowseException;
 import org.dspace.browse.IndexBrowse;
+import org.dspace.content.authority.ChoiceAuthorityManager;
+import org.dspace.content.authority.Choices;
+import org.dspace.content.authority.MetadataAuthorityManager;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.core.LogManager;
-import org.dspace.content.authority.Choices;
-import org.dspace.content.authority.ChoiceAuthorityManager;
-import org.dspace.content.authority.MetadataAuthorityManager;
-import org.dspace.event.Event;
 import org.dspace.eperson.EPerson;
 import org.dspace.eperson.Group;
+import org.dspace.event.Event;
 import org.dspace.handle.HandleManager;
 import org.dspace.storage.rdbms.DatabaseManager;
 import org.dspace.storage.rdbms.TableRow;
 import org.dspace.storage.rdbms.TableRowIterator;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * Class representing an item in DSpace.
@@ -238,6 +232,36 @@ public class Item extends DSpaceObject
         TableRowIterator rows = DatabaseManager.queryTable(context, "item", myQuery);
 
         return new ItemIterator(context, rows);
+    }
+
+    public static ItemIterator findBySubmitterDateSorted(Context context, EPerson eperson) throws SQLException
+    {
+        String querySorted =    "SELECT \n" +
+                "  item.item_id, \n" +
+                "  item.submitter_id, \n" +
+                "  item.in_archive, \n" +
+                "  item.withdrawn, \n" +
+                "  item.owning_collection, \n" +
+                "  item.last_modified, \n" +
+                "  metadatavalue.text_value\n" +
+                "FROM \n" +
+                "  public.item, \n" +
+                "  public.metadatafieldregistry, \n" +
+                "  public.metadatavalue\n" +
+                "WHERE \n" +
+                "  metadatafieldregistry.metadata_field_id = metadatavalue.metadata_field_id AND\n" +
+                "  metadatavalue.item_id = item.item_id AND\n" +
+                "  metadatafieldregistry.element = 'date' AND \n" +
+                "  metadatafieldregistry.qualifier = 'accessioned' AND \n" +
+                "  item.submitter_id = ? AND \n" +
+                "  item.in_archive = true\n" +
+                "ORDER BY\n" +
+                "  metadatavalue.text_value ASC;\n";
+
+        TableRowIterator rows = DatabaseManager.query(context, querySorted, eperson.getID());
+
+        return new ItemIterator(context, rows);
+
     }
 
     /**
