@@ -7,36 +7,25 @@
  */
 package org.dspace.app.xmlui.aspect.submission;
 
+import org.apache.cocoon.environment.ObjectModelHelper;
+import org.apache.cocoon.environment.Request;
+import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
+import org.dspace.app.xmlui.utils.UIException;
+import org.dspace.app.xmlui.wing.Message;
+import org.dspace.app.xmlui.wing.WingException;
+import org.dspace.app.xmlui.wing.element.*;
+import org.dspace.authorize.AuthorizeException;
+import org.dspace.content.*;
+import org.dspace.content.Item;
+import org.dspace.core.Constants;
+import org.dspace.eperson.EPerson;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.cocoon.environment.ObjectModelHelper;
-import org.apache.cocoon.environment.Request;
-
-import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
-import org.dspace.app.xmlui.utils.UIException;
-import org.dspace.app.xmlui.wing.Message;
-import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.CheckBox;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
-import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.Collection;
-import org.dspace.content.DCValue;
-import org.dspace.content.Item;
-import org.dspace.content.ItemIterator;
-import org.dspace.content.SupervisedItem;
-import org.dspace.content.WorkspaceItem;
-import org.dspace.core.Constants;
-import org.dspace.eperson.EPerson;
-import org.xml.sax.SAXException;
 
 /**
  * @author Scott Phillips
@@ -333,7 +322,9 @@ public class Submissions extends AbstractDSpaceTransformer
     {
         // Turn the iterator into a list (to get size info, in order to put in a table)
         List subList = new LinkedList();
-        ItemIterator subs = Item.findBySubmitter(context, context.getCurrentUser());
+        int limit = 5;
+
+        ItemIterator subs = Item.findBySubmitterDateSorted(context, context.getCurrentUser());
 
         //NOTE: notice we are adding each item to this list in *reverse* order...
         // this is a very basic attempt at making more recent submissions float 
@@ -370,7 +361,7 @@ public class Submissions extends AbstractDSpaceTransformer
         //Limit to showing just 50 archived submissions, unless overridden
         //(This is a saftey measure for Admins who may have submitted 
         // thousands of items under their account via bulk ingest tools, etc.)
-        int limit = 50;
+
         int count = 0;
 
         // Populate table
