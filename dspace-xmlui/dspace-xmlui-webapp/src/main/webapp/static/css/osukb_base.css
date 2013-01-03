@@ -169,7 +169,7 @@ th, td {
   padding: 4px; }
 
 tr.ds-table-header-row {
-  color: inherittop-downloads;
+  color: inherit;
   background-color: #dee1de; }
   tr.ds-table-header-row.subheader {
     background-color: #99aabb; }
