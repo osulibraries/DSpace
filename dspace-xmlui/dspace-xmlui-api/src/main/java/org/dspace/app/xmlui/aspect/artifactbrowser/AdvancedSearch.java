@@ -7,13 +7,6 @@
  */
 package org.dspace.app.xmlui.aspect.artifactbrowser;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-
 import org.apache.cocoon.caching.CacheableProcessingComponent;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
@@ -22,21 +15,18 @@ import org.dspace.app.xmlui.utils.HandleUtil;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Select;
-import org.dspace.app.xmlui.wing.element.Table;
-import org.dspace.app.xmlui.wing.element.Text;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.Collection;
 import org.dspace.content.Community;
 import org.dspace.content.DSpaceObject;
 import org.dspace.core.ConfigurationManager;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Preform an advanced search of the repository. The user is presented with
@@ -137,7 +127,7 @@ public class AdvancedSearch extends AbstractSearch implements CacheableProcessin
         Division search = body.addDivision("advanced-search","primary");
         search.setHead(T_head);
         Division query = search.addInteractiveDivision("search-query",
-                "advanced-search",Division.METHOD_POST,"secondary search");
+                "advanced-search#result-query",Division.METHOD_POST,"secondary search");
         
         // Use these fields to change the number of search fields, or change the results per page.
         query.addHidden("num_search_field").setValue(numSearchField);
@@ -352,7 +342,7 @@ public class AdvancedSearch extends AbstractSearch implements CacheableProcessin
             parameters.put("etal", String.valueOf(getParameterEtAl()));
         }
         
-        return super.generateURL("advanced-search", parameters);
+        return super.generateURL("advanced-search#result-query", parameters);
     }
 
     /**

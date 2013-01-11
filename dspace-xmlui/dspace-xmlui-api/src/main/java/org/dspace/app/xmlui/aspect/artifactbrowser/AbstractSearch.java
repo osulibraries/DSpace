@@ -216,8 +216,9 @@ public abstract class AbstractSearch extends AbstractDSpaceTransformer
             // Perform the actual search
             performSearch();
             DSpaceObject searchScope = getScope();
-            
-            Para para = search.addPara("result-query","result-query");
+
+            Division resultQueryDiv = search.addDivision("result-query", "result-query");
+            Para para = resultQueryDiv.addPara("result-query","result-query");
 
             String query = getQuery();
             int hitCount = queryResults.getHitCount();

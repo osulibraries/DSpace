@@ -1041,6 +1041,12 @@
                 <xsl:apply-templates />
         </div>
     </xsl:template>
+
+    <xsl:template match="dri:div[@rend='result-query']" priority="3">
+        <div id="result-query" class="alert alert-info">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
     
     
     <!-- Next come the three structural elements that divs that contain: table, p, and list. These are
