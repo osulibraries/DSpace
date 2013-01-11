@@ -563,7 +563,8 @@
         <div id="ds-body" class="column">
             <xsl:call-template name="trail"/>
             <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='alert'][@qualifier='message']">
-                <div id="ds-system-wide-alert">
+                <div id="ds-system-wide-alert" class="alert">
+                    <button type="button" class="close" data-dismiss="alert">&#215;</button>
                     <p>
                         <xsl:copy-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='alert'][@qualifier='message']/node()"/>
                     </p>
