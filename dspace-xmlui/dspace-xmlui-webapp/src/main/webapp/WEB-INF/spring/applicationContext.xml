@@ -45,17 +45,17 @@
     </bean>
      
     <!-- Inject the Default LoggerUsageEventListener into the EventService  -->
-    <!--<bean class="org.dspace.statistics.SolrLoggerUsageEventListener">
+    <bean class="org.dspace.statistics.SolrLoggerUsageEventListener">
         <property name="eventService" >
             <ref bean="dspace.eventService"/>
         </property>
-    </bean>-->
+    </bean>
     <!-- Elastic Search -->
-    <!--<bean class="org.dspace.statistics.ElasticSearchLoggerEventListener">
+    <bean class="org.dspace.statistics.ElasticSearchLoggerEventListener">
         <property name="eventService">
             <ref bean="dspace.eventService" />
         </property>
-    </bean>-->
+    </bean>
     <!-- 
     Uncomment to enable TabFileUsageEventListener 
     <bean class="org.dspace.app.statistics.TabFileUsageEventListener">
