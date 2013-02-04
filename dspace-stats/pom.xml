@@ -121,7 +121,7 @@
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
-            <version>0.18.6</version>
+            <version>0.19.11</version>
         </dependency>
         <!-- Gson: Java to Json conversion -->
         <dependency>
