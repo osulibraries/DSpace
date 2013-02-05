@@ -1,6 +1,5 @@
 package org.dspace.app.xmlui.aspect.dashboard;
 
-import org.dspace.statistics.ElasticSearchLogger;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.log4j.Logger;
@@ -13,10 +12,11 @@ import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.content.*;
 import org.dspace.content.Item;
 import org.dspace.core.Constants;
+import org.dspace.statistics.ElasticSearchLogger;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.facet.AbstractFacetBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
@@ -259,8 +259,10 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
         SearchResponse resp = searchResponseToDRI(requestBuilder);
 
                 // Top Downloads to Owning Object
-        TermsFacet bitstreamsFacet = resp.getFacets().facet(TermsFacet.class, "top_bitstreams_lastmonth");
-        addTermFacetToTable(bitstreamsFacet, division, "Bitstream", "Top Downloads for " + getLastMonthString());
+        if(resp != null) {
+            TermsFacet bitstreamsFacet = resp.getFacets().facet(TermsFacet.class, "top_bitstreams_lastmonth");
+            addTermFacetToTable(bitstreamsFacet, division, "Bitstream", "Top Downloads for " + getLastMonthString());
+        }
     }
     
     public AbstractFacetBuilder facetTopBitstreamsLastMonth() {
