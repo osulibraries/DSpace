@@ -372,7 +372,8 @@ public class StatisticsImporterElasticSearch {
 
         // This is only invoked via terminal, do not use _this_ node as that data storing node.
         // Need to get a NodeClient or TransportClient, but definitely do not want to get a local data storing client.
-        client = elasticSearchLoggerInstance.getClient(ElasticSearchLogger.ClientType.TRANSPORT);
+        //TODO do I need to force this to be transport??
+        client = elasticSearchLoggerInstance.getClient();
 
         client.admin().indices().prepareRefresh(ElasticSearchLogger.getIndexName()).execute().actionGet();
         bulkRequest = client.prepareBulk();

@@ -129,7 +129,7 @@ public class ElasticSearchLogger {
         IndicesExistsRequest indicesExistsRequest = new IndicesExistsRequest();
         indicesExistsRequest.indices(new String[] {indexName});
 
-        ActionFuture<IndicesExistsResponse> actionFutureIndicesExist = client.admin().indices().exists(indicesExistsRequest);        
+        ActionFuture<IndicesExistsResponse> actionFutureIndicesExist = client.admin().indices().exists(indicesExistsRequest);
         log.info("DS ES Checking if index exists");
         if(! actionFutureIndicesExist.actionGet().isExists() ) {
             //If elastic search index exists, then we are good to go, otherwise, we need to create that index. Should only need to happen once ever.
@@ -500,7 +500,7 @@ public class ElasticSearchLogger {
     }
 
     // Transport Client will talk to server on 9300
-    public Client createTransportClient() {
+    public void createTransportClient() {
         // Configurable values for all elasticsearch connection constants
         // Can't guarantee that these values are already loaded, since this can be called by a different JVM
         clusterName = getConfigurationStringWithFallBack("elastic-search-statistics", "clusterName", clusterName);
@@ -513,7 +513,8 @@ public class ElasticSearchLogger {
 
         Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName).build();
         client = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(address, port));
-        return client;
+
+
     }
 
     // Get the already available client, otherwise we will create a new client.
@@ -522,28 +523,28 @@ public class ElasticSearchLogger {
     //   - Node Client, must discover a master within ES cluster
     //   - Transport Client, specify IP address of server running ES.
     public Client getClient() {
-        if(client != null) {
-            return client;
-        } else {
+        if(client == null) {
             String defaultClientType = getConfigurationStringWithFallBack("elastic-search-statistics", "clientType", ClientType.NODE.name());
 
             if(defaultClientType.equalsIgnoreCase(ClientType.LOCAL.name())) {
-                return createNodeClient(ClientType.LOCAL);
+                createNodeClient(ClientType.LOCAL);
             } else if(defaultClientType.equalsIgnoreCase(ClientType.TRANSPORT.name())) {
                 //tp client
-                return createTransportClient();
+                createTransportClient();
             }  else {
                 //Get an available client, otherwise new default is NODE.
-                return createNodeClient(ClientType.NODE);
+                createNodeClient(ClientType.NODE);
             }
         }
+
+        return client;
     }
 
 
 
 
     // Node Client will discover other ES nodes running in local JVM
-    public Client createNodeClient(ClientType clientType) {
+    public void createNodeClient(ClientType clientType) {
         String dspaceDir = ConfigurationManager.getProperty("dspace.dir");
         Settings settings = ImmutableSettings.settingsBuilder().put("path.data", dspaceDir + "/elasticsearch/").build();
         
@@ -561,7 +562,6 @@ public class ElasticSearchLogger {
         log.info("Got node");
         client = node.client();
         log.info("Created new node client");
-        return client;
     }
     
     public String getConfigurationStringWithFallBack(String module, String configurationKey, String defaultFallbackValue) {
