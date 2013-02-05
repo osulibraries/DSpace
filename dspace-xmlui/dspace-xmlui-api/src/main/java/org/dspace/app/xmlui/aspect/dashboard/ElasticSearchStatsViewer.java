@@ -248,13 +248,15 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
         }
 
         List<AbstractFacetBuilder> summaryFacets = new ArrayList<AbstractFacetBuilder>();
-        summaryFacets.add(facetTopTypes);
-        summaryFacets.add(facetTopUniqueIP);
-        summaryFacets.add(facetTopCountries);
-        summaryFacets.add(facetTopUSCities);
-        summaryFacets.add(facetTopBitstreamsLastMonth());
-        summaryFacets.add(facetTopBitstreamsAllTime);
         summaryFacets.add(facetMonthlyDownloads);
+        summaryFacets.add(facetTopCountries);
+        summaryFacets.add(facetTopBitstreamsLastMonth());
+
+        //Unused in current interfaces...
+        //summaryFacets.add(facetTopTypes);
+        //summaryFacets.add(facetTopUniqueIP);
+        //summaryFacets.add(facetTopUSCities);
+        //summaryFacets.add(facetTopBitstreamsAllTime);
 
         SearchRequestBuilder requestBuilder = facetedQueryBuilder(summaryFacets);
         SearchResponse resp = searchResponseToDRI(requestBuilder);
