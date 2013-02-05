@@ -545,18 +545,26 @@ public class ElasticSearchLogger {
 
     // Node Client will discover other ES nodes running in local JVM
     public void createNodeClient(ClientType clientType) {
-        String dspaceDir = ConfigurationManager.getProperty("dspace.dir");
-        Settings settings = ImmutableSettings.settingsBuilder().put("path.data", dspaceDir + "/elasticsearch/").build();
-        
-        NodeBuilder nodeBuilder = NodeBuilder.nodeBuilder().clusterName(clusterName).data(true).settings(settings);
+        //String dspaceDir = ConfigurationManager.getProperty("dspace.dir");
+        //Settings settings = ImmutableSettings.settingsBuilder().put("path.data", dspaceDir + "/elasticsearch/").build();
 
-        if(clientType == ClientType.LOCAL) {
+        Settings settings = ImmutableSettings.settingsBuilder()
+                .put("node.master", false)
+                .put("node.data", false)
+                .put("discovery.zen.ping.unicast.hosts", address)
+                .build();
+
+        //TODO I've crippled the ability to be a local master and hold data....
+
+        NodeBuilder nodeBuilder = NodeBuilder.nodeBuilder().clusterName(clusterName).settings(settings).client(true);
+
+        /*if(clientType == ClientType.LOCAL) {
             log.info("Create a Local Node.");
             nodeBuilder = nodeBuilder.local(true);
         } else if(clientType == ClientType.NODE) {
             log.info("Create a nodeClient, allows transport clients to connect");
             nodeBuilder = nodeBuilder.local(false);
-        }
+        }*/
 
         Node node = nodeBuilder.node();
         log.info("Got node");
