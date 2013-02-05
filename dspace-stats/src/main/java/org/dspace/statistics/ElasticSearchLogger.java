@@ -500,7 +500,7 @@ public class ElasticSearchLogger {
     }
 
     // Transport Client will talk to server on 9300
-    public void createTransportClient() {
+    public Client createTransportClient() {
         // Configurable values for all elasticsearch connection constants
         // Can't guarantee that these values are already loaded, since this can be called by a different JVM
         clusterName = getConfigurationStringWithFallBack("elastic-search-statistics", "clusterName", clusterName);
@@ -513,11 +513,7 @@ public class ElasticSearchLogger {
 
         Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName).build();
         client = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(address, port));
-    }
-    
-    public Client getClient() {
-        //Get an available client, otherwise new default is NODE.
-        return getClient(ClientType.NODE);
+        return client;
     }
 
     // Get the already available client, otherwise we will create a new client.
@@ -525,19 +521,26 @@ public class ElasticSearchLogger {
     //   - Local Node, store Data
     //   - Node Client, must discover a master within ES cluster
     //   - Transport Client, specify IP address of server running ES.
-    public Client getClient(ClientType clientType) {
-        if(client == null) {
-            log.error("getClient reports null client");
+    public Client getClient() {
+        if(client != null) {
+            return client;
+        } else {
+            String defaultClientType = getConfigurationStringWithFallBack("elastic-search-statistics", "clientType", ClientType.NODE.name());
 
-            if(clientType == ClientType.TRANSPORT) {
-                createTransportClient();
-            } else {
-                createNodeClient(clientType);
+            if(defaultClientType.equalsIgnoreCase(ClientType.LOCAL.name())) {
+                return createNodeClient(ClientType.LOCAL);
+            } else if(defaultClientType.equalsIgnoreCase(ClientType.TRANSPORT.name())) {
+                //tp client
+                return createTransportClient();
+            }  else {
+                //Get an available client, otherwise new default is NODE.
+                return createNodeClient(ClientType.NODE);
             }
         }
-
-        return client;
     }
+
+
+
 
     // Node Client will discover other ES nodes running in local JVM
     public Client createNodeClient(ClientType clientType) {
