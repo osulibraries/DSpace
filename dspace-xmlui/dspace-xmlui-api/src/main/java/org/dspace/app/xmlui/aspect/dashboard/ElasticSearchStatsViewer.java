@@ -20,6 +20,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.facet.AbstractFacetBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
+import org.elasticsearch.search.facet.Facets;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 
@@ -260,8 +261,12 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
 
                 // Top Downloads to Owning Object
         if(resp != null) {
-            TermsFacet bitstreamsFacet = resp.getFacets().facet(TermsFacet.class, "top_bitstreams_lastmonth");
-            addTermFacetToTable(bitstreamsFacet, division, "Bitstream", "Top Downloads for " + getLastMonthString());
+            Facets responseFacets = resp.getFacets();
+            if(responseFacets != null) {
+                TermsFacet bitstreamsFacet = responseFacets.facet(TermsFacet.class, "top_bitstreams_lastmonth");
+                addTermFacetToTable(bitstreamsFacet, division, "Bitstream", "Top Downloads for " + getLastMonthString());
+            }
+
         }
     }
     
