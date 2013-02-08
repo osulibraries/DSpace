@@ -241,37 +241,30 @@
     <xsl:template match="mets:fileGrp[@USE='CC-LICENSE' or @USE='LICENSE']">
         <div class="clearfix">
             <xsl:if test="@USE='CC-LICENSE'">
-	        <xsl:variable name="ccLicenseName"
-        	      select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='cc']" />
-	        <xsl:variable name="ccLicenseUri"
-                      select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='ccuri']" />
-        	<span class="span2">
-	            <a rel="license"
-        	        href="{$ccLicenseUri}"
-                	alt="{$ccLicenseName}"
-	                title="{$ccLicenseName}"
-        	        >
-	                <img>
-        	             <xsl:attribute name="src">
-                	        <xsl:value-of select="concat($context-path,'/static/images/cc-ship.gif')"/>
-	                     </xsl:attribute>
-        	             <xsl:attribute name="alt">
-                	         <xsl:value-of select="$ccLicenseName"/>
-	                     </xsl:attribute>
-        	        </img>
-	            </a>
-		</span>
-        	<span class="span6">
-                    <i18n:text>xmlui.dri2xhtml.METS-1.0.cc-license-text</i18n:text><br />
-	            <a rel="license"
-        	        href="{$ccLicenseUri}"
-                	alt="{$ccLicenseName}"
-	                title="{$ccLicenseName}"
-        	        >
-	                <xsl:value-of select="$ccLicenseName"/>
+                <xsl:variable name="ccLicenseName"
+                              select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='cc']" />
+                <xsl:variable name="ccLicenseUri"
+                              select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='ccuri']" />
+                <span class="span2">
+                    <a rel="license" href="{$ccLicenseUri}" alt="{$ccLicenseName}" title="{$ccLicenseName}">
+                        <img>
+                            <xsl:attribute name="src">
+                                <xsl:value-of select="concat($context-path,'/static/images/cc-ship.gif')"/>
+                            </xsl:attribute>
+                            <xsl:attribute name="alt">
+                                <xsl:value-of select="$ccLicenseName"/>
+                            </xsl:attribute>
+                        </img>
                     </a>
-        	</span>
-	        
+                </span>
+                <span class="span6">
+                    <i18n:text>xmlui.dri2xhtml.METS-1.0.cc-license-text</i18n:text><br />
+                    <a rel="license" href="{$ccLicenseUri}" alt="{$ccLicenseName}" title="{$ccLicenseName}">
+                        <xsl:value-of select="$ccLicenseName"/>
+                        &#160;
+                    </a>
+                </span>
+
             </xsl:if>
         </div>
     </xsl:template>
