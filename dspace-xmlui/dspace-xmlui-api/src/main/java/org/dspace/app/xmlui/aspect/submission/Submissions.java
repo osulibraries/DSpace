@@ -161,18 +161,13 @@ public class Submissions extends AbstractDSpaceTransformer
 
     	if (unfinishedItems.length <= 0 && supervisedItems.length <= 0)
     	{
-            Collection[] collections = Collection.findAuthorized(context, null, Constants.ADD);
-
-            if (collections.length > 0)
-            {
-                Division start = division.addDivision("start-submision");
-                start.setHead(T_s_head1);
-                Para p = start.addPara();
-                p.addContent(T_s_info1a);
-                p.addXref(contextPath+"/submit",T_s_info1b);
-                p.addContent(T_s_info1c);
-                return;
-            }
+            Division start = division.addDivision("start-submision");
+            start.setHead(T_s_head1);
+            Para p = start.addPara();
+            p.addContent(T_s_info1a);
+            p.addXref(contextPath+"/submit",T_s_info1b);
+            p.addContent(T_s_info1c);
+            return;
     	}
 
     	Division unfinished = division.addDivision("unfinished-submisions");

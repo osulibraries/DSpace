@@ -47,6 +47,7 @@ public class SelectCollectionStep extends AbstractSubmissionStep
         message("xmlui.Submission.submit.SelectCollection.collection_default");
     protected static final Message T_submit_next = 
         message("xmlui.general.next");
+    protected static final Message T_not_authorized = message("xmlui.Submission.submit.SelectCollection.not_authorized");
 	
     public SelectCollectionStep() 
     {
@@ -94,6 +95,11 @@ public class SelectCollectionStep extends AbstractSubmissionStep
         {
         	String name = collection.getMetadata("name");
         	select.addOption(collection.getHandle(),name);
+        }
+
+        // User is not authorized to submit to a collection.
+        if(collections == null || collections.length == 0) {
+            div.addDivision("not-authorized", "alert").addPara(T_not_authorized);
         }
         
         Button submit = list.addItem().addButton("submit");

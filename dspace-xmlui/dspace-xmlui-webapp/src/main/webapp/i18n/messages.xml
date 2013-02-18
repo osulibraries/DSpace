@@ -618,6 +618,7 @@
 	<message key="xmlui.Submission.submit.SelectCollection.collection">Collection</message>
 	<message key="xmlui.Submission.submit.SelectCollection.collection_help">Select the collection you wish to submit an item to.</message>
 	<message key="xmlui.Submission.submit.SelectCollection.collection_default">Select a collection...</message>
+    <message key="xmlui.Submission.submit.SelectCollection.not_authorized">You are not authorized to submit to a collection.</message>
 
 	<!-- org.dspace.app.xmlui.Submission.submit.SaveOrRemoveStep -->
 	<message key="xmlui.Submission.submit.SaveOrRemoveStep.head">Save or cancel your submission?</message>
