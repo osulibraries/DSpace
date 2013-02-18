@@ -234,7 +234,7 @@ public class Item extends DSpaceObject
         return new ItemIterator(context, rows);
     }
 
-    public static ItemIterator findBySubmitterDateSorted(Context context, EPerson eperson) throws SQLException
+    public static ItemIterator findBySubmitterDateSorted(Context context, EPerson eperson, Integer limit) throws SQLException
     {
         String querySorted =    "SELECT \n" +
                 "  item.item_id, \n" +
@@ -256,9 +256,17 @@ public class Item extends DSpaceObject
                 "  item.submitter_id = ? AND \n" +
                 "  item.in_archive = true\n" +
                 "ORDER BY\n" +
-                "  metadatavalue.text_value ASC;\n";
+                "  metadatavalue.text_value ASC";
 
-        TableRowIterator rows = DatabaseManager.query(context, querySorted, eperson.getID());
+        TableRowIterator rows;
+
+        if(limit != null && limit > 0) {
+             querySorted += " limit ? ;";
+             rows = DatabaseManager.query(context, querySorted, eperson.getID(), limit);
+         } else {
+             querySorted += ";";
+             rows = DatabaseManager.query(context, querySorted, eperson.getID());
+         }
 
         return new ItemIterator(context, rows);
 

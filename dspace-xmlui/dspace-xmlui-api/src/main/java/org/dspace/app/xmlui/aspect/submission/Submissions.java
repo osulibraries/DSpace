@@ -322,9 +322,17 @@ public class Submissions extends AbstractDSpaceTransformer
     {
         // Turn the iterator into a list (to get size info, in order to put in a table)
         List subList = new LinkedList();
-        int limit = 5;
 
-        ItemIterator subs = Item.findBySubmitterDateSorted(context, context.getCurrentUser());
+        Integer limit;
+
+        if(displayAll) {
+            limit = -1;
+        } else {
+            //Set a default limit of 5
+            limit = 5;
+        }
+
+        ItemIterator subs = Item.findBySubmitterDateSorted(context, context.getCurrentUser(), limit);
 
         //NOTE: notice we are adding each item to this list in *reverse* order...
         // this is a very basic attempt at making more recent submissions float 
