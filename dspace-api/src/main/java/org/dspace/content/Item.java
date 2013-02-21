@@ -256,7 +256,7 @@ public class Item extends DSpaceObject
                 "  item.submitter_id = ? AND \n" +
                 "  item.in_archive = true\n" +
                 "ORDER BY\n" +
-                "  metadatavalue.text_value ASC";
+                "  metadatavalue.text_value desc";
 
         TableRowIterator rows;
 

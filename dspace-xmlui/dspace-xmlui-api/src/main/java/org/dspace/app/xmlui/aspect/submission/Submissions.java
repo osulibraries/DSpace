@@ -17,7 +17,6 @@ import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.*;
 import org.dspace.content.Item;
-import org.dspace.core.Constants;
 import org.dspace.eperson.EPerson;
 import org.xml.sax.SAXException;
 
@@ -330,14 +329,14 @@ public class Submissions extends AbstractDSpaceTransformer
         ItemIterator subs = Item.findBySubmitterDateSorted(context, context.getCurrentUser(), limit);
 
         //NOTE: notice we are adding each item to this list in *reverse* order...
-        // this is a very basic attempt at making more recent submissions float 
+        // this is a very basic attempt at making more recent submissions float
         // up to the top of the list (findBySubmitter() doesn't guarrantee
         // chronological order, but tends to return older items near top of the list)
         try
         {
             while (subs.hasNext())
             {
-                subList.add(0, subs.next());
+                subList.add(subs.next());
             }
         }
         finally
@@ -413,7 +412,7 @@ public class Submissions extends AbstractDSpaceTransformer
         }//end while
 
         //Display limit text & link to allow user to override this default limit
-        if(!displayAll && count>limit)
+        if(!displayAll && count == limit)
         {
             Para limitedList = completedSubmissions.addPara();
             limitedList.addContent(T_c_limit);
