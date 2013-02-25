@@ -49,11 +49,9 @@ import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.*;
+import org.dspace.app.xmlui.wing.element.Item;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.Bitstream;
-import org.dspace.content.Bundle;
-import org.dspace.content.Collection;
-import org.dspace.content.ItemIterator;
+import org.dspace.content.*;
 import org.dspace.core.Constants;
 import org.dspace.eperson.EPerson;
 import org.dspace.statistics.ObjectCount;
@@ -118,6 +116,7 @@ public class DashboardViewer extends AbstractDSpaceTransformer
         actionSelect.addOption(false, "commitems", "Items in Communities");
         actionSelect.addOption(false, "topDownloadsMonth", "Top Downloads for Month");
         actionSelect.addOption(false, "submissionsByUser", "Submissions by Cheryl to OSUL Research");
+        actionSelect.addOption(false, "creativeCommonsError", "Has Creative Commons Bundle, but no metadata.");
 
         Para buttons = search.addPara();
         buttons.addButton("submit_add").setValue("Create Report");
@@ -141,6 +140,9 @@ public class DashboardViewer extends AbstractDSpaceTransformer
         } else if (reportName.equals("submissionsByUser"))
         {
             querySubmissionsByUser(division);
+        } else if (reportName.equals("creativeCommonsError"))
+        {
+            addCCBundlesWithoutLicenseMetadata(division);
         }
 
 
@@ -454,4 +456,71 @@ public class DashboardViewer extends AbstractDSpaceTransformer
                 "\n" +
                 "  ;";
     }
+
+    /*
+    Look for Items in a weird state where they have a CC-LICENSE bundle, but no CC metadata.
+     */
+    public void addCCBundlesWithoutLicenseMetadata(Division division) throws SQLException, WingException {
+        String query = "SELECT \n" +
+                "  distinct(item.item_id) \n" +
+                "FROM \n" +
+                "  public.item, \n" +
+                "  public.item2bundle, \n" +
+                "  public.bundle\n" +
+                "WHERE \n" +
+                "  item.item_id = item2bundle.item_id AND\n" +
+                "  item2bundle.bundle_id = bundle.bundle_id AND\n" +
+                "  bundle.name = 'CC-LICENSE';";
+
+        TableRowIterator tri = DatabaseManager.query(context, query);
+
+        List<org.dspace.content.Item> itemsInWeirdState = new ArrayList<org.dspace.content.Item>();
+
+        List<TableRow> ccItems = tri.toList();
+        for(TableRow itemRow : ccItems) {
+            Integer itemID = itemRow.getIntColumn("item_id");
+            org.dspace.content.Item item = org.dspace.content.Item.find(context, itemID);
+            DCValue[] ccMetadatas = item.getMetadata("dc.rights.ccuri");
+
+            //Look for items with CC bundle, but no metadata
+            if(ccMetadatas.length == 0) {
+                itemsInWeirdState.add(item);
+            }
+        }
+
+        Table table = division.addTable("weirdCCItems", itemsInWeirdState.size() + 1, 3);
+        table.setHead("Weird Items with Creative Commons bundle, but no CC Metadata.");
+
+        Row header = table.addRow(Row.ROLE_HEADER);
+        header.addCellContent("Title");
+        header.addCellContent("ItemID");
+        header.addCellContent("Collection");
+        header.addCellContent("Submitter");
+
+
+        for(org.dspace.content.Item weirdItem : itemsInWeirdState) {
+            Row body = table.addRow();
+
+            //Title
+            body.addCell().addXref(contextPath + "/handle/" + weirdItem.getHandle(), weirdItem.getName());
+
+            //ItemID
+            body.addCellContent(weirdItem.getID() + "");
+
+            //Collection
+            Collection[] collections = weirdItem.getCollections();
+            if(collections != null && collections.length > 0) {
+                body.addCell().addXref(contextPath + "/handle/" + collections[0].getHandle(), collections[0].getName());
+            } else {
+                body.addCellContent("No Collection");
+            }
+
+            //Submitter
+            EPerson submitter = weirdItem.getSubmitter();
+            body.addCellContent(submitter.getFullName());
+        }
+
+        tri.close();
+    }
+
 }
