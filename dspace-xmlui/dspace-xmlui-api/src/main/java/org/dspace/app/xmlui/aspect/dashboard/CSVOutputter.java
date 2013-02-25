@@ -60,20 +60,6 @@ public class CSVOutputter extends AbstractReader implements Recyclable
 
             context = ContextUtil.obtainContext(objectModel);
 
-            String requestURI = request.getRequestURI();
-            String[] uriSegments = requestURI.split("/");
-            String requestedReport = uriSegments[uriSegments.length-1];
-            if(requestedReport == null || requestedReport.length() < 1) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-
-            response.setContentType("text/csv; encoding='UTF-8'");
-            response.setStatus(HttpServletResponse.SC_OK);
-            writer = new CSVWriter(response.getWriter());
-            DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
-            response.setHeader("Content-Disposition", "attachment; filename=KBStats-" + dso.getHandle() + "-" + requestedReport +".csv");
-
             Map<String, String> params = new HashMap<String, String>();
             for (Enumeration<String> paramNames = (Enumeration<String>) request.getParameterNames(); paramNames.hasMoreElements(); ) {
                 String param = paramNames.nextElement();
@@ -84,7 +70,7 @@ public class CSVOutputter extends AbstractReader implements Recyclable
             if(params.containsKey("from")) {
                 fromValue = params.get("from");
             }
-            
+
             String toValue = "";
             if(params.containsKey("to")) {
                 toValue = params.get("to");
@@ -105,6 +91,35 @@ public class CSVOutputter extends AbstractReader implements Recyclable
             } else {
                 toDate = null;
             }
+
+
+            String dateRange = "";
+            if(fromDate != null && toDate != null) {
+                dateRange = "from_"+dateFormat.format(fromDate) + "_to_"+dateFormat.format(toDate);
+            } else if (fromDate != null && toDate == null) {
+                dateRange = "from_"+dateFormat.format(fromDate);
+            } else if(fromDate == null && toDate != null) {
+                dateRange = "to_"+dateFormat.format(toDate);
+            } else if(fromDate == null && toDate == null) {
+                dateRange = "all_dates_available";
+            }
+
+
+            String requestURI = request.getRequestURI();
+            String[] uriSegments = requestURI.split("/");
+            String requestedReport = uriSegments[uriSegments.length-1];
+            if(requestedReport == null || requestedReport.length() < 1) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            response.setContentType("text/csv; encoding='UTF-8'");
+            response.setStatus(HttpServletResponse.SC_OK);
+            writer = new CSVWriter(response.getWriter());
+            DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
+            response.setHeader("Content-Disposition", "attachment; filename=KBStats-" + dso.getHandle() + "-" + requestedReport + "_" + dateRange +".csv");
+
+
             
             ElasticSearchStatsViewer esStatsViewer = new ElasticSearchStatsViewer(dso, fromDate, toDate);
             StatisticsTransformer statisticsTransformerInstance = new StatisticsTransformer(fromDate, toDate);
