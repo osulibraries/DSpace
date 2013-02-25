@@ -121,6 +121,10 @@
             // Add rows (`dataValue`) to the chartData.
             c.chartData.addRows(dataValue);
 
+            // Specify a date formatting, where we make all dates format as Month, Year. ex: May 2010
+            var formatter_pattern_month = new google.visualization.DateFormat({pattern: 'MMMM, y'});
+            formatter_pattern_month.format(c.chartData, 0)
+
             // Add a child element
             var par = $('#' + c.parentElement);
             par.append("<div style='height:280px; width:750px;' " +
