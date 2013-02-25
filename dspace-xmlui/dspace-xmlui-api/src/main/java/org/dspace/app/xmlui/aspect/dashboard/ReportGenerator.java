@@ -85,7 +85,7 @@ public class ReportGenerator
         return dateStart;
     }
     
-    public String getDateStartFormated() {
+    public String getDateStartFormatted() {
         try {
             return dateFormat.format(dateStart);
         } catch (Exception e) {
@@ -166,7 +166,7 @@ public class ReportGenerator
             Text from = reportForm.addText("from", "slick");
             from.setLabel("From");
             from.setHelp("The start date of the report, ex 01/31/2008");
-            from.setValue(getDateStartFormated());
+            from.setValue(getDateStartFormatted());
 
             setDateEnd();
             Text to = reportForm.addText("to", "slick");

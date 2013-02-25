@@ -241,7 +241,7 @@ public class CSVOutputter extends AbstractReader implements Recyclable
         
         return metadataString.toString();
     }
-    
+
     private void addDateHistogramFacetToWriter(DateHistogramFacet dateHistogramFacet) {
         List<? extends DateHistogramFacet.Entry> monthlyFacetEntries = dateHistogramFacet.getEntries();
 
