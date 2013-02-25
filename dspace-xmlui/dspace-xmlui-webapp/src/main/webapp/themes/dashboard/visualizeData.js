@@ -7,7 +7,10 @@
 
     (function ($) {
         var dateStart = new Date($('input[name=dateStart]').val());
+        var dateStart_utc = new Date(dateStart.getUTCFullYear(), dateStart.getUTCMonth(), dateStart.getUTCDate(),  dateStart.getUTCHours(), dateStart.getUTCMinutes(), dateStart.getUTCSeconds());
+
         var dateEnd = new Date($('input[name=dateEnd]').val());
+        var dateEnd_utc = new Date(dateEnd.getUTCFullYear(), dateEnd.getUTCMonth(), dateEnd.getUTCDate(),  dateEnd.getUTCHours(), dateEnd.getUTCMinutes(), dateEnd.getUTCSeconds());
 
         // ### Chart Maker
         //
@@ -63,9 +66,9 @@
 
             // Cheat with dates / data, and zero-fill the start/end edges, and "hopefully" things work out...
             // Set certainty to our cheat date to false, so it gets a dotted line.
-            if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateStart) && c.chartType == 'LineChart') {
+            if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateStart_utc) && c.chartType == 'LineChart') {
                 var cheatDateStart = [];
-                cheatDateStart.push(dateStart);
+                cheatDateStart.push(dateStart_utc);
                 cheatDateStart.push(0);
                 if(c.includeTotal) {
                     cheatDateStart.push(total);
@@ -83,7 +86,9 @@
 
               newEntry = [];
               if (c.chartData.getColumnType(0) == 'date') {
-                newEntry.push(new Date(entry[c.keyField]));
+                  rowDate = new Date(entry[c.keyField]);
+                  rowDate_utc = new Date(rowDate.getUTCFullYear(), rowDate.getUTCMonth(), rowDate.getUTCDate(),  rowDate.getUTCHours(), rowDate.getUTCMinutes(), rowDate.getUTCSeconds());
+                  newEntry.push(rowDate_utc);
               } else {
                 newEntry.push(entry[c.keyField]);
               }
@@ -102,9 +107,9 @@
             });
 
             //Cheat and zero-fill in the last date. Certainty is false, so dotted line.
-            if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateEnd) && c.chartType=='LineChart') {
+            if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateEnd_utc) && c.chartType=='LineChart') {
               var cheatDateEnd = [];
-              cheatDateEnd.push(dateEnd);
+              cheatDateEnd.push(dateEnd_utc);
               cheatDateEnd.push(0);
               if(c.includeTotal) {
                   cheatDateEnd.push(total);
