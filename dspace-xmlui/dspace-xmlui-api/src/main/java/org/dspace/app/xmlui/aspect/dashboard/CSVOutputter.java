@@ -251,6 +251,9 @@ public class CSVOutputter extends AbstractReader implements Recyclable
 
         writer.writeNext(new String[]{"Month", "Count"});
 
+
+        dateFormat.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+
         for(DateHistogramFacet.Entry histogramEntry : monthlyFacetEntries) {
             Date facetDate = new Date(histogramEntry.getTime());
             writer.writeNext(new String[]{dateFormat.format(facetDate), String.valueOf(histogramEntry.getCount())});
