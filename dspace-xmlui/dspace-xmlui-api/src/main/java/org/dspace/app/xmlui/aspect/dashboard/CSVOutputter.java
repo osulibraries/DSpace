@@ -42,7 +42,7 @@ import java.util.*;
 public class CSVOutputter extends AbstractReader implements Recyclable 
 {
     protected static final Logger log = Logger.getLogger(CSVOutputter.class);
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
 
     protected Response response;
     protected Request request;
