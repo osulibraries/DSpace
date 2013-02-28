@@ -195,7 +195,7 @@ public class CSVOutputter extends AbstractReader implements Recyclable
         List<? extends TermsFacet.Entry> termsFacetEntries = termsFacet.getEntries();
 
         if(termType.equalsIgnoreCase("bitstream")) {
-            writer.writeNext(new String[]{"BitstreamID", "Bitstream Name", "Bitstream Bundle", "Item Title", "Item Handle", "Item Creator", "Item Publisher", "Item Issue Date", "Count"});
+            writer.writeNext(new String[]{"BitstreamID", "Bitstream Name", "Bitstream Bundle", "Item Title", "Item Handle", "Item Creator", "Item Publisher", "Item Issue Date", "Downloads"});
         } else {
             writer.writeNext(new String[]{"term", "count"});
         }
@@ -249,7 +249,7 @@ public class CSVOutputter extends AbstractReader implements Recyclable
             return;
         }
 
-        writer.writeNext(new String[]{"Month", "Count"});
+        writer.writeNext(new String[]{"Month", "File Downloads"});
 
 
         dateFormat.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
