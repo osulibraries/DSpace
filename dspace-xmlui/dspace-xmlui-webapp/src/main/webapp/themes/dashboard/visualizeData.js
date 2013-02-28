@@ -67,14 +67,20 @@
             // Cheat with dates / data, and zero-fill the start/end edges, and "hopefully" things work out...
             // Set certainty to our cheat date to false, so it gets a dotted line.
             if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateStart_utc) && c.chartType == 'LineChart') {
-                var cheatDateStart = [];
-                cheatDateStart.push(dateStart_utc);
-                cheatDateStart.push(0);
-                if(c.includeTotal) {
-                    cheatDateStart.push(total);
+                start = new Date(dateStart_utc)
+                first = new Date(c.entries[0].time)
+
+                //Only add cheater date (fuzzy no-data date) if difference between our cheat, and real data is more than a day
+                if ( ( Math.abs(start-first) / (1000 * 60 * 60) ) > 24*31) {
+                    var cheatDateStart = [];
+                    cheatDateStart.push(dateStart_utc);
+                    cheatDateStart.push(0);
+                    if(c.includeTotal) {
+                        cheatDateStart.push(total);
+                    }
+                    cheatDateStart.push(false);
+                    dataValue.push(cheatDateStart);
                 }
-                cheatDateStart.push(false);
-                dataValue.push(cheatDateStart);
             }
 
             // For each entry construct a vector to add to push onto
@@ -108,14 +114,20 @@
 
             //Cheat and zero-fill in the last date. Certainty is false, so dotted line.
             if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateEnd_utc) && c.chartType=='LineChart') {
-              var cheatDateEnd = [];
-              cheatDateEnd.push(dateEnd_utc);
-              cheatDateEnd.push(0);
-              if(c.includeTotal) {
-                  cheatDateEnd.push(total);
-              }
-              cheatDateEnd.push(false);
-              dataValue.push(cheatDateEnd);
+                end = new Date(dateEnd_utc)
+                last = new Date(c.entries[c.entries.length -1 ].time)
+
+                //Only add cheater date (fuzzy no-data date) if difference between our cheat, and real data is more than a day
+                if ( ( Math.abs(end-last)/ (1000 * 60 * 60) ) > 24*31) {
+                    var cheatDateEnd = [];
+                    cheatDateEnd.push(dateEnd_utc);
+                    cheatDateEnd.push(0);
+                    if(c.includeTotal) {
+                        cheatDateEnd.push(total);
+                    }
+                    cheatDateEnd.push(false);
+                    dataValue.push(cheatDateEnd);
+                }
             }
 
             // Add rows (`dataValue`) to the chartData.
