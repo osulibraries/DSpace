@@ -139,7 +139,10 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
                 dateStart = cal.getTime();
 
                 division.addHidden("reportDepth").setValue("summary");
-                String dateRange = "Last Five Years";
+                String dateRange = "Last Five Years [" + dateFormat.format(dateStart) + " to " + dateFormat.format(dateEnd) + "]";
+
+
+
                 division.addPara("Showing Data ( " + dateRange + " )");
                 division.addHidden("timeRangeString").setValue("Data Range: " + dateRange);
                 if(dateStart != null) {
