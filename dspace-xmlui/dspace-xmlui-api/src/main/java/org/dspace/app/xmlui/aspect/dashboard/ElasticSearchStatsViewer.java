@@ -201,10 +201,10 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
                     SearchResponse resp = searchResponseToDRI(requestBuilder);
 
                     TermsFacet bitstreamsAllTimeFacet = resp.getFacets().facet(TermsFacet.class, "top_bitstreams_alltime");
-                    addTermFacetToTable(bitstreamsAllTimeFacet, division, "Bitstream", "Top Downloads (all time)");
+                    addTermFacetToTable(bitstreamsAllTimeFacet, division, "Bitstream", "Top File Downloads (all time)");
 
                     TermsFacet bitstreamsFacet = resp.getFacets().facet(TermsFacet.class, "top_bitstreams_lastmonth");
-                    addTermFacetToTable(bitstreamsFacet, division, "Bitstream", "Top Downloads for " + getLastMonthString());
+                    addTermFacetToTable(bitstreamsFacet, division, "Bitstream", "Top File Downloads for " + getLastMonthString());
                 }
                 else if(requestedReport.equalsIgnoreCase("itemsAdded"))
                 {
@@ -266,7 +266,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
             Facets responseFacets = resp.getFacets();
             if(responseFacets != null) {
                 TermsFacet bitstreamsFacet = responseFacets.facet(TermsFacet.class, "top_bitstreams_lastmonth");
-                addTermFacetToTable(bitstreamsFacet, division, "Bitstream", "Top Downloads for " + getLastMonthString());
+                addTermFacetToTable(bitstreamsFacet, division, "Bitstream", "Top File Downloads for " + getLastMonthString());
             }
 
         }

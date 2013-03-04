@@ -195,7 +195,7 @@ public class CSVOutputter extends AbstractReader implements Recyclable
         List<? extends TermsFacet.Entry> termsFacetEntries = termsFacet.getEntries();
 
         if(termType.equalsIgnoreCase("bitstream")) {
-            writer.writeNext(new String[]{"BitstreamID", "Bitstream Name", "Bitstream Bundle", "Item Title", "Item Handle", "Item Creator", "Item Publisher", "Item Issue Date", "Downloads"});
+            writer.writeNext(new String[]{"BitstreamID", "Bitstream Name", "Bitstream Bundle", "Item Title", "Item Handle", "Item Creator", "Item Publisher", "Item Issue Date", "File Downloads"});
         } else {
             writer.writeNext(new String[]{"term", "count"});
         }
