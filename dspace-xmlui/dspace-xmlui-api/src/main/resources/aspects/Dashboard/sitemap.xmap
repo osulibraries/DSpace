@@ -51,6 +51,7 @@ The Dashboard Aspect is responsible providing a dashboard for statistical inquir
             <map:transformer name="Dashboard" src="org.dspace.app.xmlui.aspect.dashboard.DashboardViewer"/>
             <map:transformer name="ElasticSearchStatsViewer" src="org.dspace.app.xmlui.aspect.dashboard.ElasticSearchStatsViewer"/>
             <map:transformer name="RestrictedItem" src="org.dspace.app.xmlui.aspect.artifactbrowser.RestrictedItem"/>
+            <map:transformer name="Navigation" src="org.dspace.app.xmlui.aspect.statistics.Navigation"/>
         </map:transformers>
 
         <map:matchers default="wildcard">
@@ -109,6 +110,18 @@ The Dashboard Aspect is responsible providing a dashboard for statistical inquir
                     </map:select>
                 </map:match>
                 <map:serialize type="xml"/>
+            </map:match>
+
+
+            <!--Only show the stats link if we have read rights-->
+            <map:match pattern="handle/*/**">
+                <map:select type="SpecifiedGroupAuthenticatedSelector">
+                    <map:when test="statistics_viewer">
+                        <map:transform type="Navigation"/>
+                    </map:when>
+                    <map:otherwise>
+                    </map:otherwise>
+                </map:select>
             </map:match>
 
 
