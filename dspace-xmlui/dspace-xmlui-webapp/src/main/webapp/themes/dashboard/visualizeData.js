@@ -484,7 +484,7 @@
             $('<h3>Number of File Downloads for ' + name + '</h3>'+timeRangeString+' <a href="'+ baseURLStats + '/fileDownloads">For more information.</a>').insertBefore('#dspaceChart_downloadsMonthly');
             $('<h3>Countries with most Downloads ' + name + '</h3>'+timeRangeString+' <a href="'+ baseURLStats + '/topCountries">For more information.</a>').insertBefore('#dspaceChart_topCountries');
             $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/topUSCities">For more information.</a></p>').insertBefore('#dspaceChart_topUSCities');
-            $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/topDownloads">For more information.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_facet-Bitstream');
+            $('<p><a href="'+ baseURLStats + '/topDownloads">For more information.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_facet-Bitstream');
         }
 
         var reportName = $('input[name=reportName]').val();
