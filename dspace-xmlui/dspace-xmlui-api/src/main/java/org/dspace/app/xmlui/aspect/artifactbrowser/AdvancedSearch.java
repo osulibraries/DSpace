@@ -127,7 +127,7 @@ public class AdvancedSearch extends AbstractSearch implements CacheableProcessin
         Division search = body.addDivision("advanced-search","primary");
         search.setHead(T_head);
         Division query = search.addInteractiveDivision("search-query",
-                "advanced-search#result-query",Division.METHOD_POST,"secondary search");
+                "advanced-search",Division.METHOD_POST,"secondary search");
         
         // Use these fields to change the number of search fields, or change the results per page.
         query.addHidden("num_search_field").setValue(numSearchField);
@@ -342,7 +342,7 @@ public class AdvancedSearch extends AbstractSearch implements CacheableProcessin
             parameters.put("etal", String.valueOf(getParameterEtAl()));
         }
         
-        return super.generateURL("advanced-search#result-query", parameters);
+        return super.generateURL("advanced-search", parameters);
     }
 
     /**
