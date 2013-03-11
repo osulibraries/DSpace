@@ -24,4 +24,12 @@ $(document).ready(function(){
             }
         });
     });
+
+    // On advanced-search result pages, scroll-down to the results. Doing this in HTML with #anchorID, was breaking pagination links.
+    if ($(location).attr('pathname').indexOf('advanced-search') >= 0) {
+        if ((($(location).attr('search').length > 0) || $(location).attr('hash').length > 0)) {
+            $(document).scrollTop( $("#result-query").offset().top );
+        }
+    }
+
 });
