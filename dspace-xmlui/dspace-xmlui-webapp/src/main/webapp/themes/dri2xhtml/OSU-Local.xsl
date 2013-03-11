@@ -53,12 +53,11 @@
             <xsl:text> </xsl:text>
         </script>
 
-        <!-- bds: text-field-prompt.js for global search box, uses jQuery -->
-        <!-- see http://kyleschaeffer.com/best-practices/input-prompt-text/ -->
+        <!-- KB - Custom Javascript for entire application. -->
         <script type="text/javascript">
             <xsl:attribute name="src">
                 <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='contextPath'][not(@qualifier)]"/>
-                <xsl:text>/static/js/text-field-prompt.js</xsl:text>
+                <xsl:text>/static/js/application.js</xsl:text>
             </xsl:attribute>
             <xsl:text> </xsl:text>
         </script>

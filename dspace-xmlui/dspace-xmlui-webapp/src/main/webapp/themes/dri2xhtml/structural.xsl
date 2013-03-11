@@ -716,7 +716,6 @@
                     </xsl:attribute>
                     <fieldset>
                         <legend class="visuallyhidden">Search</legend>
-                        <!-- bds: title attribute works with jQuery script static/js/text-field-prompt.js -->
                         <input title="Search the Knowledge Bank" id="ds-global-search-box" type="text">
                             <xsl:attribute name="name">
                                 <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='search'][@qualifier='queryField']"/>
