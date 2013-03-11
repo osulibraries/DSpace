@@ -479,12 +479,12 @@
         var toDateString = $('input[name=dateEnd]').val();
 
         if ($('input[name=reportDepth]').val() == "summary") {
-            $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/itemsAdded">For more information.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_itemsAddedGrid');
-            $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/filesAdded">For more information.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_filesInContainer-grid');
-            $('<h3>Number of File Downloads for ' + name + '</h3>'+timeRangeString+' <a href="'+ baseURLStats + '/fileDownloads">For more information.</a>').insertBefore('#dspaceChart_downloadsMonthly');
-            $('<h3>Countries with most Downloads ' + name + '</h3>'+timeRangeString+' <a href="'+ baseURLStats + '/topCountries">For more information.</a>').insertBefore('#dspaceChart_topCountries');
-            $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/topUSCities">For more information.</a></p>').insertBefore('#dspaceChart_topUSCities');
-            $('<p><a href="'+ baseURLStats + '/topDownloads">For more information.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_facet-Bitstream');
+            $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/itemsAdded">For Custom Report Generator.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_itemsAddedGrid');
+            $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/filesAdded">For Custom Report Generator.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_filesInContainer-grid');
+            $('<h3>Number of File Downloads for ' + name + '</h3>'+timeRangeString+' <a href="'+ baseURLStats + '/fileDownloads">For Custom Report Generator.</a>').insertBefore('#dspaceChart_downloadsMonthly');
+            $('<h3>Countries with most Downloads ' + name + '</h3>'+timeRangeString+' <a href="'+ baseURLStats + '/topCountries">For Custom Report Generator.</a>').insertBefore('#dspaceChart_topCountries');
+            $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/topUSCities">For Custom Report Generator.</a></p>').insertBefore('#dspaceChart_topUSCities');
+            $('<p><a href="'+ baseURLStats + '/topDownloads">For Custom Report Generator.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_facet-Bitstream');
         }
 
         var reportName = $('input[name=reportName]').val();
