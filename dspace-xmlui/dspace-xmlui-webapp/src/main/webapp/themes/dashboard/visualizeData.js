@@ -482,7 +482,7 @@
             $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/itemsAdded">For Custom Report Generator.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_itemsAddedGrid');
             $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/filesAdded">For Custom Report Generator.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_filesInContainer-grid');
             $('<h3>Number of File Downloads for ' + name + '</h3>'+timeRangeString+' <a href="'+ baseURLStats + '/fileDownloads">For Custom Report Generator.</a>').insertBefore('#dspaceChart_downloadsMonthly');
-            $('<h3>Countries with most Downloads ' + name + '</h3>'+timeRangeString+' <a href="'+ baseURLStats + '/topCountries">For Custom Report Generator.</a>').insertBefore('#dspaceChart_topCountries');
+            $('<h3>Countries with most Downloads ' + name + '</h3>'+timeRangeString+' <a href="'+ baseURLStats + '/topCountries">For Custom Report Generator.</a> <p>Note: Results limited to Top 150 Countries.</p>').insertBefore('#dspaceChart_topCountries');
             $('<p>'+timeRangeString+' <a href="'+ baseURLStats + '/topUSCities">For Custom Report Generator.</a></p>').insertBefore('#dspaceChart_topUSCities');
             $('<p><a href="'+ baseURLStats + '/topDownloads">For Custom Report Generator.</a></p>').insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_table_facet-Bitstream');
         }
@@ -507,6 +507,12 @@
             }
             contextPanel += '"><i class="icon-download-alt"></i> Download Data as .csv</a></div>';
             $(contextPanel).insertAfter('#aspect_dashboard_ElasticSearchStatsViewer_div_chart_div');
+
+            // Add a note to the topCountries detail page about limit 150 countries
+            if ($('input[name=reportName]').val() == 'topCountries') {
+                var countriesNote = '<div class="alert alert-info"><b>Note:</b> Results limited to Top 150 Countries</div>';
+                $(countriesNote).insertBefore('#aspect_dashboard_ElasticSearchStatsViewer_div_chart_div');
+            }
 
         }
       });
