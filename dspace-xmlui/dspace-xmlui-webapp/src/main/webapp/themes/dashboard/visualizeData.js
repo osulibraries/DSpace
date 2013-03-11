@@ -5,6 +5,9 @@
 // Firstly we wrap our code in a closure to keep variables local.
 (function (context) {
 
+    // Get data from elastic that has been dumped on the page.
+    var elasticJSON = $.parseJSON($('#aspect_dashboard_ElasticSearchStatsViewer_field_response').val());
+
     (function ($) {
         var dateStart = new Date($('input[name=dateStart]').val());
         var dateStart_utc = new Date(dateStart.getUTCFullYear(), dateStart.getUTCMonth(), dateStart.getUTCDate(),  dateStart.getUTCHours(), dateStart.getUTCMinutes(), dateStart.getUTCSeconds());
@@ -66,7 +69,7 @@
 
             // Cheat with dates / data, and zero-fill the start/end edges, and "hopefully" things work out...
             // Set certainty to our cheat date to false, so it gets a dotted line.
-            if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateStart_utc) && c.chartType == 'LineChart') {
+            if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateStart_utc) && c.chartType == 'LineChart' && c.entries.length > 0) {
                 start = new Date(dateStart_utc)
                 first = new Date(c.entries[0].time)
 
@@ -113,7 +116,7 @@
             });
 
             //Cheat and zero-fill in the last date. Certainty is false, so dotted line.
-            if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateEnd_utc) && c.chartType=='LineChart') {
+            if (c.chartData.getColumnType(0) == 'date' && isValidDate(dateEnd_utc) && c.chartType=='LineChart' && c.entries.length > 0) {
                 end = new Date(dateEnd_utc)
                 last = new Date(c.entries[c.entries.length -1 ].time)
 
@@ -133,9 +136,16 @@
             // Add rows (`dataValue`) to the chartData.
             c.chartData.addRows(dataValue);
 
-            // Specify a date formatting, where we make all dates format as Month, Year. ex: May 2010
-            var formatter_pattern_month = new google.visualization.DateFormat({pattern: 'MMMM, y'});
-            formatter_pattern_month.format(c.chartData, 0)
+            // Specify a date formatting
+            // If we are dealing with days, use Month Day, Year
+            // otherwise its monthly, so use the pattern of Month, Year. ex: May 2010
+            if ((elasticJSON !== null) && (typeof elasticJSON.facets.daily_downloads !== 'undefined')) {
+                var formatter_pattern_day = new google.visualization.DateFormat({pattern: 'MMMM d, y'})
+                formatter_pattern_day.format(c.chartData, 0)
+            } else {
+                var formatter_pattern_month = new google.visualization.DateFormat({pattern: 'MMMM, y'});
+                formatter_pattern_month.format(c.chartData, 0)
+            }
 
             // Add a child element
             var par = $('#' + c.parentElement);
@@ -191,8 +201,6 @@
         //Create a ChartMaker instance.
         var chartMaker = new ChartMaker();
 
-        // Get data from elastic that has been dumped on the page.
-        var elasticJSON = $.parseJSON($('#aspect_dashboard_ElasticSearchStatsViewer_field_response').val());
 
         // `function chartDataHelper` creates a chartData object from a few
         // parameters.
@@ -413,6 +421,62 @@
                 }
 
         }
+
+          if ((elasticJSON !== null) && (typeof elasticJSON.facets.daily_downloads !== 'undefined')) {
+              var chartDataNoTotal = chartDataHelper({
+                  type : 'date',
+                  textKey : 'Date',
+                  textValue : 'File Downloads',
+                  hasCertainty: true
+              });
+              chartMaker.addChart({
+                  entries: elasticJSON.facets.daily_downloads.entries,
+                  name: 'downloadsDaily',
+                  chartData: chartDataNoTotal,
+                  keyField: 'time',
+                  chartType: 'LineChart',
+                  options: optionsDownloads});
+
+              if ($('input[name=reportDepth]').val() == "detail") {
+                  var chartDataTotal = chartDataHelper({
+                      type : 'date',
+                      textKey : 'Date',
+                      textValue : 'File Downloads',
+                      includeTotal: true,
+                      textTotal: 'Total Downloads'
+                  });
+
+                  // Table with raw data of # Downloads each month
+                  chartMaker.addChart({
+                      entries: elasticJSON.facets.daily_downloads.entries,
+                      name: 'downloadsDailyTable',
+                      chartData: chartDataTotal,
+                      includeTotal : true,
+                      keyField : 'time',
+                      options:optionsDownloads,
+                      chartType: 'Table'
+                  });
+
+                  // Chart of Downloads with aggregate total
+                  var chartDataTotal2 = chartDataHelper({
+                      type : 'date',
+                      textKey : 'Date',
+                      textValue : 'File Downloads',
+                      includeTotal: true,
+                      textTotal: 'Total Downloads',
+                      hasCertainty: true
+                  });
+                  chartMaker.addChart({
+                      entries: elasticJSON.facets.daily_downloads.entries,
+                      name: 'downloadsWithTotal',
+                      includeTotal: true,
+                      chartData: chartDataTotal2,
+                      keyField: 'time',
+                      chartType: 'LineChart',
+                      options: optionsDownloads});
+              }
+
+          }
 
         // Add a chart to show downloads from various countries.
         if ((elasticJSON !== null) && (typeof elasticJSON.facets.top_countries !== 'undefined')) {

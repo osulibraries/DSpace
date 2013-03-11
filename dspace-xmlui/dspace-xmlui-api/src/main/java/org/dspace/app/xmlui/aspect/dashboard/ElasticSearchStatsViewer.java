@@ -17,6 +17,9 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.joda.time.DateTime;
+import org.elasticsearch.common.joda.time.Duration;
+import org.elasticsearch.common.joda.time.Interval;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.facet.AbstractFacetBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
@@ -25,6 +28,7 @@ import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -62,6 +66,12 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
             .facetFilter(FilterBuilders.andFilter(
                 FilterBuilders.termFilter("type", "BITSTREAM"),
                 justOriginals
+            ));
+
+    protected static AbstractFacetBuilder facetDailyDownloads = FacetBuilders.dateHistogramFacet("daily_downloads").field("time").interval("day")
+            .facetFilter(FilterBuilders.andFilter(
+                    FilterBuilders.termFilter("type", "BITSTREAM"),
+                    justOriginals
             ));
     
     protected static AbstractFacetBuilder facetTopBitstreamsAllTime = FacetBuilders.termsFacet("top_bitstreams_alltime").field("id")
@@ -195,8 +205,18 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
                 }
                 else if(requestedReport.equalsIgnoreCase("fileDownloads"))
                 {
-                    SearchRequestBuilder requestBuilder = facetedQueryBuilder(facetMonthlyDownloads);
-                    searchResponseToDRI(requestBuilder);
+                    //When the requested range exceeds a months worth, give monthly results
+                    // Otherwise gives results in days...
+                    Boolean granularityResult = lessThanMonthApart(dateStart, dateEnd);
+                    log.info("Do we give days, or months: " + granularityResult.toString() + " for date range:" + dateStart + " to " + dateEnd);
+
+                    if(granularityResult) {
+                        SearchRequestBuilder requestBuilder = facetedQueryBuilder(facetDailyDownloads);
+                        searchResponseToDRI(requestBuilder);
+                    } else {
+                        SearchRequestBuilder requestBuilder = facetedQueryBuilder(facetMonthlyDownloads);
+                        searchResponseToDRI(requestBuilder);
+                    }
                 }
                 else if(requestedReport.equalsIgnoreCase("topDownloads"))
                 {
@@ -204,7 +224,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
                     SearchResponse resp = searchResponseToDRI(requestBuilder);
 
                     TermsFacet bitstreamsAllTimeFacet = resp.getFacets().facet(TermsFacet.class, "top_bitstreams_alltime");
-                    addTermFacetToTable(bitstreamsAllTimeFacet, division, "Bitstream", "Top File Downloads (all time)");
+                    addTermFacetToTable(bitstreamsAllTimeFacet, division, "Bitstream", "Top File Downloads (" + dateRange + ")");
 
                     TermsFacet bitstreamsFacet = resp.getFacets().facet(TermsFacet.class, "top_bitstreams_lastmonth");
                     addTermFacetToTable(bitstreamsFacet, division, "Bitstream", "Top File Downloads for " + getLastMonthString());
@@ -443,6 +463,50 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
             return dcValue[0].value;
         } else {
             return "";
+        }
+    }
+
+    /**
+     * Determine if this date-range is less than a months worth.
+     * - days/true      - if dates are within same month
+     * - days/true      - different months but dates are less than 28 days apart.
+     * - months/false   - different months and 28 or more days apart.
+     * @param dateBegin defaults to Minimum Date if null
+     * @param dateEnd defaults to current date if null
+     * @return
+     */
+    protected boolean lessThanMonthApart(Date dateBegin, Date dateEnd) {
+        boolean monthOrMore = false;
+        boolean days = true;
+
+        if(dateBegin == null) {
+            SimpleDateFormat dateFormatYMD = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                dateBegin = dateFormatYMD.parse(ReportGenerator.MINIMUM_DATE);
+
+            } catch (ParseException e) {
+                log.error(e.getMessage());
+                return false;
+            }
+        }
+
+        if(dateEnd == null) {
+            dateEnd = new Date();
+        }
+
+        DateTime date1 = new DateTime(dateBegin);
+        DateTime date2 = new DateTime(dateEnd);
+        Interval interval = new Interval(date1, date2);
+        Duration duration = new Duration(interval);
+
+        log.info("JODA has " + date1 + " for " + dateBegin + " and " + date2 + " for " + dateEnd);
+
+        if (dateBegin.getYear() == dateEnd.getYear() && dateBegin.getMonth() == dateEnd.getMonth()) {
+            return days;
+        } else if (duration.getStandardDays() < 28) {
+            return days;
+        } else {
+            return monthOrMore;
         }
     }
 }

@@ -70,7 +70,7 @@ public class ReportGenerator
     /**
      * The minimum date for the from or to field to be. (e.g. The beginning of DSpace)
      */
-    private static String MINIMUM_DATE = "2008-01-01";
+    public static String MINIMUM_DATE = "2008-01-01";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
     // perfect input is 2008-01-22, an alternate format is 01/22/2008
