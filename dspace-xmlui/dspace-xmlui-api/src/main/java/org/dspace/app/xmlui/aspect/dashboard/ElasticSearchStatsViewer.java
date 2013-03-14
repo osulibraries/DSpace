@@ -154,7 +154,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
 
 
                 division.addPara("Showing Data ( " + dateRange + " )");
-                division.addHidden("timeRangeString").setValue("Data Range: " + dateRange);
+                division.addHidden("timeRangeString").setValue("Date Range Shown: " + dateRange);
                 if(dateStart != null) {
                     division.addHidden("dateStart").setValue(dateFormat.format(dateStart));
                 }
