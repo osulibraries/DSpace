@@ -115,11 +115,19 @@ The Dashboard Aspect is responsible providing a dashboard for statistical inquir
 
             <!--Only show the stats link if we have read rights-->
             <map:match pattern="handle/*/**">
+
+                <!-- Inherit through being member of stats viewer group -->
                 <map:select type="SpecifiedGroupAuthenticatedSelector">
                     <map:when test="statistics_viewer">
                         <map:transform type="Navigation"/>
                     </map:when>
                     <map:otherwise>
+
+                        <!-- Inherit through being a power user -->
+                        <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
+                            <map:transform type="Navigation"/>
+                        </map:match>
+
                     </map:otherwise>
                 </map:select>
             </map:match>
