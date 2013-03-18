@@ -42,7 +42,8 @@ import java.util.*;
 public class CSVOutputter extends AbstractReader implements Recyclable 
 {
     protected static final Logger log = Logger.getLogger(CSVOutputter.class);
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+    private static SimpleDateFormat dateFormatYearMonth = new SimpleDateFormat("yyyy-MM");
+    private static SimpleDateFormat dateFormatYearMonthDay = new SimpleDateFormat("yyyy-MM-dd");
 
     protected Response response;
     protected Request request;
@@ -95,11 +96,11 @@ public class CSVOutputter extends AbstractReader implements Recyclable
 
             String dateRange = "";
             if(fromDate != null && toDate != null) {
-                dateRange = "from_"+dateFormat.format(fromDate) + "_to_"+dateFormat.format(toDate);
+                dateRange = "from_"+dateFormatYearMonthDay.format(fromDate) + "_to_"+dateFormatYearMonthDay.format(toDate);
             } else if (fromDate != null && toDate == null) {
-                dateRange = "from_"+dateFormat.format(fromDate);
+                dateRange = "from_"+dateFormatYearMonthDay.format(fromDate);
             } else if(fromDate == null && toDate != null) {
-                dateRange = "to_"+dateFormat.format(toDate);
+                dateRange = "to_"+dateFormatYearMonthDay.format(toDate);
             } else if(fromDate == null && toDate == null) {
                 dateRange = "all_dates_available";
             }
@@ -134,11 +135,22 @@ public class CSVOutputter extends AbstractReader implements Recyclable
             }
             else if (requestedReport.equalsIgnoreCase("fileDownloads"))
             {
-                SearchRequestBuilder requestBuilder = esStatsViewer.facetedQueryBuilder(esStatsViewer.facetMonthlyDownloads);
-                SearchResponse searchResponse = requestBuilder.execute().actionGet();
+                Boolean granularityResult = esStatsViewer.lessThanMonthApart(fromDate, toDate);
 
-                DateHistogramFacet monthlyDownloadsFacet = searchResponse.getFacets().facet(DateHistogramFacet.class, "monthly_downloads");
-                addDateHistogramFacetToWriter(monthlyDownloadsFacet);
+                if(granularityResult) {
+                    SearchRequestBuilder requestBuilder = esStatsViewer.facetedQueryBuilder(esStatsViewer.facetDailyDownloads);
+                    SearchResponse searchResponse = requestBuilder.execute().actionGet();
+
+                    DateHistogramFacet dailyDownloadsFacet = searchResponse.getFacets().facet(DateHistogramFacet.class, "daily_downloads");
+                    addDateHistogramFacetToWriterDaily(dailyDownloadsFacet);
+                } else {
+                    SearchRequestBuilder requestBuilder = esStatsViewer.facetedQueryBuilder(esStatsViewer.facetMonthlyDownloads);
+                    SearchResponse searchResponse = requestBuilder.execute().actionGet();
+
+                    DateHistogramFacet monthlyDownloadsFacet = searchResponse.getFacets().facet(DateHistogramFacet.class, "monthly_downloads");
+                    addDateHistogramFacetToWriter(monthlyDownloadsFacet);
+                }
+
             }
             else if (requestedReport.equalsIgnoreCase("itemsAdded"))
             {
@@ -252,11 +264,29 @@ public class CSVOutputter extends AbstractReader implements Recyclable
         writer.writeNext(new String[]{"Month", "File Downloads"});
 
 
-        dateFormat.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+        dateFormatYearMonth.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
 
         for(DateHistogramFacet.Entry histogramEntry : monthlyFacetEntries) {
             Date facetDate = new Date(histogramEntry.getTime());
-            writer.writeNext(new String[]{dateFormat.format(facetDate), String.valueOf(histogramEntry.getCount())});
+            writer.writeNext(new String[]{dateFormatYearMonth.format(facetDate), String.valueOf(histogramEntry.getCount())});
+        }
+    }
+
+    private void addDateHistogramFacetToWriterDaily(DateHistogramFacet dateHistogramFacet) {
+        List<? extends DateHistogramFacet.Entry> dailyFacetEntries = dateHistogramFacet.getEntries();
+
+        if(dailyFacetEntries.size() == 0) {
+            return;
+        }
+
+        writer.writeNext(new String[]{"Day", "File Downloads"});
+
+
+        dateFormatYearMonthDay.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+
+        for(DateHistogramFacet.Entry histogramEntry : dailyFacetEntries) {
+            Date facetDate = new Date(histogramEntry.getTime());
+            writer.writeNext(new String[]{dateFormatYearMonthDay.format(facetDate), String.valueOf(histogramEntry.getCount())});
         }
     }
 
