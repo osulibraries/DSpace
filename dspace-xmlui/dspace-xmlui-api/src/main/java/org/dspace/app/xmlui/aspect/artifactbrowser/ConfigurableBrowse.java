@@ -7,11 +7,6 @@
  */
 package org.dspace.app.xmlui.aspect.artifactbrowser;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.*;
-
 import org.apache.cocoon.ResourceNotFoundException;
 import org.apache.cocoon.caching.CacheableProcessingComponent;
 import org.apache.cocoon.environment.ObjectModelHelper;
@@ -21,32 +16,12 @@ import org.apache.cocoon.util.HashUtil;
 import org.apache.excalibur.source.SourceValidity;
 import org.apache.log4j.Logger;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
-import org.dspace.app.xmlui.utils.ContextUtil;
-import org.dspace.app.xmlui.utils.DSpaceValidity;
-import org.dspace.app.xmlui.utils.HandleUtil;
-import org.dspace.app.xmlui.utils.RequestUtils;
-import org.dspace.app.xmlui.utils.UIException;
+import org.dspace.app.xmlui.utils.*;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.ReferenceSet;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Select;
-import org.dspace.app.xmlui.wing.element.Table;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.browse.BrowseEngine;
-import org.dspace.browse.BrowseException;
-import org.dspace.browse.BrowseIndex;
-import org.dspace.browse.BrowseInfo;
-import org.dspace.browse.BrowseItem;
-import org.dspace.browse.BrowserScope;
-import org.dspace.sort.SortOption;
-import org.dspace.sort.SortException;
+import org.dspace.browse.*;
 import org.dspace.content.Collection;
 import org.dspace.content.Community;
 import org.dspace.content.DCDate;
@@ -55,9 +30,18 @@ import org.dspace.content.authority.ChoiceAuthorityManager;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.core.LogManager;
+import org.dspace.sort.SortException;
+import org.dspace.sort.SortOption;
 import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implements all the browse functionality (browse by title, subject, authors,
@@ -235,7 +219,7 @@ public class ConfigurableBrowse extends AbstractDSpaceTransformer implements
         pageMeta.addTrailLink(contextPath + "/", T_dspace_home);
         if (dso != null)
         {
-            HandleUtil.buildHandleTrail(dso, pageMeta, contextPath);
+            HandleUtil.buildHandleTrailIncludeTerminal(dso, pageMeta, contextPath);
         }
 
         pageMeta.addTrail().addContent(getTrailMessage(info));

@@ -7,24 +7,19 @@
  */
 package org.dspace.app.xmlui.utils;
 
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.Stack;
-
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.content.Bitstream;
-import org.dspace.content.Bundle;
-import org.dspace.content.Collection;
-import org.dspace.content.Community;
-import org.dspace.content.DSpaceObject;
-import org.dspace.content.Item;
+import org.dspace.content.*;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.handle.HandleManager;
+
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * Simple utility class for extracting handles.
@@ -153,46 +148,95 @@ public class HandleUtil
     public static void buildHandleTrail(DSpaceObject dso, PageMeta pageMeta,
             String contextPath) throws SQLException, WingException
     {
-        // Add the trail back to the repository root.
+        buildHandleTrail(dso, pageMeta, contextPath, false);
+    }
+
+    /**
+     * A trail of DSpace Objects to the root, that includes a link to the terminal level.
+     * @param dso
+     * @param pageMeta
+     * @param contextPath
+     * @throws SQLException
+     * @throws WingException
+     */
+    public static void buildHandleTrailIncludeTerminal(DSpaceObject dso, PageMeta pageMeta,
+                                        String contextPath) throws SQLException, WingException
+    {
+        buildHandleTrail(dso, pageMeta, contextPath, true);
+    }
+
+    public static void buildHandleTrail(DSpaceObject dso, PageMeta pageMeta, String contextPath, Boolean includeTerminalLink) throws SQLException, WingException {
+        Stack<DSpaceObject> stack = buildDSOStack(dso);
+
+        while (!stack.empty())
+        {
+            DSpaceObject pop = stack.pop();
+
+            // Do not link "back" to the terminal object, unless we are browsing within it...
+            String target;
+            if (pop == dso && includeTerminalLink==false) {
+                target = null;
+            } else {
+                target = contextPath + "/handle/" + pop.getHandle();
+            }
+
+            if (pop instanceof Collection)
+            {
+                addTrailLinkForCollection((Collection) pop, pageMeta, target);
+            }
+            else if (pop instanceof Community)
+            {
+                addTrailLinkForCommunity((Community) pop, pageMeta, target);
+            }
+
+        }
+    }
+
+    /**
+     * Add the trail back to the repository root.
+     * @param dso
+     * @return
+     * @throws SQLException
+     */
+    public static Stack<DSpaceObject> buildDSOStack(DSpaceObject dso) throws SQLException {
         Stack<DSpaceObject> stack = new Stack<DSpaceObject>();
-        DSpaceObject aDso = dso;
 
-        if (aDso instanceof Bitstream)
+        if (dso instanceof Bitstream)
         {
-        	Bitstream bitstream = (Bitstream) aDso;
-        	Bundle[] bundles = bitstream.getBundles();
+            Bitstream bitstream = (Bitstream) dso;
+            Bundle[] bundles = bitstream.getBundles();
 
-        	aDso = bundles[0];
+            dso = bundles[0];
         }
 
-        if (aDso instanceof Bundle)
+        if (dso instanceof Bundle)
         {
-        	Bundle bundle = (Bundle) aDso;
-        	Item[] items = bundle.getItems();
+            Bundle bundle = (Bundle) dso;
+            Item[] items = bundle.getItems();
 
-        	aDso = items[0];
+            dso = items[0];
         }
 
-        if (aDso instanceof Item)
+        if (dso instanceof Item)
         {
-            Item item = (Item) aDso;
+            Item item = (Item) dso;
             Collection collection = item.getOwningCollection();
 
-            aDso = collection;
+            dso = collection;
         }
 
-        if (aDso instanceof Collection)
+        if (dso instanceof Collection)
         {
-            Collection collection = (Collection) aDso;
+            Collection collection = (Collection) dso;
             stack.push(collection);
             Community[] communities = collection.getCommunities();
 
-            aDso = communities[0];
+            dso = communities[0];
         }
 
-        if (aDso instanceof Community)
+        if (dso instanceof Community)
         {
-            Community community = (Community) aDso;
+            Community community = (Community) dso;
             stack.push(community);
 
             for (Community parent : community.getAllParents())
@@ -201,43 +245,30 @@ public class HandleUtil
             }
         }
 
-        while (!stack.empty())
+        return stack;
+    }
+
+    public static void addTrailLinkForCommunity(Community community, PageMeta pageMeta, String targetURL) throws WingException {
+        String name = community.getMetadata("name");
+        if (name == null || name.length() == 0)
         {
-            DSpaceObject pop = stack.pop();
+            pageMeta.addTrailLink(targetURL, new Message("default", "xmlui.general.untitled"));
+        }
+        else
+        {
+            pageMeta.addTrailLink(targetURL, name);
+        }
+    }
 
-            String target;
-            if (pop == dso)
-                target = null; // Do not link "back" to the terminal object
-            else
-                target = contextPath + "/handle/" + pop.getHandle();
-
-            if (pop instanceof Collection)
-            {
-            	Collection collection = (Collection) pop;
-            	String name = collection.getMetadata("name");
-            	if (name == null || name.length() == 0)
-                {
-                    pageMeta.addTrailLink(target, new Message("default", "xmlui.general.untitled"));
-                }
-            	else
-                {
-                    pageMeta.addTrailLink(target, name);
-                }
-            }
-            else if (pop instanceof Community)
-            {
-            	Community community = (Community) pop;
-            	String name = community.getMetadata("name");
-            	if (name == null || name.length() == 0)
-                {
-                    pageMeta.addTrailLink(target, new Message("default", "xmlui.general.untitled"));
-                }
-            	else
-                {
-                    pageMeta.addTrailLink(target, name);
-                }
-            }
-
+    public static void addTrailLinkForCollection(Collection collection, PageMeta pageMeta, String targetURL) throws WingException {
+        String name = collection.getMetadata("name");
+        if (name == null || name.length() == 0)
+        {
+            pageMeta.addTrailLink(targetURL, new Message("default", "xmlui.general.untitled"));
+        }
+        else
+        {
+            pageMeta.addTrailLink(targetURL, name);
         }
     }
 

@@ -7,12 +7,6 @@
  */
 package org.dspace.app.xmlui.aspect.discovery;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.cocoon.caching.CacheableProcessingComponent;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
@@ -22,16 +16,26 @@ import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.*;
-import org.dspace.app.xmlui.wing.element.Item;
-import org.dspace.app.xmlui.wing.element.List;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.*;
+import org.dspace.content.Community;
+import org.dspace.content.DSpaceObject;
 import org.dspace.core.ConfigurationManager;
-import org.dspace.discovery.*;
+import org.dspace.discovery.DiscoverFilterQuery;
+import org.dspace.discovery.SearchService;
+import org.dspace.discovery.SearchServiceException;
+import org.dspace.discovery.SearchUtils;
 import org.dspace.discovery.configuration.DiscoveryConfiguration;
 import org.dspace.discovery.configuration.DiscoverySearchFilter;
 import org.dspace.utils.DSpace;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Preform a simple search of the repository. The user provides a simple one
@@ -88,7 +92,7 @@ public class SimpleSearch extends AbstractSearch implements CacheableProcessingC
 
         DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
         if ((dso instanceof org.dspace.content.Collection) || (dso instanceof Community)) {
-            HandleUtil.buildHandleTrail(dso, pageMeta, contextPath);
+            HandleUtil.buildHandleTrailIncludeTerminal(dso, pageMeta, contextPath);
         }
 
         pageMeta.addTrail().addContent(T_trail);
