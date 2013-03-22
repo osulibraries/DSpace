@@ -51,8 +51,8 @@
 		-->
 		<map:component-configurations>
 			<global-variables>
-				<theme-path>oca_gallery</theme-path>
-				<theme-name>oca_gallery</theme-name>
+				<theme-path>lep_gallery</theme-path>
+				<theme-name>lep_gallery</theme-name>
 			</global-variables>
 		</map:component-configurations>
 		
