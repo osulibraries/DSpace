@@ -1420,6 +1420,88 @@ public class Collection extends DSpaceObject
         return myCollections;
     }
 
+    public static Collection[] findDirectMapped(Context context, int actionID) throws java.sql.SQLException
+    {
+        //eperson_id -> resourcepolicy.eperson_id
+        TableRowIterator tri = DatabaseManager.query(context,
+                "SELECT * FROM collection, resourcepolicy, eperson " +
+                        "WHERE resourcepolicy.resource_id = collection.collection_id AND " +
+                        "eperson.eperson_id = resourcepolicy.eperson_id AND "+
+                        "resourcepolicy.resource_type_id = 3 AND "+
+                        "( resourcepolicy.action_id = 3 OR resourcepolicy.action_id = 11 ) AND "+
+                        "eperson.eperson_id = ?", context.getCurrentUser().getID());
+        return produceCollectionsFromQuery(context, tri);
+    }
+
+    public static Collection[] findGroupMapped(Context context, int actionID) throws java.sql.SQLException
+    {
+        //eperson_id -> resourcepolicy.eperson_id
+        TableRowIterator tri = DatabaseManager.query(context,
+                "SELECT * FROM collection, resourcepolicy, eperson, epersongroup2eperson " +
+                        "WHERE resourcepolicy.resource_id = collection.collection_id AND "+
+                        "eperson.eperson_id = epersongroup2eperson.eperson_id AND "+
+                        "epersongroup2eperson.eperson_group_id = resourcepolicy.epersongroup_id AND "+
+                        "resourcepolicy.resource_type_id = 3 AND "+
+                        "( resourcepolicy.action_id = 3 OR resourcepolicy.action_id = 11 ) AND "+
+                        "eperson.eperson_id = ?", context.getCurrentUser().getID());
+        return produceCollectionsFromQuery(context, tri);
+    }
+
+    public static Collection[] findAuthorizedOptimized(Context context, int actionID) throws java.sql.SQLException
+    {
+        List<Collection> myResults = new ArrayList<Collection>();
+
+        if(AuthorizeManager.isAdmin(context))
+        {
+            return findAll(context);
+        }
+
+        //Check eperson->policy
+        Collection[] directToCollection = findDirectMapped(context, actionID);
+        for (int i = 0; i< directToCollection.length; i++)
+        {
+            if(!myResults.contains(directToCollection[i]))
+            {
+                myResults.add(directToCollection[i]);
+            }
+        }
+
+        //Check eperson->groups->policy
+        Collection[] groupToCollection = findGroupMapped(context, actionID);
+
+        for (int i = 0; i< groupToCollection.length; i++)
+        {
+            if(!myResults.contains(groupToCollection[i]))
+            {
+                myResults.add(groupToCollection[i]);
+            }
+        }
+
+        //Check eperson->comm-admin
+
+
+        Collection[] myCollections = new Collection[myResults.size()];
+        myCollections = (Collection[]) myResults.toArray(myCollections);
+
+        return myCollections;
+
+
+    }
+
+    public static Collection[] produceCollectionsFromQuery(Context context, TableRowIterator tri) throws SQLException {
+        List<Collection> collections = new ArrayList<Collection>();
+
+        while(tri.hasNext()) {
+            TableRow row = tri.next();
+            row.getIntColumn("collection_id");
+            Collection collection = Collection.find(context, row.getIntColumn("collection_id"));
+            collections.add(collection);
+        }
+
+        return collections.toArray(new Collection[0]);
+    }
+
+
 	/**
      * counts items in this collection
      *
