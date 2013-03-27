@@ -98,6 +98,8 @@ function initjQueryTools() {
             $(".items img").removeClass("active");
             $(this).addClass("active");
 
+            $(document).scrollTop( $('#photos').offset().top )
+
         // when page loads simulate a "click" on the first image
         }).filter(":first").click();
 }
