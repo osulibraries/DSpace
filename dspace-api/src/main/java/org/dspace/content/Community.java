@@ -670,6 +670,15 @@ public class Community extends DSpaceObject
         return collectionArray;
     }
 
+    /*
+    Fetch all Collections recursively.
+     */
+    public Collection[] getAllCollections()
+    {
+        //TODO
+        return null;
+    }
+
     /**
      * Get the immediate sub-communities of this community. Throws an
      * SQLException because creating a community object won't load in all
