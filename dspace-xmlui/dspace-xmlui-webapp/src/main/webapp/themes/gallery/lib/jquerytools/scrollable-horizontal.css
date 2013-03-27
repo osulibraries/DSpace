@@ -9,7 +9,7 @@
 	position:relative;
 	overflow:hidden;
 	/*width: 680px;*/
-	height:120px;
+	min-height:120px;
 
 	/* custom decorations */
 	border:1px solid #ccc;
@@ -17,15 +17,19 @@
 }
 
 /*
+    To disable scrollable, and just go wicked wide, we'll let the container grow vertically. Probably just a hack.
+
+	To be Scrollable...
 	root element for scrollable items. Must be absolutely positioned
 	and it should have a extremely large width to accomodate scrollable items.
 	it's enough that you set the width and height for the root element and
 	not for this element.
 */
 .scrollable .items {
-	/* this cannot be too large */
-	width:20000em;
-	position:absolute;
+	/* Scrollable (uncomment if using scrollable. with prev/next buttons)
+	    width:20000em;
+	    position:absolute;
+	*/
 	clear:both;
 }
 
@@ -53,6 +57,7 @@
 	border:2px solid #000;
 	position:relative;
 	cursor:default;
+    margin: 20px 3px 18px 19px;
 }
 
 
