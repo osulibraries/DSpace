@@ -7,14 +7,13 @@
  */
 package org.dspace.content;
 
-import java.sql.SQLException;
-
-import java.util.Iterator;
-import java.util.List;
-
 import org.dspace.core.Context;
 import org.dspace.storage.rdbms.TableRow;
 import org.dspace.storage.rdbms.TableRowIterator;
+
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Specialized iterator for DSpace Items. This iterator is used for loading
@@ -236,6 +235,17 @@ public class ItemIterator
         else
         {
             return null;
+        }
+    }
+
+    /**
+     * To Support Pagination
+     * @throws SQLException
+     */
+    public void skip() throws SQLException {
+        if (itemRows.hasNext())
+        {
+            itemRows.next();
         }
     }
 
