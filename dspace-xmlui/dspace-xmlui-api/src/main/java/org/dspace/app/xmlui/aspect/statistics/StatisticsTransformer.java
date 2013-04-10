@@ -61,6 +61,8 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    //TODO Make the grid use enum for slots, so not direct reference 0 YEAR, 1-12 MONTHs, 13 YRTotal, or 14 CumuTotal
+
     public StatisticsTransformer(Date dateStart, Date dateEnd) {
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
@@ -438,6 +440,35 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         return tableRowList;
     }
 
+    public Integer getItemsInContainerPriorToStart(DSpaceObject dso) {
+        // collection or community
+        String typeTextLower = dso.getTypeText().toLowerCase();
+
+        String start = dateFormat.format(dateStart);
+
+        String query = "SELECT count(*)::integer as count " +
+                " FROM " +
+                " " + typeTextLower + "2item, " +
+                "  item, " +
+                "  metadatavalue " +
+                " WHERE " +
+                " " + typeTextLower + "2item.item_id = item.item_id AND " +
+                " metadatavalue.item_id = item.item_id AND " +
+                " " + typeTextLower + "2item." + typeTextLower +"_id = ? AND " +
+                " metadatavalue.metadata_field_id = 12 AND " +
+                " metadatavalue.text_value < '" + start + "' ;";
+
+        try {
+
+            TableRow row = DatabaseManager.querySingle(context, query, dso.getID());
+            return row.getIntColumn("count");
+
+        } catch (Exception e) {
+            log.error("Error getting items added before date: " + e.getMessage());
+            return null;
+        }
+    }
+
     /**
      * Only call this on a container object (collection or community).
      * @param dso
@@ -451,7 +482,16 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
             division.addHidden("gson-itemsAdded").setValue(gson.toJson(tableRowList));
             
             Integer[][] monthlyDataGrid = convertTableRowListToIntegerGrid(tableRowList, "yearmo", "countitem");
-            displayAsGrid(division, monthlyDataGrid, "itemsAddedGrid", "Number of Items Added to the " + dso.getName());
+
+            Integer prior = null;
+            if(dateStart != null) {
+                prior = getItemsInContainerPriorToStart(dso);
+            }
+
+            displayAsGrid(division, monthlyDataGrid, "itemsAddedGrid", "Number of Items Added to the " + dso.getName(), prior);
+
+
+
         } catch (WingException e) {
             log.error(e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -604,8 +644,8 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         }
         return monthlyDataGrid;
     }
-    
-    public void displayAsGrid(Division division, Integer[][] monthlyDataGrid, String name, String header) throws WingException {
+
+    public void displayAsGrid(Division division, Integer[][] monthlyDataGrid, String name, String header, Integer priorEntries) throws WingException {
         if(monthlyDataGrid == null || monthlyDataGrid.length == 0) {
             log.error("Grid has no data: "+ header);
             Table gridTable = division.addTable(name, 1,1);
@@ -634,7 +674,14 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         int numberOfYears = yearLast-yearStart;
 
         Integer columns = 1 + 12 + 1 + 1;
-        Table gridTable = division.addTable(name, numberOfYears+1, columns);
+
+        //Add extra row for header, then possibly to have a "prior years"
+        int extraRows = 1;
+        if(dateStart != null && priorEntries != null) {
+            extraRows++;
+        }
+
+        Table gridTable = division.addTable(name, numberOfYears+extraRows, columns);
         gridTable.setHead(header);
         Row gridHeader = gridTable.addRow(Row.ROLE_HEADER);
         gridHeader.addCell().addContent("Year");
@@ -652,6 +699,26 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         gridHeader.addCell().addContent("DEC");
         gridHeader.addCell().addContent("Total YR");
         gridHeader.addCell().addContent("Total Cumulative");
+
+        if(dateStart != null && priorEntries != null) {
+            //Add a row that says prior to dateStart, Prior to 2008-01-01
+            Row priorRow = gridTable.addRow();
+            priorRow.addCell(Cell.ROLE_HEADER).addContent("Prior to " + dateFormat.format(dateStart));
+
+            //Blank out each month, and total YR
+            for(int i =0; i < 13; i++) {
+                priorRow.addCell();
+            }
+
+            //Set the cumulative
+            priorRow.addCell().addContent(priorEntries);
+
+            //Touch the cumulative for the other years.
+            for(int i = 0; i < monthlyDataGrid.length; i ++) {
+                monthlyDataGrid[i][14] += priorEntries;
+            }
+
+        }
 
         for(int yearIndex=0; yearIndex < monthlyDataGrid.length; yearIndex++) {
             Row yearRow = gridTable.addRow();
@@ -725,6 +792,10 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
 
         return tableRowList;
     }
+
+    public Integer getBitstreamsInContainerPriorToStart(DSpaceObject dso) {
+        return null;
+    }
     
     public void addFilesInContainer(DSpaceObject dso, Division division) {
         java.util.List<TableRow> tableRowList = addFilesInContainerQuery(dso);
@@ -734,8 +805,13 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
             division.addHidden("gson-filesAdded").setValue(gson.toJson(tableRowList));
 
             Integer[][] monthlyDataGrid = convertTableRowListToIntegerGrid(tableRowList, "yearmo", "countitem");
+
+            if(dateStart != null) {
+                //Add Prior to start cheat...
+                //addPriorFiles...
+            }
             
-            displayAsGrid(division, monthlyDataGrid, "filesInContainer-grid", "Number of Files in the "+dso.getName());
+            displayAsGrid(division, monthlyDataGrid, "filesInContainer-grid", "Number of Files in the "+dso.getName(), null);
             //displayAsTableRows(division, tableRowList, "Number of Files in the "+getTypeAsString(dso));
         } catch (WingException e) {
             log.error(e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
@@ -779,7 +855,7 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
             ObjectCount[] objectCounts = SolrLogger.queryFacetDate(query, "", -1, "MONTH", monthStart, monthEnd, false);
 
             Integer[][] monthlyDataGrid = convertObjectCountsToIntegerGrid(objectCounts);
-            displayAsGrid(division, monthlyDataGrid, "fileDownloadsToContainer-grid", "Number of File Downloads in the " + StringUtils.capitalize(dso.getTypeText().toLowerCase()));
+            displayAsGrid(division, monthlyDataGrid, "fileDownloadsToContainer-grid", "Number of File Downloads in the " + StringUtils.capitalize(dso.getTypeText().toLowerCase()), null);
 
         } catch (SolrServerException e) {
             log.error("addFileDownloadsInContainer Solr Query Failed: " + e.getMessage());
@@ -841,7 +917,7 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-d", Locale.getDefault());
             Integer[][] monthlyDataGrid = convertObjectCountsToIntegerGrid(objectCountArrayList.toArray(new ObjectCount[objectCountArrayList.size()]), dateFormat);
-            displayAsGrid(division, monthlyDataGrid, "uniqueVisitorsGrid", "Number of Unique Visitors to the " + StringUtils.capitalize(dso.getTypeText().toLowerCase()));
+            displayAsGrid(division, monthlyDataGrid, "uniqueVisitorsGrid", "Number of Unique Visitors to the " + StringUtils.capitalize(dso.getTypeText().toLowerCase()), null);
 
         } catch (SolrServerException e) {
             log.error("addUniqueVisitorsToContainer Solr Query Failed: " + e.getMessage());

@@ -1247,6 +1247,29 @@ public class Community extends DSpaceObject
         }
         return total;
     }
+
+    /**
+     * counts bitstreams in this community
+     *
+     * @return  total items
+     */
+    public int countBitstreams(String bundleName) throws SQLException
+    {
+        int total = 0;
+        // add collection counts
+        Collection[] cols = getCollections();
+        for ( int i = 0; i < cols.length; i++)
+        {
+            total += cols[i].countBitstreams(bundleName);
+        }
+        // add sub-community counts
+        Community[] comms = getSubcommunities();
+        for ( int j = 0; j < comms.length; j++ )
+        {
+            total += comms[j].countBitstreams(bundleName);
+        }
+        return total;
+    }
     
     public DSpaceObject getAdminObject(int action) throws SQLException
     {
