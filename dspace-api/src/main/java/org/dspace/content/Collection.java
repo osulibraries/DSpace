@@ -1466,17 +1466,115 @@ public class Collection extends DSpaceObject
      }
 
     /**
+     * counts items in this collection
+     *
+     * @return  total items
+     */
+    public Integer countItemsBeforeDate(String date)
+    {
+        String query = "SELECT count(*)::integer as count FROM collection2item, item, metadatavalue WHERE "
+                + "collection2item.collection_id =  ? "
+                + "AND collection2item.item_id = item.item_id "
+                + "AND in_archive = true AND item.withdrawn=false "
+                + "AND metadatavalue.item_id = item.item_id "
+                + "AND metadatavalue.metadata_field_id = 12 "
+                + "AND metadatavalue.text_value < '"+date+"' ";
+
+        try {
+            log.info(query + this.getID() + date);
+            TableRow row = DatabaseManager.querySingle(ourContext, query, this.getID());
+            return row.getIntColumn("count");
+
+        } catch (Exception e) {
+            log.error("Error getting countItemsBeforeDate: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Determine how many bitstreams are contained within this collection.
      * @param bundleName (Optional) Specify a bundle name to restrict the search to just those within this bundle
      * @return Number of bitstreams in this collection
      */
     public int countBitstreams(String bundleName) {
-        String query = "SELECT count(*) FROM public.collection2item,public.item2bundle,public.bundle2bitstream, public.bitstream,public.bundle" +
+        String query = "SELECT count(*) FROM public.collection2item,public.item2bundle,public.bundle2bitstream, public.bitstream,public.bundle, public.item" +
                 " WHERE item2bundle.bundle_id = bundle2bitstream.bundle_id" +
                 " AND item2bundle.item_id = collection2item.item_id" +
+                " AND item.item_id = collection2item.item_id" +
+                " AND item.in_archive = true" +
+                " AND item.withdrawn = false" +
                 " AND bundle2bitstream.bitstream_id = bitstream.bitstream_id" +
                 " AND bundle.bundle_id = item2bundle.bundle_id" +
                 " AND collection2item.collection_id = ?";
+
+
+        // If bundle is specified, then we need to limit our search to just those within the bundle.
+        if (bundleName.length() > 0) {
+            query = query.concat(" AND bundle.\"name\" = ?");
+        }
+
+        int bitstreamCount = 0;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+
+        try {
+            statement = ourContext.getDBConnection().prepareStatement(query);
+            statement.setInt(1, getID());
+            log.info("Query: "+query);
+            if(bundleName.length() > 0) {
+                statement.setString(2, bundleName);
+            }
+            log.info("Query2: "+query);
+
+            rs = statement.executeQuery();
+            if (rs != null) {
+                rs.next();
+                bitstreamCount = rs.getInt(1);
+            }
+        } catch (SQLException sqlE) {
+            log.error(sqlE.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+
+        } finally
+        {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqle) {
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException sqle) {
+                }
+            }
+        }
+        return bitstreamCount;
+    }
+
+    /**
+     * Determine how many bitstreams are contained within this collection.
+     * @param bundleName (Optional) Specify a bundle name to restrict the search to just those within this bundle
+     * @return Number of bitstreams in this collection
+     */
+    public int countBitstreamsBeforeDate(String bundleName, String date) {
+        String query = "SELECT count(*) FROM public.collection2item,public.item2bundle,public.bundle2bitstream, public.bitstream,public.bundle, public.item, public.metadatavalue" +
+                " WHERE item2bundle.bundle_id = bundle2bitstream.bundle_id" +
+                " AND item2bundle.item_id = collection2item.item_id" +
+                " AND item.item_id = collection2item.item_id" +
+                " AND item.in_archive = true" +
+                " AND item.withdrawn = false" +
+                " AND bundle2bitstream.bitstream_id = bitstream.bitstream_id" +
+                " AND bundle.bundle_id = item2bundle.bundle_id" +
+                " AND collection2item.collection_id = ?" +
+                " AND metadatavalue.item_id = item.item_id " +
+                " AND metadatavalue.metadata_field_id = 12 " +
+                " AND metadatavalue.text_value < '"+date+"' ";
+
+
 
 
         // If bundle is specified, then we need to limit our search to just those within the bundle.

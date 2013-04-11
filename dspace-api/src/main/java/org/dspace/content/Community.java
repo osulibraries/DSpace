@@ -1230,7 +1230,7 @@ public class Community extends DSpaceObject
      *
      * @return  total items
      */
-    public int countItems() throws SQLException
+    public Integer countItems() throws SQLException
     {       
     	int total = 0;
     	// add collection counts
@@ -1249,26 +1249,87 @@ public class Community extends DSpaceObject
     }
 
     /**
+     * counts items in this community
+     *
+     * @return  total items
+     */
+    public Integer countItemsBeforeDate(String date)
+    {
+        try {
+            int total = 0;
+            // add collection counts
+            Collection[] cols = getCollections();
+            for ( int i = 0; i < cols.length; i++)
+            {
+                total += cols[i].countItemsBeforeDate(date);
+            }
+            // add sub-community counts
+            Community[] comms = getSubcommunities();
+            for ( int j = 0; j < comms.length; j++ )
+            {
+                total += comms[j].countItemsBeforeDate(date);
+            }
+            return total;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    /**
      * counts bitstreams in this community
      *
      * @return  total items
      */
-    public int countBitstreams(String bundleName) throws SQLException
+    public Integer countBitstreams(String bundleName)
     {
-        int total = 0;
-        // add collection counts
-        Collection[] cols = getCollections();
-        for ( int i = 0; i < cols.length; i++)
-        {
-            total += cols[i].countBitstreams(bundleName);
+        try {
+            int total = 0;
+            // add collection counts
+            Collection[] cols = getCollections();
+            for ( int i = 0; i < cols.length; i++)
+            {
+                total += cols[i].countBitstreams(bundleName);
+            }
+            // add sub-community counts
+            Community[] comms = getSubcommunities();
+            for ( int j = 0; j < comms.length; j++ )
+            {
+                total += comms[j].countBitstreams(bundleName);
+            }
+            return total;
+        } catch (SQLException sqlE) {
+            log.error("Error countBitstreams for Comm: " + sqlE.getMessage());
+            return null;
         }
-        // add sub-community counts
-        Community[] comms = getSubcommunities();
-        for ( int j = 0; j < comms.length; j++ )
-        {
-            total += comms[j].countBitstreams(bundleName);
+    }
+
+    /**
+     * counts items in this community
+     *
+     * @return  total items
+     */
+    public Integer countBitstreamsBeforeDate(String bundleName, String date)
+    {
+        try {
+            int total = 0;
+            // add collection counts
+            Collection[] cols = getCollections();
+            for ( int i = 0; i < cols.length; i++)
+            {
+                total += cols[i].countBitstreamsBeforeDate(bundleName, date);
+            }
+            // add sub-community counts
+            Community[] comms = getSubcommunities();
+            for ( int j = 0; j < comms.length; j++ )
+            {
+                total += comms[j].countBitstreamsBeforeDate(bundleName, date);
+            }
+            return total;
+        } catch (SQLException sqlE) {
+            log.error("Error countBitstreams for Comm: " + sqlE.getMessage());
+            return null;
         }
-        return total;
     }
     
     public DSpaceObject getAdminObject(int action) throws SQLException

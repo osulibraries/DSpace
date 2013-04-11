@@ -410,10 +410,12 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
             typeTextLower = dso.getTypeText().toLowerCase();
         }
 
+        //TODO, I don't trust communities2item when it is for a recursive child.
+
         String querySpecifyContainer = "SELECT to_char(date_trunc('month', t1.ts), 'YYYY-MM') AS yearmo, count(*) as countitem " +
                 "FROM ( SELECT to_timestamp(text_value, 'YYYY-MM-DD') AS ts FROM metadatavalue, item, " +
                 typeTextLower + "2item " +
-                "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true AND "+
+                "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true AND item.withdrawn = false AND "+
                 typeTextLower + "2item.item_id = item.item_id AND "+
                 typeTextLower + "2item." + dso.getTypeText().toLowerCase() +"_id = ? ";
 
@@ -456,7 +458,9 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
                 " metadatavalue.item_id = item.item_id AND " +
                 " " + typeTextLower + "2item." + typeTextLower +"_id = ? AND " +
                 " metadatavalue.metadata_field_id = 12 AND " +
-                " metadatavalue.text_value < '" + start + "' ;";
+                " metadatavalue.text_value < '" + start + "' AND " +
+                " item.in_archive = true AND " +
+                " item.withdrawn = false ;";
 
         try {
 
@@ -485,7 +489,11 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
 
             Integer prior = null;
             if(dateStart != null) {
-                prior = getItemsInContainerPriorToStart(dso);
+                if(dso instanceof Collection) {
+                    prior = ((Collection) dso).countItemsBeforeDate(dateFormat.format(dateStart));
+                } else if(dso instanceof Community) {
+                    prior = ((Community) dso).countItemsBeforeDate(dateFormat.format(dateStart));
+                }
             }
 
             displayAsGrid(division, monthlyDataGrid, "itemsAddedGrid", "Number of Items Added to the " + dso.getName(), prior);
@@ -766,7 +774,7 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         String querySpecifyContainer = "SELECT to_char(date_trunc('month', t1.ts), 'YYYY-MM') AS yearmo, count(*) as countitem " +
                 "FROM ( SELECT to_timestamp(text_value, 'YYYY-MM-DD') AS ts FROM metadatavalue, item, item2bundle, bundle, bundle2bitstream, " +
                 typeTextLower + "2item " +
-                "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true AND " +
+                "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true AND item.withdrawn = false AND " +
                 "item2bundle.bundle_id = bundle.bundle_id AND item2bundle.item_id = item.item_id AND bundle.bundle_id = bundle2bitstream.bundle_id AND bundle.\"name\" = 'ORIGINAL' AND "+
                 typeTextLower + "2item.item_id = item.item_id AND "+
                 typeTextLower + "2item."+dso.getTypeText().toLowerCase()+"_id = ? ";
@@ -794,7 +802,14 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
     }
 
     public Integer getBitstreamsInContainerPriorToStart(DSpaceObject dso) {
-        return null;
+        if(dso instanceof Collection) {
+            return ((Collection) dso).countBitstreams(Constants.CONTENT_BUNDLE_NAME);
+        } else if(dso instanceof Community) {
+            return ((Community) dso).countBitstreams(Constants.CONTENT_BUNDLE_NAME);
+        } else {
+            return null;
+        }
+
     }
     
     public void addFilesInContainer(DSpaceObject dso, Division division) {
@@ -806,13 +821,17 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
 
             Integer[][] monthlyDataGrid = convertTableRowListToIntegerGrid(tableRowList, "yearmo", "countitem");
 
+            Integer prior = null;
             if(dateStart != null) {
-                //Add Prior to start cheat...
-                //addPriorFiles...
+                String date = dateFormat.format(dateStart);
+                if(dso instanceof Collection) {
+                    prior = ((Collection)dso).countBitstreamsBeforeDate(Constants.CONTENT_BUNDLE_NAME, date);
+                } else if(dso instanceof Community) {
+                    prior = ((Community)dso).countBitstreamsBeforeDate(Constants.CONTENT_BUNDLE_NAME, date);
+                }
             }
             
-            displayAsGrid(division, monthlyDataGrid, "filesInContainer-grid", "Number of Files in the "+dso.getName(), null);
-            //displayAsTableRows(division, tableRowList, "Number of Files in the "+getTypeAsString(dso));
+            displayAsGrid(division, monthlyDataGrid, "filesInContainer-grid", "Number of Files in the "+dso.getName(), prior);
         } catch (WingException e) {
             log.error(e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
         }
