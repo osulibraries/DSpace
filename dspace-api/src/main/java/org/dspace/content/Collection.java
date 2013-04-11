@@ -1535,19 +1535,30 @@ public class Collection extends DSpaceObject
         }
 
         //TODO Check eperson->groups->groups->policy->community
-        //TODO Check eperson->groups->policy->community
 
+
+        //TODO Check eperson->groups->policy->community
+        // i.e. Typical Community Admin -- name.# > COMMUNITY_10_ADMIN > Ohio State University Press
 
         //Check eperson->comm-admin
 
 
-        // Return the collections
+        // Return the collections, sorted alphabetically
+        Collections.sort(myResults, new CollectionComparator());
+
         Collection[] myCollections = new Collection[myResults.size()];
         myCollections = (Collection[]) myResults.toArray(myCollections);
 
         return myCollections;
 
 
+    }
+
+    public static class CollectionComparator implements Comparator<Collection> {
+        @Override
+        public int compare(Collection collection1, Collection collection2) {
+            return collection1.getName().compareTo(collection2.getName());
+        }
     }
 
     public static Collection[] produceCollectionsFromQuery(Context context, TableRowIterator tri) throws SQLException {
