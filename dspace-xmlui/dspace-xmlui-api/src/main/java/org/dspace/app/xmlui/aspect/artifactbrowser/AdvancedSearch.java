@@ -238,7 +238,7 @@ public class AdvancedSearch extends AbstractSearch implements CacheableProcessin
         {
             String field = sindex.split(":")[0];               
             
-            if(! usedSearchTypes.contains(field) && field.equalsIgnoreCase(ignoreFromAdvancedField))
+            if(! usedSearchTypes.contains(field) && !field.equalsIgnoreCase(ignoreFromAdvancedField))
             {
                 usedSearchTypes.add(field);
                 select.addOption(field.equals(current), field).addContent(message("xmlui.ArtifactBrowser.AdvancedSearch.type_" + field));
