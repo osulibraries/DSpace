@@ -228,6 +228,8 @@ public class AdvancedSearch extends AbstractSearch implements CacheableProcessin
         // Special case ANY
         select.addOption((current == null), "ANY").addContent(
                 message("xmlui.ArtifactBrowser.AdvancedSearch.type_ANY"));
+
+        String ignoreFromAdvancedField = ConfigurationManager.getProperty(null, "search.index.ignore-from-advanced-dropdown", "generic");
         
         ArrayList<String> usedSearchTypes = new ArrayList<String>();
         int i = 1;
@@ -236,7 +238,7 @@ public class AdvancedSearch extends AbstractSearch implements CacheableProcessin
         {
             String field = sindex.split(":")[0];               
             
-            if(! usedSearchTypes.contains(field))
+            if(! usedSearchTypes.contains(field) && field.equalsIgnoreCase(ignoreFromAdvancedField))
             {
                 usedSearchTypes.add(field);
                 select.addOption(field.equals(current), field).addContent(message("xmlui.ArtifactBrowser.AdvancedSearch.type_" + field));
