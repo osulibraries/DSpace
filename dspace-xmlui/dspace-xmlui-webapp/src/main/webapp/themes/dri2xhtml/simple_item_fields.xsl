@@ -342,6 +342,7 @@
         itemFieldDisplay.dc.date.issued
         itemFieldDisplay.dc.description
         itemFieldDisplay.dc.description.abstract
+	itemFieldDisplay.dc.description.academicmajor
         itemFieldDisplay.dc.description.embargo
         itemFieldDisplay.dc.description.sponsorship
         itemFieldDisplay.dc.description.tableofcontents
@@ -364,6 +365,7 @@
         itemFieldDisplay.dc.source.uri
         itemFieldDisplay.dc.subject
         itemFieldDisplay.dc.subject.lcsh
+	itemFieldDisplay.dc.subject.other
         itemFieldDisplay.dc.title
         itemFieldDisplay.dc.title.alternative
 
@@ -716,6 +718,42 @@
                                 <xsl:copy-of select="node()"/>
                             </span>
                             <xsl:if test="count(following-sibling::dim:field[@element='description'][@qualifier='abstract']) != 0">
+                                <br />
+                            </xsl:if>
+                        </xsl:for-each>
+                    </td>
+                </tr>
+                <xsl:call-template name="itemSummaryView-DIM-fields">
+                    <xsl:with-param name="clause" select="($clause + 1)"/>
+                    <xsl:with-param name="phase" select="$otherPhase"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="itemSummaryView-DIM-fields">
+                    <xsl:with-param name="clause" select="($clause + 1)"/>
+                    <xsl:with-param name="phase" select="$phase"/>
+                </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+
+
+
+    <xsl:template name="itemFieldDisplay.dc.description.academicmajor">
+        <xsl:param name="clause" />
+        <xsl:param name="phase" />
+        <xsl:param name="otherPhase" />
+        <xsl:choose>
+            <xsl:when test="dim:field[@element='description'][@qualifier='academicmajor']">
+                <tr class="ds-table-row {$phase}">
+                    <td class="field-label"><span class="bold"><i18n:text>metadata.dc.description.academicmajor</i18n:text>:</span></td>
+                    <td class="field-data">
+                        <xsl:for-each select="dim:field[@element='description'][@qualifier='academicmajor']">
+                            <span>
+                                <xsl:copy-of select="node()"/>
+                            </span>
+                            <xsl:if test="count(following-sibling::dim:field[@element='description'][@qualifier='academicmajor']) != 0">
                                 <br />
                             </xsl:if>
                         </xsl:for-each>
@@ -1513,6 +1551,42 @@
                                 <xsl:copy-of select="node()"/>
                             </span>
                             <xsl:if test="count(following-sibling::dim:field[@element='subject'][@qualifier='lcsh']) != 0">
+                                <br />
+                            </xsl:if>
+                        </xsl:for-each>
+                    </td>
+                </tr>
+                <xsl:call-template name="itemSummaryView-DIM-fields">
+                    <xsl:with-param name="clause" select="($clause + 1)"/>
+                    <xsl:with-param name="phase" select="$otherPhase"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="itemSummaryView-DIM-fields">
+                    <xsl:with-param name="clause" select="($clause + 1)"/>
+                    <xsl:with-param name="phase" select="$phase"/>
+                </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+
+
+
+    <xsl:template name="itemFieldDisplay.dc.subject.other">
+        <xsl:param name="clause" />
+        <xsl:param name="phase" />
+        <xsl:param name="otherPhase" />
+        <xsl:choose>
+            <xsl:when test="dim:field[@element='subject'][@qualifier='other']">
+                <tr class="ds-table-row {$phase}">
+                    <td class="field-label"><span class="bold"><i18n:text>metadata.dc.subject.other</i18n:text>:</span></td>
+                    <td class="field-data">
+                        <xsl:for-each select="dim:field[@element='subject'][@qualifier='other']">
+                            <span>
+                                <xsl:copy-of select="node()"/>
+                            </span>
+                            <xsl:if test="count(following-sibling::dim:field[@element='subject'][@qualifier='other']) != 0">
                                 <br />
                             </xsl:if>
                         </xsl:for-each>
