@@ -1907,6 +1907,7 @@
 	<message key="metadata.dc.date.issued">Issue Date</message>
 	<message key="metadata.dc.description">Description</message>
 	<message key="metadata.dc.description.abstract">Abstract</message>
+	<message key="metadata.dc.description.academicmajor">Academic Major</message>
 	<message key="metadata.dc.description.embargo">Embargo</message>
 	<message key="metadata.dc.description.embargoterm">Embargo Term</message>
 	<message key="metadata.dc.description.sponsorship">Sponsors</message>
@@ -1934,6 +1935,7 @@
 	<message key="metadata.dc.source.uri">OSU Library Catalog</message>
 	<message key="metadata.dc.subject">Keywords</message>
 	<message key="metadata.dc.subject.lcsh">Subjects (LCSH)</message>
+	<message key="metadata.dc.subject.other">Subjects (Other)</message>
 	<message key="metadata.dc.subject.nalt">Subjects (NALT)</message>
 	<message key="metadata.dc.title">Title</message>
 	<message key="metadata.dc.title.alternative">Other Titles</message>
