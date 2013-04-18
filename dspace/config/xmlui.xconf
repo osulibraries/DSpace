@@ -160,8 +160,11 @@
     <theme path="article/" handle="1811/5916" name="Empirical Musicology Review" />
     <theme path="archives/" handle="1811/46669" name="Makio" />
     <theme path="archives/" handle="1811/46456" name="OSU Football Programs 1901-1977" />
+    <theme path="sesposters/" handle="1811/54587" name="Campus as a Living Laboratory Archive" />
+    <theme path="sesposters/" handle="1811/54562" name="Engineering Capstone Design Showcase Projects" />
+    
 
-        <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
+    <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
     
     <!-- Everything Else is Default Theme -->
