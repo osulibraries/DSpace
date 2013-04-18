@@ -136,6 +136,8 @@
     
     <theme path="gallery/" handle="1811/37313" name="University archives photo archives" />
     <theme path="gallery/" handle="1811/47556" name="Charles H. McCaghy Collection of Exotic Dance from Burlesque to Clubs" />
+
+    <theme path="lep_gallery/" handle="1811/54232" name="Logan Elm Press" />
     
     <!-- webui styles imports -->
     <theme path="video/" handle="1811/5951" name="Videos of Ohio rivers" />
