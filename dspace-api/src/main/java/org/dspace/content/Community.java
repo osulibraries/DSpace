@@ -1239,7 +1239,7 @@ public class Community extends DSpaceObject
      *
      * @return  total items
      */
-    public Integer countItems() throws SQLException
+    public int countItems() throws SQLException
     {       
     	int total = 0;
     	// add collection counts
