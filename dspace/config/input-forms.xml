@@ -161,6 +161,10 @@
 <!--20 December 2012: edited honors-departments value-pairs list - mpw-->
 <!--31 December 2012: year end changes - edited honors-departments value-pairs list, OARDC-posters-departments value-pairs list, and ses-posters value-pairs list - mpw-->
 <!--22 February 2013: added collection to forum form - mpw -->
+<!--9 April 2013: edited honors-departments value-pairs list and honors-majors value-pairs list - mpw -->
+<!--18 April 2013: added eng-cap form and living-lab form and added collections to forms - mpw -->
+<!--18 April 2013: edited theses form and honors-majors value-pairs list - mpw -->
+<!--18 April 2013: added eng-cap-area and living-lab-subjects value-pairs lists - mpw -->
 
 
 <!-- 
@@ -315,11 +319,377 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 		<name-map collection-handle="1811/45834" form-name="video-generic"/>
 		<name-map collection-handle="1811/45850" form-name="video-generic"/>
 		<name-map collection-handle="1811/127" form-name="osul-pub"/>
+		<name-map collection-handle="1811/54562" form-name="eng-cap"/>
+		<name-map collection-handle="1811/54587" form-name="living-lab"/>
 	</form-map>
 
 
 	<form-definitions>
 
+
+<!--                                              Campus as a Living Laboratory                                                -->
+		
+		<form name="living-lab">
+			<page number="1">
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>creator</dc-element>
+					<dc-qualifier/>
+					<repeatable>true</repeatable>
+					<label>Author</label>
+					<input-type>name</input-type>
+					<hint>Enter the name(s) of the author(s) of this project below.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>contributor</dc-element>
+					<dc-qualifier>advisor</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Advisor</label>
+					<input-type>name</input-type>
+					<hint>Enter the name(s) of your faculty advisor(s) below.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>title</dc-element>
+					<dc-qualifier/>
+					<repeatable>false</repeatable>
+					<label>Title</label>
+					<input-type>onebox</input-type>
+					<hint>Enter the title of your project.</hint>
+					<required>Please enter the title of your project in this field.</required>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>title</dc-element>
+					<dc-qualifier>alternative</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Other Titles</label>
+					<input-type>onebox</input-type>
+					<hint>If your project has any alternate titles, please enter them below.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>date</dc-element>
+					<dc-qualifier>issued</dc-qualifier>
+					<repeatable>false</repeatable>
+					<label>Semester Completed</label>
+					<input-type>date</input-type>
+					<hint>Please enter the last month of the current semester and the current year below.</hint>
+					<required>Please enter the last month of the current semester and the current year below.</required>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>relation</dc-element>
+					<dc-qualifier>ispartofseries</dc-qualifier>
+					<repeatable>false</repeatable>
+					<label>Series</label>
+					<input-type>onebox</input-type>
+					<hint>"The Ohio State University Campus as a Living Laboratory Student Report. [Year]" should appear in this field.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>description</dc-element>
+					<dc-qualifier>academicmajor</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Academic Major</label>
+					<input-type value-pairs-name="honors-majors">dropdown</input-type>
+					<hint>Please select your academic major(s) from the list below. **If your academic major is not listed, please select "Academic major is not listed" and enter your major name in the next field.</hint>
+					<required>Please select your academic major(s) from the list below. **If your major is not listed, please select "Academic major is not listed" and enter your major name in the next field.</required>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>relation</dc-element>
+					<dc-qualifier>haspart</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Academic Major (Not Listed Above)</label>
+					<input-type>onebox</input-type>
+					<hint>If your academic major is not in the list above, enter your academic major name here.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>type</dc-element>
+					<dc-qualifier/>
+					<repeatable>true</repeatable>
+					<label>Type</label>
+					<input-type value-pairs-name="common_types">dropdown</input-type>
+					<hint>Select the type(s) of content you are submitting. To select more than one value in the list, you may have to hold down the "CTRL" or "Shift" key.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>language</dc-element>
+					<dc-qualifier>iso</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Language</label>
+					<input-type value-pairs-name="common_iso_languages">dropdown</input-type>
+					<hint>Select the language of the main content of the item. If the language does not appear in the list below, please select 'Other'. If the content does not really have a language (for example, if it is a dataset or an image) please select 'N/A'.</hint>
+					<required/>
+				</field>
+			</page>
+			<page number="2">
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>subject</dc-element>
+					<dc-qualifier>other</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Project Category</label>
+					<input-type value-pairs-name="living-lab-subjects">dropdown</input-type>
+					<hint>Choose the appropriate category or categories from the list.</hint>
+					<required>Choose the appropriate category or categories from the list.</required>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>subject</dc-element>
+					<dc-qualifier/>
+					<!--  An input-type of twobox MUST be marked as repeatable  -->
+					<repeatable>true</repeatable>
+					<label>Project topic(s) or keywords</label>
+					<input-type>twobox</input-type>
+					<hint>Enter 4-6 appropriate topic keywords or phrases that describe your project below. Enter one keyword or phrase per box, click "Add more" to add additional keywords.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>description</dc-element>
+					<dc-qualifier>abstract</dc-qualifier>
+					<repeatable>false</repeatable>
+					<label>Project Summary</label>
+					<input-type>textarea</input-type>
+					<hint>Enter a short description of your project below.</hint>
+					<required>Please enter the description of your project below.</required>
+				</field>
+				
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>description</dc-element>
+					<dc-qualifier/>
+					<repeatable>true</repeatable>
+					<label>Course Code</label>
+					<input-type>onebox</input-type>
+					<hint>Enter course code, preceded by "Course Code:" below. Example: "Course Code: ENR 2320" </hint>
+					<required>Please enter the course code for your project below.</required>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>description</dc-element>
+					<dc-qualifier>sponsorship</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Sponsors</label>
+					<input-type>textarea</input-type>
+					<hint>Enter the names of any sponsor(s) and/or funding source(s) in the box below. Please use one field per sponsor.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>publisher</dc-element>
+					<dc-qualifier/>
+					<repeatable>false</repeatable>
+					<label>Publisher</label>
+					<input-type>onebox</input-type>
+					<hint>Enter the name of the publisher of the previously issued instance of this item.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>identifier</dc-element>
+					<dc-qualifier>citation</dc-qualifier>
+					<repeatable>false</repeatable>
+					<label>Published Citation</label>
+					<input-type>onebox</input-type>
+					<hint>If your submission has already been published, please enter the citation below.</hint>
+					<required/>
+				</field>
+			</page>
+		</form>
+		
+		
+		<!--                                              Engineering Capstone Design Showcase                                                -->
+		
+		<form name="eng-cap">
+			<page number="1">
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>creator</dc-element>
+					<dc-qualifier/>
+					<repeatable>true</repeatable>
+					<label>Author</label>
+					<input-type>name</input-type>
+					<hint>Enter the name(s) of the author(s) of this project below.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>contributor</dc-element>
+					<dc-qualifier>advisor</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Advisor</label>
+					<input-type>name</input-type>
+					<hint>Enter the name(s) of your faculty advisor(s) below.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>title</dc-element>
+					<dc-qualifier/>
+					<repeatable>false</repeatable>
+					<label>Title</label>
+					<input-type>onebox</input-type>
+					<hint>Enter the title of your project.</hint>
+					<required>Please enter the title of your project in this field.</required>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>title</dc-element>
+					<dc-qualifier>alternative</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Other Titles</label>
+					<input-type>onebox</input-type>
+					<hint>If your project has any alternate titles, please enter them below.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>date</dc-element>
+					<dc-qualifier>issued</dc-qualifier>
+					<repeatable>false</repeatable>
+					<label>Showcase Date</label>
+					<input-type>date</input-type>
+					<hint>The date of the Showcase should appear below.</hint>
+					<required>The date of the Showcase should appear in this field.</required>
+				</field>
+				
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>relation</dc-element>
+					<dc-qualifier>ispartofseries</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Project Category</label>
+					<input-type value-pairs-name="eng-cap-area">dropdown</input-type>
+					<hint>Please select the project category from the list below. **If your project category is not listed, please select "category is not listed" and enter your category name in the next field.</hint>
+					<required>Please select your project category from the list below. **If your project category is not listed, please select "category is not listed" and enter your project category name in the next field.</required>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>relation</dc-element>
+					<dc-qualifier>ispartof</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Project Category (Not Listed Above)</label>
+					<input-type>onebox</input-type>
+					<hint>If the project category is not in the list above, enter your project category name here.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>description</dc-element>
+					<dc-qualifier>academicmajor</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Academic Major</label>
+					<input-type value-pairs-name="honors-majors">dropdown</input-type>
+					<hint>Please select your academic major(s) from the list below. **If your academic major is not listed, please select "Academic major is not listed" and enter your major name in the next field.</hint>
+					<required>Please select your academic major(s) from the list below. **If your major is not listed, please select "Academic Major is not listed" and enter your major name in the next field.</required>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>relation</dc-element>
+					<dc-qualifier>haspart</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Academic Major (Not Listed Above)</label>
+					<input-type>onebox</input-type>
+					<hint>If your academic major is not in the list above, enter your academic major name here.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>type</dc-element>
+					<dc-qualifier/>
+					<repeatable>true</repeatable>
+					<label>Type</label>
+					<input-type value-pairs-name="common_types">dropdown</input-type>
+					<hint>Select the type(s) of content you are submitting. To select more than one value in the list, you may have to hold down the "CTRL" or "Shift" key.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>language</dc-element>
+					<dc-qualifier>iso</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Language</label>
+					<input-type value-pairs-name="common_iso_languages">dropdown</input-type>
+					<hint>Select the language of the main content of the item. If the language does not appear in the list below, please select 'Other'. If the content does not really have a language (for example, if it is a dataset or an image) please select 'N/A'.</hint>
+					<required/>
+				</field>
+			</page>
+			<page number="2">
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>subject</dc-element>
+					<dc-qualifier/>
+					<!--  An input-type of twobox MUST be marked as repeatable  -->
+					<repeatable>true</repeatable>
+					<label>Project topic(s) or keywords</label>
+					<input-type>twobox</input-type>
+					<hint>Enter 4-6 appropriate topic keywords or phrases that describe your project below. Enter one keyword or phrase per box, click "Add more" to add additional keywords.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>description</dc-element>
+					<dc-qualifier>abstract</dc-qualifier>
+					<repeatable>false</repeatable>
+					<label>Project Summary</label>
+					<input-type>textarea</input-type>
+					<hint>Enter a short description of your project below.</hint>
+					<required>Please enter the description of your project below.</required>
+				</field>
+				
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>description</dc-element>
+					<dc-qualifier/>
+					<repeatable>true</repeatable>
+					<label>Award Statement</label>
+					<input-type>onebox</input-type>
+					<hint>Enter statement about any award(s) the project has received below.</hint>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>description</dc-element>
+					<dc-qualifier>sponsorship</dc-qualifier>
+					<repeatable>true</repeatable>
+					<label>Sponsors</label>
+					<input-type>textarea</input-type>
+					<hint>Enter the names of any sponsor(s) and/or funding source(s) in the box below. Please use one field per sponsor.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>publisher</dc-element>
+					<dc-qualifier/>
+					<repeatable>false</repeatable>
+					<label>Publisher</label>
+					<input-type>onebox</input-type>
+					<hint>Enter the name of the publisher of the previously issued instance of this item.</hint>
+					<required/>
+				</field>
+				<field>
+					<dc-schema>dc</dc-schema>
+					<dc-element>identifier</dc-element>
+					<dc-qualifier>citation</dc-qualifier>
+					<repeatable>false</repeatable>
+					<label>Published Citation</label>
+					<input-type>onebox</input-type>
+					<hint>If your submission has already been published, please enter the citation below.</hint>
+					<required/>
+				</field>
+			</page>
+		</form>
+		
 		<!--                                                                         OSUL Research, Publications, and Presentations                                                     -->
 		<form name="osul-pub">
 			<page number="1">
@@ -3406,8 +3776,8 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 				</field>
 				<field>
 					<dc-schema>dc</dc-schema>
-					<dc-element>relation</dc-element>
-					<dc-qualifier/>
+					<dc-element>description</dc-element>
+					<dc-qualifier>academicmajor</dc-qualifier>
 					<repeatable>true</repeatable>
 					<label>Academic Major</label>
 					<input-type value-pairs-name="honors-majors">dropdown</input-type>
@@ -5017,6 +5387,83 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 			</pair>
 		</value-pairs>
 		
+		<value-pairs value-pairs-name="eng-cap-area" dc-term="relation.ispartofseries">
+			<pair>
+				<displayed-value>My project category is not listed</displayed-value>
+				<stored-value>Project category is not listed.</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Aeronautical Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Aeronautical Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Biomedical Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Biomedical Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Chemical and Biomolecular Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Chemical and Biomolecular Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Civil and Environmental Engineeering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Civil and Environmental Engineeering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Computer Science Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Computer Science Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Electrical Computer Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Electrical Computer Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Food, Agricultural, Biological Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Food, Agricultural, Biological Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Integrated Systems Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Integrated Systems Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Material Science Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Material Science Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Mechanical Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Mechanical Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Multidisciplinary Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Multidisciplinary Engineering. 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Welding Engineering</displayed-value>
+				<stored-value>The Ohio State University. Engineering Capstone Design Showcase. Welding Engineering. 2013</stored-value>
+			</pair>
+		</value-pairs>
+		
+		<value-pairs value-pairs-name="living-lab-subjects" dc-term="subject.other">
+			<pair>
+				<displayed-value>Community</displayed-value>
+				<stored-value>Community</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Ecology</displayed-value>
+				<stored-value>Ecology</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Energy</displayed-value>
+				<stored-value>Energy</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Materials</displayed-value>
+				<stored-value>Materials</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Transportation</displayed-value>
+				<stored-value>Transportation</stored-value>
+			</pair>
+		</value-pairs>
 
 		<value-pairs value-pairs-name="ses-posters" dc-term="relation.ispartofseries">
 			<pair>
@@ -5251,6 +5698,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 				<stored-value>The Ohio State University. Department of Dance Honors Theses; 2013</stored-value>
 			</pair>
 			<pair>
+				<displayed-value>Design</displayed-value>
+				<stored-value>The Ohio State University. Department of Design Honors Theses; 2013</stored-value>
+			</pair>
+			<pair>
 				<displayed-value>Earth Sciences</displayed-value>
 				<stored-value>The Ohio State University. School of Earth Sciences Honors Theses; 2013</stored-value>
 			</pair>
@@ -5289,6 +5740,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 			<pair>
 				<displayed-value>Evolution, Ecology, and Organismal Biology</displayed-value>
 				<stored-value>The Ohio State University. Department of Evolution, Ecology, and Organismal Biology Honors Theses; 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Film Studies</displayed-value>
+				<stored-value>The Ohio State University. Film Studies Program Honors Theses; 2013</stored-value>
 			</pair>
 			<pair>
 				<displayed-value>Finance</displayed-value>
@@ -5415,8 +5870,16 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 				<stored-value>The Ohio State University. Department of Microbiology Honors Theses; 2013</stored-value>
 			</pair>
 			<pair>
+				<displayed-value>Middle Childhood Education</displayed-value>
+				<stored-value>The Ohio State University. Middle Childhood Education Program Honors Theses; 2013</stored-value>
+			</pair>
+			<pair>
 				<displayed-value>Military Science </displayed-value>
 				<stored-value>The Ohio State University. Department of Military Science Honors Theses; 2013</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Molecular and Cellular Biochemistry</displayed-value>
+				<stored-value>The Ohio State University. Department of Molecular and Cellular Biochemistry; 2013</stored-value>
 			</pair>
 			<pair>
 				<displayed-value>Molecular Genetics</displayed-value>
@@ -5474,11 +5937,11 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 				<displayed-value>Psychology</displayed-value>
 				<stored-value>The Ohio State University. Department of Psychology Honors Theses; 2013</stored-value>
 			</pair>
-<pair>
+			<pair>
 				<displayed-value>Public Affairs</displayed-value>
 				<stored-value>The Ohio State University. John Glenn School of Public Affairs Honors Theses; 2013</stored-value>
 			</pair>
-<pair>
+			<pair>
 				<displayed-value>Public Health</displayed-value>
 				<stored-value>The Ohio State University. College of Public Health Honors Theses; 2013</stored-value>
 			</pair>
@@ -5525,7 +5988,7 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 		</value-pairs>
 		
 		
-		<value-pairs value-pairs-name="honors-majors" dc-term="relation">
+		<value-pairs value-pairs-name="honors-majors" dc-term="description.academicmajor">
 			<pair>
 				<displayed-value>My academic major is not listed</displayed-value>
 				<stored-value>Academic Major is not listed.</stored-value>
@@ -5615,6 +6078,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 				<stored-value>Academic Major: Aviation</stored-value>
 			</pair>
 			<pair>
+				<displayed-value>Aviation Management</displayed-value>
+				<stored-value>Academic Major: Aviation Management</stored-value>
+			</pair>
+			<pair>
 				<displayed-value>Biochemistry</displayed-value>
 				<stored-value>Academic Major: Biochemistry</stored-value>
 			</pair>
@@ -5629,10 +6096,6 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 			<pair>
 				<displayed-value>Biomedical Science</displayed-value>
 				<stored-value>Academic Major: Biomedical Science</stored-value>
-			</pair>
-			<pair>
-				<displayed-value>Business Management</displayed-value>
-				<stored-value>Academic Major: Business Management</stored-value>
 			</pair>
 			<pair>
 				<displayed-value>Chemical Engineering</displayed-value>
@@ -5681,6 +6144,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 			<pair>
 				<displayed-value>Construction Systems Management</displayed-value>
 				<stored-value>Academic Major: Construction Systems Management</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Consumer and Family Financial Services</displayed-value>
+				<stored-value>Academic Major: Consumer and Family Financial Services</stored-value>
 			</pair>
 			<pair>
 				<displayed-value>Criminology and Criminal Justice Studies</displayed-value>
@@ -5855,6 +6322,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 				<stored-value>Academic Major: Health Promotion, Nutrition, and Exercise Science</stored-value>
 			</pair>
 			<pair>
+				<displayed-value>Health Sciences Management</displayed-value>
+				<stored-value>Academic Major: Health Sciences Management</stored-value>
+			</pair>
+			<pair>
 				<displayed-value>Health Sciences Program</displayed-value>
 				<stored-value>Academic Major: Health Sciences Program</stored-value>
 			</pair>
@@ -5897,6 +6368,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 			<pair>
 				<displayed-value>Information Systems</displayed-value>
 				<stored-value>Academic Major: Information Systems</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Insurance</displayed-value>
+				<stored-value>Academic Major: Insurance</stored-value>
 			</pair>
 			<pair>
 				<displayed-value>Interior Design</displayed-value>
@@ -6003,10 +6478,6 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 				<stored-value>Academic Major: Music - Education</stored-value>
 			</pair>
 			<pair>
-				<displayed-value>Music - History</displayed-value>
-				<stored-value>Academic Major: Music - History</stored-value>
-			</pair>
-			<pair>
 				<displayed-value>Music - Jazz Studies</displayed-value>
 				<stored-value>Academic Major: Music - Jazz Studies</stored-value>
 			</pair>
@@ -6079,6 +6550,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 				<stored-value>Academic Major: Portuguese</stored-value>
 			</pair>
 			<pair>
+				<displayed-value>Professional Golf Management</displayed-value>
+				<stored-value>Academic Major: Professional Golf Management</stored-value>
+			</pair>
+			<pair>
 				<displayed-value>Psychology</displayed-value>
 				<stored-value>Academic Major: Psychology</stored-value>
 			</pair>
@@ -6107,10 +6582,6 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 				<stored-value>Academic Major: Respiratory Therapy</stored-value>
 			</pair>
 			<pair>
-				<displayed-value>Risk Management and Insurance</displayed-value>
-				<stored-value>Academic Major: Risk Management and Insurance</stored-value>
-			</pair>
-			<pair>
 				<displayed-value>Romance Studies</displayed-value>
 				<stored-value>Academic Major: Romance Studies</stored-value>
 			</pair>
@@ -6121,6 +6592,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 			<pair>
 				<displayed-value>Sexuality Studies</displayed-value>
 				<stored-value>Academic Major: Sexuality Studies</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Social Sciences Air Transportation</displayed-value>
+				<stored-value>Academic Major: Social Sciences Air Transportation</stored-value>
 			</pair>
 			<pair>
 				<displayed-value>Social Work</displayed-value>
