@@ -511,7 +511,7 @@
             <!--<i18n:text>xmlui.dri2xhtml.structural.footer-promotional</i18n:text>-->
             <div id="ds-footer-left">
                 <div class="ir" id="footer-osu-logo">The Ohio State University Logo</div>
-                <p>If you have problems with the site, difficulty accessing portions of it due to incompatibility with adaptive technology, or need information in an alternative format, please contact the <a href="mailto:libkbhelp@lists.acs.ohio-state.edu">system administrators</a>.</p>
+                <p>If you have problems with the site, difficulty accessing portions of it due to incompatibility with adaptive technology, or need information in an alternative format, please contact the <a href="mailto:libkbhelp@lists.osu.edu">system administrators</a>.</p>
             </div>
             <div id="ds-footer-right">
                 <div id="ds-footer-links">
