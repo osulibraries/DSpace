@@ -27,6 +27,7 @@
                 <dspace.database.password>dspace</dspace.database.password>
 
                 <dspace.mail.server.disabled>false</dspace.mail.server.disabled>
+                <dspace.mail.from.address>kbnoreply@osu.edu</dspace.mail.from.address>
                 <dspace.webui.browse.render-scientific-formulas>false</dspace.webui.browse.render-scientific-formulas>
 
                 <dspace.xmlui.user.assumelogin>false</dspace.xmlui.user.assumelogin>
