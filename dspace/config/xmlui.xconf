@@ -164,7 +164,7 @@
     <theme path="archives/" handle="1811/46456" name="OSU Football Programs 1901-1977" />
     <theme path="sesposters/" handle="1811/54587" name="Campus as a Living Laboratory Archive" />
     <theme path="sesposters/" handle="1811/54562" name="Engineering Capstone Design Showcase Projects" />
-    
+    <theme path="sesposters/" handle="1811/54651" name="Denman Undergraduate Research Forum" />    
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
