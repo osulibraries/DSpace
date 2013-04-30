@@ -2,22 +2,19 @@ package org.dspace.disseminate;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.draw.LineSeparator;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.Bitstream;
+import org.dspace.content.*;
 import org.dspace.content.Collection;
-import org.dspace.content.DCValue;
-import org.dspace.content.Item;
 import org.dspace.core.ConfigurationManager;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The Citation Document produces a dissemination package (DIP) that is different that the archival package (AIP).
@@ -202,76 +199,116 @@ public class CitationDocument {
         cDoc.open();
         writer.setCompressionLevel(0);
 
-        //Set up some fonts
-        Font beforeAfterFont = FontFactory.getFont(FontFactory.TIMES_BOLD, 12f, new BaseColor(153, 0, 0));
-        Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 30f, new BaseColor(0, 0, 0));
-        Font headerFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 18f, new BaseColor(9, 9, 9));
+        Item item = cMeta.getItem();
 
-        //Construct title and header paragraphs
-        Paragraph title = new Paragraph(cMeta.getItem().getName(), titleFont);
-        title.setLeading(0f, 1f);
+        //Set up some fonts
+        Font helv26 =           FontFactory.getFont(FontFactory.HELVETICA,          26f,    BaseColor.BLACK);
+        Font helv16 =           FontFactory.getFont(FontFactory.HELVETICA,          16f,    BaseColor.BLACK);
+        Font helv12 =           FontFactory.getFont(FontFactory.HELVETICA,          12f,    BaseColor.BLACK);
+        Font helv12_italic =    FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE,  12f,    BaseColor.BLACK);
+        Font helv11_bold =      FontFactory.getFont(FontFactory.HELVETICA_BOLD,     11f,    BaseColor.BLACK);
+        Font helv9 =            FontFactory.getFont(FontFactory.HELVETICA,          9f,     BaseColor.BLACK);
+
+        // 1 - Header:
+        //  University Name
+        //  Repository Name                                                        repository.url
+        Paragraph university = new Paragraph("The Ohio State University", helv11_bold);
+        cDoc.add(university);
+
+        PdfPTable repositoryTable = new PdfPTable(2);
+        repositoryTable.setWidthPercentage(100);
+
+        Chunk repositoryName =  new Chunk("Knowledge Bank", helv11_bold);
+        PdfPCell nameCell = new PdfPCell();
+        nameCell.setBorderWidth(0);
+        nameCell.addElement(repositoryName);
+
+        Chunk repositoryURL =   new Chunk("kb.osu.edu", helv11_bold);
+        repositoryURL.setAnchor("http://kb.osu.edu");
+
+        PdfPCell urlCell = new PdfPCell();
+        urlCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        urlCell.setBorderWidth(0);
+        urlCell.addElement(repositoryURL);
+
+        repositoryTable.addCell(nameCell);
+        repositoryTable.addCell(urlCell);
+
+        repositoryTable.setSpacingAfter(5);
+
+        cDoc.add(repositoryTable);
+
+        // Line Separator
+        LineSeparator lineSeparator = new LineSeparator();
+        cDoc.add(lineSeparator);
+
+        // 2 - Bread Crumbs
+        // Community Name                                                          Collection Name
+        PdfPTable breadcrumbTable = new PdfPTable(2);
+        breadcrumbTable.setWidthPercentage(100);
+
+        Chunk communityName =  new Chunk(getOwningCommunity(item), helv9);
+        PdfPCell commCell = new PdfPCell();
+        commCell.setBorderWidth(0);
+        commCell.addElement(communityName);
+
+        Chunk collectionName =   new Chunk(getOwningCollection(item), helv9);
+        PdfPCell collCell = new PdfPCell();
+        collCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        collCell.setBorderWidth(0);
+        collCell.addElement(collectionName);
+
+        breadcrumbTable.addCell(commCell);
+        breadcrumbTable.addCell(collCell);
+
+        breadcrumbTable.setSpacingBefore(5);
+        breadcrumbTable.setSpacingAfter(5);
+
+        cDoc.add(breadcrumbTable);
+
+        // Line Separator
+        cDoc.add(lineSeparator);
+
+        // 3 - Metadata
+        // date.issued
+        // dc.title
+        // dc.creator; dc.creator
+        Paragraph dateIssued = new Paragraph(getFirstMetadata(item, "dc.date.issued"), helv12);
+        dateIssued.setSpacingBefore(20);
+        cDoc.add(dateIssued);
+
+        Paragraph title = new Paragraph(item.getName(), helv26);
+        title.setSpacingBefore(15);
         cDoc.add(title);
 
-        Phrase beforeCollection = new Phrase(1f, "This file appeared in the following Collection:", beforeAfterFont);
-        Paragraph fromPara = new Paragraph(beforeCollection);
-        fromPara.setLeading(1f, 1.5f);
-        cDoc.add(fromPara);
+        Paragraph creators = new Paragraph(getAllMetadataSeperated(item, "dc.creator"), helv16);
+        creators.setSpacingBefore(30);
+        creators.setSpacingAfter(20);
+        cDoc.add(creators);
 
-        Phrase collectionPhrase = new Phrase(1f, cMeta.getCollection().getName(), headerFont);
-        Paragraph collectionPara = new Paragraph(collectionPhrase);
-        collectionPara.setLeading(1f, 1.5f);
-        cDoc.add(collectionPara);
+        // Line Separator
+        cDoc.add(lineSeparator);
 
-        //Add OSU logo to citation page.
-        if (LOGO_RESOURCE.length() > 0) {
-            if (!this.addLogoToDocument(cDoc, writer, LOGO_RESOURCE)) {
-                log.debug("Unable to add logo from " + LOGO_RESOURCE);
-            }
-        }
+        // 4 - Citation
+        // dc.identifier.citation
+        // dc.identifier.uri
+        Paragraph citation      = new Paragraph(getFirstMetadata(item, "dc.identifier.citation"), helv12);
 
-        //Iterate through METADATA and display each entry
-        Font metaKeyFont = FontFactory.getFont(FontFactory.COURIER_BOLD, 11f, new BaseColor(24, 24, 24));
-        String handleURI = null;
-        for (Map.Entry<String, String> entry : cMeta.getMetaData().entrySet()) {
-            //Construct a nicely fomatted string.
-            Rectangle pageSize = cDoc.getPageSize();
-            Float remainingWidth = (pageSize.getWidth() - cDoc.rightMargin() - cDoc.leftMargin()) / 10.0f - entry.getKey().length();
-            log.debug("Remaining width: " + remainingWidth);
-            Paragraph metaItem = new Paragraph();
-            metaItem.add(new Phrase(1f, entry.getKey() + ": ", metaKeyFont));
-            if (entry.getValue().length() < remainingWidth) {
-                metaItem.add(new Phrase(entry.getValue()));
-                cDoc.add(metaItem);
-            } else {
-                cDoc.add(metaItem);
-                Paragraph valPara = new Paragraph(entry.getValue());
-                valPara.setLeading(0f, 1.1f);
-                valPara.setSpacingAfter(0.5f);
-                valPara.setIndentationLeft(36f);
-                cDoc.add(valPara);
-            }
-            if (entry.getKey().toLowerCase().contains("identifier.uri")) {
-                handleURI = entry.getValue();
-                log.debug("Found handle URI: " + entry.getKey() + " -> " + entry.getValue());
-            }
-        }
+        Chunk identifierChunk = new Chunk(getFirstMetadata(item, "dc.identifier.uri"), helv12);
+        identifierChunk.setAnchor(getFirstMetadata(item, "dc.identifier.uri"));
 
-        //If we have a handle, make a QR code to it
-        if (handleURI != null) {
-            BarcodeQRCode qrCode = new BarcodeQRCode(handleURI, 100, 100, null);
-            Image qrImage = qrCode.getImage();
-            float x = cDoc.getPageSize().getWidth() - qrImage.getScaledWidth();
-            float y = 0;
-            qrImage.setAbsolutePosition(x, y);
-            cDoc.add(qrImage);
-            //Writer a label for the QR Code
-            PdfContentByte cb = writer.getDirectContent();
-            cb.beginText();
-            cb.moveText(x, y + qrImage.getHeight() - 15f);
-            cb.setFontAndSize(FontFactory.getFont(FontFactory.HELVETICA).getBaseFont(), 6f);
-            cb.showText(handleURI);
-            cb.endText();
-        }
+        Paragraph identifier    = new Paragraph();
+        identifier.add(identifierChunk);
+
+
+        cDoc.add(citation);
+        cDoc.add(identifier);
+
+        // 5 - License
+        // Downloaded from the Knowledge Bank, The Ohio State University's institutional repository
+        Paragraph license = new Paragraph("Downloaded from the Knowledge Bank, The Ohio State University's institutional repository", helv12_italic);
+        license.setSpacingBefore(10);
+        cDoc.add(license);
 
         cDoc.close();
     }
@@ -342,6 +379,50 @@ public class CitationDocument {
             ret = false;
         }
         return ret;
+    }
+
+    public String getOwningCommunity(Item item) {
+        try {
+            Community[] comms = item.getCommunities();
+            if(comms.length > 0) {
+                return comms[0].getName();
+            } else {
+                return "No Community";
+            }
+
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            return e.getMessage();
+        }
+    }
+
+    public String getOwningCollection(Item item) {
+        try {
+            return item.getOwningCollection().getName();
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            return e.getMessage();
+        }
+    }
+
+    public String getFirstMetadata(Item item, String metadataKey) {
+        DCValue[] dcValues = item.getMetadata(metadataKey);
+        if(dcValues != null && dcValues.length > 0) {
+            return dcValues[0].value;
+        } else {
+            return "No Data";
+        }
+    }
+
+    public String getAllMetadataSeperated(Item item, String metadataKey) {
+        DCValue[] dcValues = item.getMetadata(metadataKey);
+        ArrayList<String> valueArray = new ArrayList<String>();
+
+        for(DCValue dcValue : dcValues) {
+            valueArray.add(dcValue.value);
+        }
+
+        return StringUtils.join(valueArray.toArray(), ';');
     }
 
     /**

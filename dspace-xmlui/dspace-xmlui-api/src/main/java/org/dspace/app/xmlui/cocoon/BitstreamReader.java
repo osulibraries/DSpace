@@ -352,7 +352,7 @@ public class BitstreamReader extends AbstractReader implements Recyclable
                     log.error("Caught an error with intercepting the citation document:" + e.getMessage());
                 }
                 
-                
+                //End of CitationDocument
             } else {
                 this.bitstreamInputStream = bitstream.retrieve();
                 this.bitstreamSize = bitstream.getSize();
