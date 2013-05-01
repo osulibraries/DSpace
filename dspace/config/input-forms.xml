@@ -169,6 +169,8 @@
 <!--22 April 2013: edited living-lab form - mpw-->
 <!--25 April 2013: added denman form - mpw-->
 <!--25 April 2013: added denman-awards value-pairs list - mpw-->
+<!--1 May 2013: edited denman-awards value-pairs list - mpw-->
+<!--1 May 2013: added collections to denman form - mpw-->
 
 <!-- 
 add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_Projects/Test KB/Input Forms/input-forms.dtd"'
@@ -325,6 +327,11 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 		<name-map collection-handle="1811/54562" form-name="eng-cap"/>
 		<name-map collection-handle="1811/54587" form-name="living-lab"/>
 		<name-map collection-handle="1811/54652" form-name="denman"/>
+		<name-map collection-handle="1811/54719" form-name="denman"/>
+		<name-map collection-handle="1811/54720" form-name="denman"/>
+		<name-map collection-handle="1811/54721" form-name="denman"/>
+		<name-map collection-handle="1811/54722" form-name="denman"/>
+		<name-map collection-handle="1811/54723" form-name="denman"/>
 	</form-map>
 
 
@@ -6864,6 +6871,30 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 			<pair>
 				<displayed-value>Business/Education/Speech and Hearing Science: 3rd Place</displayed-value>
 				<stored-value>Business/Education/Speech and Hearing Science: 3rd Place (The Ohio State University Denman Undergraduate Research Forum)</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Business/Social and Behavioral Sciences: 1st Place</displayed-value>
+				<stored-value>Business/Social and Behavioral Sciences: 1st Place (The Ohio State University Denman Undergraduate Research Forum)</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Business/Social and Behavioral Sciences: 2nd Place</displayed-value>
+				<stored-value>Business/Social and Behavioral Sciences: 2nd Place (The Ohio State University Denman Undergraduate Research Forum)</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Business/Social and Behavioral Sciences: 3rd Place</displayed-value>
+				<stored-value>Business/Social and Behavioral Sciences: 3rd Place (The Ohio State University Denman Undergraduate Research Forum)</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Education/Speech and Hearing Science: 1st Place</displayed-value>
+				<stored-value>Education/Speech and Hearing Science: 1st Place (The Ohio State University Denman Undergraduate Research Forum)</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Education/Speech and Hearing Science: 2nd Place</displayed-value>
+				<stored-value>Education/Speech and Hearing Science: 2nd Place (The Ohio State University Denman Undergraduate Research Forum)</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Education/Speech and Hearing Science: 3rd Place</displayed-value>
+				<stored-value>Education/Speech and Hearing Science: 3rd Place (The Ohio State University Denman Undergraduate Research Forum)</stored-value>
 			</pair>
 			<pair>
 				<displayed-value>Engineering: 1st Place</displayed-value>
