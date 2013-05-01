@@ -165,6 +165,9 @@
     <theme path="sesposters/" handle="1811/54587" name="Campus as a Living Laboratory Archive" />
     <theme path="sesposters/" handle="1811/54562" name="Engineering Capstone Design Showcase Projects" />
     <theme path="sesposters/" handle="1811/54651" name="Denman Undergraduate Research Forum" />    
+    <theme path="oca_gallery/" handle="1811/53392" name="Image Gallery - Cromie"/>
+    <theme path="oca_gallery/" handle="1811/53223" name="Image Gallery - Jesse Owens Photographs"/>
+
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
