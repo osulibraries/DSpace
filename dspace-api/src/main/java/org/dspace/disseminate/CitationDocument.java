@@ -6,9 +6,12 @@ import com.itextpdf.text.pdf.draw.LineSeparator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dspace.authorize.AuthorizeException;
+import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.*;
 import org.dspace.content.Collection;
 import org.dspace.core.ConfigurationManager;
+import org.dspace.core.Context;
+import org.dspace.handle.HandleManager;
 
 import java.io.*;
 import java.net.URL;
@@ -50,6 +53,24 @@ public class CitationDocument {
      */
     private static final Set<String> SVG_MIMES = new HashSet<String>();
 
+    /**
+     * Comma separated list of collections handles to enable citation for.
+     * webui.citation.enabled_collections, default empty/none. ex: =1811/123, 1811/345
+     */
+    private static String citationEnabledCollections = null;
+
+    /**
+     * Comma separated list of community handles to enable citation for.
+     * webui.citation.enabled_communties, default empty/none. ex: =1811/123, 1811/345
+     */
+    private static String citationEnabledCommunities = null;
+
+    /**
+     * List of all enabled collections, inherited/determined for those under communities.
+     */
+    private static ArrayList<String> citationEnabledCollectionsList;
+
+
     static {
         // Add valid format MIME types to set. This could be put in the Schema
         // instead.
@@ -69,25 +90,129 @@ public class CitationDocument {
 
         //Populate VALID_TYPES
         VALID_TYPES.addAll(PDF_MIMES);
+
+
+        //Load enabled collections
+        citationEnabledCollections = ConfigurationManager.getProperty("disseminate-citation", "enabled_collections");
+        citationEnabledCollectionsList = new ArrayList<String>();
+        if(citationEnabledCollections != null && citationEnabledCollections.length() > 0) {
+            String[] collectionChunks = citationEnabledCollections.split(",");
+            for(String collectionString : collectionChunks) {
+                citationEnabledCollectionsList.add(collectionString.trim());
+            }
+
+        }
+
+        //Load enabled communities, and add to collection-list
+        citationEnabledCommunities = ConfigurationManager.getProperty("disseminate-citation", "enabled_communities");
+        if(citationEnabledCollectionsList == null) {
+            citationEnabledCollectionsList = new ArrayList<String>();
+        }
+
+        if(citationEnabledCommunities != null && citationEnabledCommunities.length() > 0) {
+            try {
+                String[] communityChunks = citationEnabledCommunities.split(",");
+                for(String communityString : communityChunks) {
+                    Context context = new Context();
+                    DSpaceObject dsoCommunity = HandleManager.resolveToObject(context, communityString.trim());
+                    if(dsoCommunity instanceof Community) {
+                        Community community = (Community)dsoCommunity;
+                        Collection[] collections = community.getAllCollections();
+
+                        for(Collection collection : collections) {
+                            citationEnabledCollectionsList.add(collection.getHandle());
+                        }
+                    } else {
+                        log.error("Invalid community for citation.enabled_communities, value:" + communityString.trim());
+                    }
+
+                }
+            } catch (SQLException e) {
+                log.error(e.getMessage());
+            }
+
+        }
     }
-
-    /**
-     * Tag line for the header of the citation page.
-     */
-    private static final String HEADER_LINE = ConfigurationManager.getProperty(
-            "citationpage", "header_line", "DSpace - Document Management System");
-
-    /**
-     * The location of the logo to be used on the citation page.
-     */
-    private static final String LOGO_RESOURCE = ConfigurationManager.getProperty(
-            "citationpage", "logo_resource", "");
 
 
     public CitationDocument() {
     }
+
+    /**
+     * Boolean to determine is citation-functionality is enabled globally for entire site.
+     * config/module/disseminate-citation: enable_globally, default false. true=on, false=off
+     */
+    private static Boolean citationEnabledGlobally = null;
+
+    private static boolean isCitationEnabledGlobally() {
+        if(citationEnabledGlobally == null) {
+            citationEnabledGlobally = ConfigurationManager.getBooleanProperty("disseminate-citation", "enable_globally", false);
+        }
+
+        return citationEnabledGlobally;
+    }
+
+
+
+
+    private static boolean isCitationEnabledThroughCollection(Bitstream bitstream) throws SQLException {
+        //TODO Should we re-check configs, and set the collections list?
+
+        DSpaceObject owningDSO = bitstream.getParentObject();
+        if(owningDSO instanceof Item) {
+            Item item = (Item)owningDSO;
+
+            Collection[] collections = item.getCollections();
+
+            for(Collection collection : collections) {
+                if(citationEnabledCollectionsList.contains(collection.getHandle())) {
+                    return true;
+                }
+            }
+        }
+
+        // If previous logic didn't return true, then we're false
+        return false;
+    }
+
+
+
+
+    /**
+     * Repository policy can specify to have a custom citation cover/tail page to the document, which embeds metadata.
+     * We need to determine if we will intercept this bitstream download, and give out a citation dissemination rendition.
+     *
+     * What will trigger a redirect/intercept?
+     *  Citation enabled globally (all citable bitstreams will get "watermarked") modules/disseminate-citation: enable_globally
+     *    OR
+     *  The container is this object is whitelist enabled.
+     *      - community:  modules/disseminate-citation: enabled_communities
+     *      - collection: modules/disseminate-citation: enabled_collections
+     * AND
+     *  This User is not an admin. (Admins need to be able to view the "raw" original instead.)
+     * AND
+     *  This object is citation-able (presently, just PDF)
+     *
+     *  The module must be enabled, before the permission level checks happen.
+     * @param bitstream
+     * @return
+     */
+    public static Boolean isCitationEnabledForBitstream(Bitstream bitstream, Context context) throws SQLException {
+        if(isCitationEnabledGlobally() || isCitationEnabledThroughCollection(bitstream)) {
+
+            boolean adminUser = AuthorizeManager.isAdmin(context);
+
+            if(!adminUser && canGenerateCitationVersion(bitstream)) {
+                return true;
+            }
+
+        }
+
+        // If previous logic didn't return true, then we're false.
+        return false;
+    }
     
-    public boolean canGenerateCitationVersion(Bitstream bitstream) {
+    public static boolean canGenerateCitationVersion(Bitstream bitstream) {
         return VALID_TYPES.contains(bitstream.getFormat().getMIMEType());        
     }
     
