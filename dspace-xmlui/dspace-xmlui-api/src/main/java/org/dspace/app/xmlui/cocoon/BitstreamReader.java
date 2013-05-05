@@ -318,17 +318,13 @@ public class BitstreamReader extends AbstractReader implements Recyclable
             // 1) Intercepting Enabled
             // 2) This User is not an admin
             // 3) This object is citation-able
-            boolean isCitationEnabled = ConfigurationManager.getBooleanProperty("webui.citation.enabled", false);
-            boolean isUserAdmin = AuthorizeManager.isAdmin(context);
-
-            CitationDocument citationDocument = new CitationDocument();
-
-            if (isCitationEnabled && !isUserAdmin && citationDocument.canGenerateCitationVersion(bitstream)) {
+            if (CitationDocument.isCitationEnabledForBitstream(bitstream, context)) {
                 // on-the-fly citation generator
                 log.info(item.getHandle() + " - " + bitstream.getName() + " is citable.");
                 
                 File citedDocument = null;
                 FileInputStream fileInputStream = null;
+                CitationDocument citationDocument = new CitationDocument();
                 
                 try {
                     //Create the cited document
