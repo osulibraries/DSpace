@@ -211,6 +211,21 @@ public class CitationDocument {
         // If previous logic didn't return true, then we're false.
         return false;
     }
+
+    /**
+     * Should the citation page be the first page of the document, or the last page?
+     * default => true. true => first page, false => last page
+     * citation_as_first_page=true
+     */
+    private static Boolean citationAsFirstPage = null;
+
+    private static Boolean isCitationFirstPage() {
+        if(citationAsFirstPage == null) {
+            citationAsFirstPage = ConfigurationManager.getBooleanProperty("disseminate-citation", "citation_as_first_page", true);
+        }
+
+        return citationAsFirstPage;
+    }
     
     public static boolean canGenerateCitationVersion(Bitstream bitstream) {
         return VALID_TYPES.contains(bitstream.getFormat().getMIMEType());        
@@ -287,8 +302,17 @@ public class CitationDocument {
         OutputStream citedOut = new FileOutputStream(citedTemp);
         PdfConcatenate concat = new PdfConcatenate(citedOut);
         concat.open();
-        concat.addPages(source);
-        concat.addPages(cover);
+
+        //Is the citation-page the first page or last-page?
+        if(isCitationFirstPage()) {
+            //citation as cover page
+            concat.addPages(cover);
+            concat.addPages(source);
+        } else {
+            //citation as tail page
+            concat.addPages(source);
+            concat.addPages(cover);
+        }
 
         //Put all of our labels in from the orignal document.
         if (labels != null) {
