@@ -37,6 +37,12 @@
                 <dspace.statistics.elasticsearch.clusterName>dspaceelastic</dspace.statistics.elasticsearch.clusterName>
                 <dspace.statistics.elasticsearch.indexName>unset</dspace.statistics.elasticsearch.indexName>
                 <dspace.statistics.elasticsearch.indexType>stats</dspace.statistics.elasticsearch.indexType>
+
+                <disseminate-citation.enable-globally>false</disseminate-citation.enable-globally>
+                <disseminate-citation.enabled_collections></disseminate-citation.enabled_collections>
+                <disseminate-citation.enabled_communities></disseminate-citation.enabled_communities>
+                <disseminate-citation.citation_as_first_page>true</disseminate-citation.citation_as_first_page>
+
             </properties>
         </profile>
 
