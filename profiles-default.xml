@@ -43,6 +43,8 @@
                 <disseminate-citation.enabled_communities></disseminate-citation.enabled_communities>
                 <disseminate-citation.citation_as_first_page>true</disseminate-citation.citation_as_first_page>
 
+                <gallery.item_pager.enabled>false</gallery.item_pager.enabled>
+
             </properties>
         </profile>
 

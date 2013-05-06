@@ -238,6 +238,36 @@
                 </xsl:for-each>
             </script>
 
+            <!-- Previous / Next buttons -->
+            <xsl:if test="$previousItemHandle or $nextItemHandle">
+                <ul id="pager" class="pager">
+                    <xsl:if test="$previousItemHandle">
+                        <li class="previous">
+                            <a>
+                                <xsl:attribute name="href">
+                                    <xsl:text>/dspace/handle/</xsl:text>
+                                    <xsl:value-of select="$previousItemHandle"/>
+                                    <xsl:text>#pager</xsl:text>
+                                </xsl:attribute>
+                                <xsl:text>&#8592; Previous</xsl:text>
+                            </a>
+                        </li>
+                    </xsl:if>
+                    <xsl:if test="$nextItemHandle">
+                        <li class="next">
+                            <a>
+                                <xsl:attribute name="href">
+                                    <xsl:text>/dspace/handle/</xsl:text>
+                                    <xsl:value-of select="$nextItemHandle"/>
+                                    <xsl:text>#pager</xsl:text>
+                                </xsl:attribute>
+                                Next &#8594;</a>
+                        </li>
+                    </xsl:if>
+                </ul>
+            </xsl:if>
+
+
             <!-- Photos Div. JavaScript is required to load the images. -->
             <div id="photos">&#160;</div>
         </xsl:if>
