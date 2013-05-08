@@ -539,7 +539,7 @@ public class CitationDocument {
             if(comms.length > 0) {
                 return comms[0].getName();
             } else {
-                return "No Community";
+                return " ";
             }
 
         } catch (SQLException e) {
@@ -562,7 +562,7 @@ public class CitationDocument {
         if(dcValues != null && dcValues.length > 0) {
             return dcValues[0].value;
         } else {
-            return "No Data";
+            return " ";
         }
     }
 
