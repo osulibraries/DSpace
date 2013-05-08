@@ -158,6 +158,11 @@ public class CitationDocument {
     private static boolean isCitationEnabledThroughCollection(Bitstream bitstream) throws SQLException {
         //TODO Should we re-check configs, and set the collections list?
 
+        //Reject quickly if no-enabled collections
+        if(citationEnabledCollectionsList.size() == 0) {
+            return false;
+        }
+
         DSpaceObject owningDSO = bitstream.getParentObject();
         if(owningDSO instanceof Item) {
             Item item = (Item)owningDSO;
