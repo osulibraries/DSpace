@@ -284,10 +284,8 @@ public class CitationDocument {
         //Read the source bitstream
         PdfReader source = new PdfReader(bitstream.retrieve());
 
-        //Determine the size of the first page so the
-        //citation page can be the same.
-        Rectangle pdfSize = source.getCropBox(1);
-        Document citedDoc = new Document(pdfSize);
+        Document citedDoc = new Document(PageSize.LETTER);
+
         File coverTemp = File.createTempFile(bitstream.getName(), ".cover.pdf");
 
         //Need a writer instance to make changed to the document.
@@ -302,7 +300,7 @@ public class CitationDocument {
         //Get page labels from source document
         String[] labels = PdfPageLabels.getPageLabels(source);
 
-        //Concatente the finished cover page with the source document.
+        //Concatenate the finished cover page with the source document.
         File citedTemp = File.createTempFile(bitstream.getName(), ".cited.pdf");
         OutputStream citedOut = new FileOutputStream(citedTemp);
         PdfConcatenate concat = new PdfConcatenate(citedOut);
