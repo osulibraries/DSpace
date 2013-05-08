@@ -576,7 +576,7 @@ public class CitationDocument {
             valueArray.add(dcValue.value);
         }
 
-        return StringUtils.join(valueArray.toArray(), ';');
+        return StringUtils.join(valueArray.toArray(), "; ");
     }
 
     /**
