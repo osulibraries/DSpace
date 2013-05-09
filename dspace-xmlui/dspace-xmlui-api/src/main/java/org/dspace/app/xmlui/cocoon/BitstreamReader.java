@@ -148,6 +148,9 @@ public class BitstreamReader extends AbstractReader implements Recyclable
     /** True if user agent making this request was identified as spider. */
     private boolean isSpider = false;
 
+    /** TEMP file for citation PDF. We will save here, so we can delete the temp file when done.  */
+    private File tempFile;
+
     /**
      * Set up the bitstream reader.
      *
@@ -321,28 +324,27 @@ public class BitstreamReader extends AbstractReader implements Recyclable
             if (CitationDocument.isCitationEnabledForBitstream(bitstream, context)) {
                 // on-the-fly citation generator
                 log.info(item.getHandle() + " - " + bitstream.getName() + " is citable.");
-                
-                File citedDocument = null;
+
                 FileInputStream fileInputStream = null;
                 CitationDocument citationDocument = new CitationDocument();
                 
                 try {
                     //Create the cited document
-                    citedDocument = citationDocument.makeCitedDocument(bitstream);
-                    if(citedDocument == null) {
+                    tempFile = citationDocument.makeCitedDocument(bitstream);
+                    if(tempFile == null) {
                         log.error("CitedDocument was null");
                     } else {
-                        log.info("CitedDocument was ok," + citedDocument.getAbsolutePath());
+                        log.info("CitedDocument was ok," + tempFile.getAbsolutePath());
                     }
                     
                     
-                    fileInputStream = new FileInputStream(citedDocument);
+                    fileInputStream = new FileInputStream(tempFile);
                     if(fileInputStream == null) {
                         log.error("Error opening fileInputStream: ");
                     }
                     
                     this.bitstreamInputStream = fileInputStream;
-                    this.bitstreamSize = citedDocument.length();
+                    this.bitstreamSize = tempFile.length();
                     
                 } catch (Exception e) {
                     log.error("Caught an error with intercepting the citation document:" + e.getMessage());
@@ -709,6 +711,11 @@ public class BitstreamReader extends AbstractReader implements Recyclable
             {
                 // Close the bitstream input stream so that we don't leak a file descriptor
                 this.bitstreamInputStream.close();
+
+                // If citation created a temp file, now is the time to delete that temp file.
+                if(tempFile != null) {
+                    tempFile.delete();
+                }
                 
                 // Close the output stream as per Cocoon docs: http://cocoon.apache.org/2.2/core-modules/core/2.2/681_1_1.html
                 out.close();

@@ -333,6 +333,11 @@ public class CitationDocument {
         //Close it up
         concat.close();
 
+        //Close the cover-page
+        writer.close();
+        coverTemp.delete();
+
+        citedTemp.deleteOnExit();
         return citedTemp;
     }
 
