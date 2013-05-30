@@ -323,6 +323,11 @@ public class ElasticSearchLogger {
                 log.debug(e.getMessage(), e);
             }
 
+            String userAgent = request.getHeader("User-Agent");
+            if(userAgent!=null) {
+                docBuilder.field("userAgent", userAgent);
+            }
+
             // Save the location information if valid, save the event without
             // location information if not valid
             if(locationService == null) {
