@@ -286,9 +286,17 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
 
         if(dso instanceof Site) {
             //Goodies for site-as-a-whole view.
+
+            //Hits to BITSTREAM vs ITEM vs COLLECTION vs COMMUNITY
             summaryFacets.add(facetTopTypes);
+
+            //Top User IP's, probably Spiders
             summaryFacets.add(facetTopUniqueIP);
+
+            //Not needed on homepage
             summaryFacets.add(facetTopUSCities);
+
+
             summaryFacets.add(facetTopBitstreamsAllTime);
         }
 
