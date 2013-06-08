@@ -89,6 +89,8 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
             ));
     
     protected static AbstractFacetBuilder facetTopUniqueIP = FacetBuilders.termsFacet("top_unique_ips").field("ip");
+
+    protected static AbstractFacetBuilder facetTopUniqueDNS = FacetBuilders.termsFacet("top_unique_dns").field("dns.untouched").size(50);
     
     protected static AbstractFacetBuilder facetTopTypes = FacetBuilders.termsFacet("top_types").field("type");
 
@@ -292,6 +294,8 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
 
             //Top User IP's, probably Spiders
             summaryFacets.add(facetTopUniqueIP);
+
+            summaryFacets.add(facetTopUniqueDNS);
 
             //Not needed on homepage
             summaryFacets.add(facetTopUSCities);
