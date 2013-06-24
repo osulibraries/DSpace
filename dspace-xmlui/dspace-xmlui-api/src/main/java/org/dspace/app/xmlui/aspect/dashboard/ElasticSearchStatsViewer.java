@@ -367,21 +367,26 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
     }
     
     public SearchRequestBuilder facetedQueryBuilder(List<AbstractFacetBuilder> facetList) {
-        FilterBuilder rangeFilter = FilterBuilders.rangeFilter("time").from(dateStart).to(dateEnd);
-        FilteredQueryBuilder filteredQueryBuilder;
+        FilterBuilder dateRangeFilter = FilterBuilders.rangeFilter("time").from(dateStart).to(dateEnd);
 
+        QueryBuilder containerScopeQuery;
         if(dso instanceof Collection || dso instanceof Community) {
-            TermQueryBuilder termQuery = QueryBuilders.termQuery(getOwningText(dso), dso.getID());
-            filteredQueryBuilder = QueryBuilders.filteredQuery(termQuery, rangeFilter);
+            containerScopeQuery = QueryBuilders.termQuery(getOwningText(dso), dso.getID());
         } else {
             //Need a no-op query to join.. All, as opposed to specify a owning-something
-            MatchAllQueryBuilder allQueryBuilder = QueryBuilders.matchAllQuery();
-            filteredQueryBuilder = QueryBuilders.filteredQuery(allQueryBuilder, rangeFilter);
+            containerScopeQuery = QueryBuilders.matchAllQuery();
         }
+
+        FilteredQueryBuilder filteredQueryBuilder = QueryBuilders.filteredQuery(containerScopeQuery, dateRangeFilter);
+
+        QueryBuilder scopedDatedDebottedQuery = QueryBuilders.boolQuery()
+                .must(filteredQueryBuilder)
+                .mustNot(QueryBuilders.termQuery("isBot", true))
+                .mustNot(QueryBuilders.termQuery("isBotUA", true));
 
         SearchRequestBuilder searchRequestBuilder = client.prepareSearch(ElasticSearchLogger.getInstance().indexName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-                .setQuery(filteredQueryBuilder)
+                .setQuery(scopedDatedDebottedQuery)
                 .setSize(0);
 
         for(AbstractFacetBuilder facet : facetList) {
