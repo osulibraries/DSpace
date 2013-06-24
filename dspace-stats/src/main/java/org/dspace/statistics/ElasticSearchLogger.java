@@ -14,7 +14,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.log4j.Logger;
 import org.dspace.content.*;
-import org.dspace.content.Collection;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
 import org.dspace.eperson.EPerson;
@@ -41,8 +40,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
@@ -587,31 +588,8 @@ public class ElasticSearchLogger {
 
     //Robot maintenance
     public static void markRobots() {
-        log.info("Is GoogleBot a spider: " + SpiderDetector.isSpiderRegex("GoogleBot"));
-
-        Pattern googleRegex = Pattern.compile("Googlebot");
-
-
-
-
-
-        //Make repeated queries against ES data for things that match the regex.
-        //TODO Can we multi-query many regexes?
-        Set<Pattern> spidersRegex = SpiderDetector.getSpidersRegex();
-        for(Pattern spiderRegex : spidersRegex) {
-
-
-            //TermsFilterBuilder termsFilterBuilder = TermFilterBuilder.Params
-        }
-
-        //AbstractFacetBuilder facetMonthlyDownloads = FacetBuilders.dateHistogramFacet("monthly_downloads").field("time").interval("month")
-        //        .facetFilter(FilterBuilders.andFilter(
-        //                FilterBuilders.termFilter("type", "BITSTREAM"),
-        //                justOriginals
-        //        ));
-
-        //client.close();
-
+        log.info("Is GoogleBot a spider: " + SpiderDetector.isSpiderByUserAgentRegex("GoogleBot"));
+        // Use elasticsearch-reindex for performing markRobots maintenance.
 
     }
 
