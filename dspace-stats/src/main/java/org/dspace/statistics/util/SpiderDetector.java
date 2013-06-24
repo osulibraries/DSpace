@@ -138,7 +138,7 @@ public class SpiderDetector {
         /*
         * 1) If the IP address matches the spider IP addresses (this is the current implementation)
         */
-        boolean checkSpidersIP = ConfigurationManager.getBooleanProperty("spider.ipmatch.enabled", true);
+        boolean checkSpidersIP = ConfigurationManager.getBooleanProperty("usage-statistics", "spider.ipmatch.enabled", true);
         if (checkSpidersIP) {
             if (SolrLogger.isUseProxies() && request.getHeader("X-Forwarded-For") != null) {
                 /* This header is a comma delimited list */
@@ -189,7 +189,7 @@ public class SpiderDetector {
         /*
          * 2) if the user-agent header is empty - DISABLED BY DEFAULT -
          */
-        boolean checkSpidersEmptyAgent = ConfigurationManager.getBooleanProperty("spider.agentempty.enabled", false);
+        boolean checkSpidersEmptyAgent = ConfigurationManager.getBooleanProperty("usage-statistics", "spider.agentempty.enabled", false);
         if (checkSpidersEmptyAgent) {
             if (userAgent == null || userAgent.length() == 0) {
                 log.debug("spider.agentempty");
@@ -199,7 +199,7 @@ public class SpiderDetector {
         /*
          * 3) if the user-agent corresponds to one of the regexes at http://www.projectcounter.org/r4/COUNTER_robot_txt_list_Jan_2011.txt
          */
-        boolean checkSpidersTxt = ConfigurationManager.getBooleanProperty("spider.agentregex.enabled", true);
+        boolean checkSpidersTxt = ConfigurationManager.getBooleanProperty("usage-statistics", "spider.agentregex.enabled", true);
         if (checkSpidersTxt) {
 
             if (userAgent != null && !userAgent.equals("")) {
@@ -289,49 +289,67 @@ public class SpiderDetector {
 
     /**
      * Populate static Set spidersRegex from local txt file.
+     * Original file downloaded from http://www.projectcounter.org/r4/COUNTER_robot_txt_list_Jan_2011.txt during build
      */
-    public static void loadRegexPatternFile(String spiderListPath, Set<Pattern> spidersRegexSet) {
-        spidersRegexSet = new HashSet<Pattern>();
+    public static void loadUserAgentSpiders() {
+        userAgentSpidersRegex = new HashSet<Pattern>();
 
+        String spidersTxt = ConfigurationManager.getProperty("usage-statistics", "spider.agentregex.regexfile");
         DataInputStream in = null;
         try {
-            FileInputStream fstream = new FileInputStream(spiderListPath);
+            FileInputStream fstream = new FileInputStream(spidersTxt);
             in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String strLine;
             while ((strLine = br.readLine()) != null) {
-                spidersRegexSet.add(Pattern.compile(strLine, Pattern.CASE_INSENSITIVE));
+                userAgentSpidersRegex.add(Pattern.compile(strLine, Pattern.CASE_INSENSITIVE));
             }
-            log.info("Loaded Spider Regex file: " + spiderListPath);
+            log.info("Loaded Spider Regex file: " + spidersTxt);
         } catch (FileNotFoundException e) {
-            log.info("File with spiders regex not found @ " + spiderListPath);
+            log.info("File with spiders regex not found @ " + spidersTxt);
         } catch (IOException e) {
-            log.info("Could not read from file " + spiderListPath);
+            log.info("Could not read from file " + spidersTxt);
         } finally {
             try {
                 if (in != null) {
                     in.close();
                 }
             } catch (IOException e) {
-                log.info("Could not close file " + spiderListPath);
+                log.info("Could not close file " + spidersTxt);
             }
         }
     }
 
-    /*
-     * Original file downloaded from http://www.projectcounter.org/r4/COUNTER_robot_txt_list_Jan_2011.txt during build
+    /**
+     * Populate static Set spidersRegex from local txt file.
      */
-    public static void loadUserAgentSpiders() {
-        // /dspace/config/Spiders-UserAgent.txt
-        String spidersTxt = ConfigurationManager.getProperty("spider.agentregex.regexfile");
-        loadRegexPatternFile(spidersTxt, userAgentSpidersRegex);
-    }
-
-    // Domain Name
     public static void loadDomainNameSpiders() {
-        // /dspace/config/Spiders-DomainName.txt
-        String domainRegexPath = ConfigurationManager.getProperty("spider.domain.regexfile");
-        loadRegexPatternFile(domainRegexPath, domainNameSpidersRegex);
+        domainNameSpidersRegex = new HashSet<Pattern>();
+
+        String spidersTxt = ConfigurationManager.getProperty("usage-statistics", "spider.domain.regexfile");
+        DataInputStream in = null;
+        try {
+            FileInputStream fstream = new FileInputStream(spidersTxt);
+            in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+            while ((strLine = br.readLine()) != null) {
+                domainNameSpidersRegex.add(Pattern.compile(strLine, Pattern.CASE_INSENSITIVE));
+            }
+            log.info("Loaded Spider Regex file: " + spidersTxt);
+        } catch (FileNotFoundException e) {
+            log.info("File with spiders regex not found @ " + spidersTxt);
+        } catch (IOException e) {
+            log.info("Could not read from file " + spidersTxt);
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                log.info("Could not close file " + spidersTxt);
+            }
+        }
     }
 
     public static Set<Pattern> getUserAgentSpidersRegex() {
