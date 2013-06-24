@@ -37,8 +37,15 @@ public class SpiderDetector {
      */
     private static IPTable table = null;
 
-    private static Set<Pattern> spidersRegex = null;
-    private static Set<String> spidersMatched = null;
+    // UserAgent Regex set for matching.
+    private static Set<Pattern> userAgentSpidersRegex = null;
+    // Matched UserAgent set for faster matching.
+    private static Set<String> userAgentSpidersMatched = null;
+
+    // DomainName Regex set for matching.
+    private static Set<Pattern> domainNameSpidersRegex = null;
+    // Matched DomainName set for faster matching.
+    private static Set<String> domainNameSpiderMatched = null;
 
     /**
      * Utility method which Reads the ip addresses out a file & returns them in a Set
@@ -152,6 +159,8 @@ public class SpiderDetector {
          */
         String userAgent = request.getHeader("user-agent");
         return isSpiderByUserAgent(userAgent);
+
+        // Todo isSpiderByDomainName(domainName)
     }
 
     /**
@@ -194,7 +203,7 @@ public class SpiderDetector {
         if (checkSpidersTxt) {
 
             if (userAgent != null && !userAgent.equals("")) {
-                return isSpiderRegex(userAgent);
+                return isSpiderByUserAgentRegex(userAgent);
             }
         }
 
@@ -211,28 +220,65 @@ public class SpiderDetector {
      * @param userAgent String
      * @return true if the user-agent matches a regex
      */
-    public static boolean isSpiderRegex(String userAgent) {
-        if (spidersMatched != null && spidersMatched.contains(userAgent)) {
-            log.debug("spider.agentregex");
+    public static boolean isSpiderByUserAgentRegex(String userAgent) {
+        if (userAgentSpidersMatched != null && userAgentSpidersMatched.contains(userAgent)) {
+            log.info("SPIDER(M): " + userAgent);
             return true;
         } else {
-            if (spidersRegex == null) {
-                loadSpiderRegexFromFile();
+            if (userAgentSpidersRegex == null) {
+                loadUserAgentSpiders();
             }
 
-            if (spidersRegex != null) {
-                Object[] regexArray = spidersRegex.toArray();
+            if (userAgentSpidersRegex != null) {
+                Object[] regexArray = userAgentSpidersRegex.toArray();
                 for (Object regex : regexArray) {
                     Matcher matcher = ((Pattern) regex).matcher(userAgent);
                     if (matcher.find()) {
-                        if (spidersMatched == null) {
-                            spidersMatched = new HashSet<String>();
+                        if (userAgentSpidersMatched == null) {
+                            userAgentSpidersMatched = new HashSet<String>();
                         }
-                        if (spidersMatched.size() >= 100) {
-                            spidersMatched.clear();
+
+                        //Prevent boundless set, perhaps a better caching object could be used instead (i.e. recency)
+                        if (userAgentSpidersMatched.size() >= 100) {
+                            userAgentSpidersMatched.clear();
                         }
-                        spidersMatched.add(userAgent);
-                        log.debug("spider.agentregex");
+
+                        userAgentSpidersMatched.add(userAgent);
+                        log.info("SPIDER: " + userAgent);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    //TODO DRY up this code, tricky part is to loadxxSpiders()
+    public static boolean isSpiderByDomainNameRegex(String domainName) {
+        if (domainNameSpiderMatched != null && domainNameSpiderMatched.contains(domainName)) {
+            log.info("SPIDER(M): " + domainName);
+            return true;
+        } else {
+            if (domainNameSpidersRegex == null) {
+                loadDomainNameSpiders();
+            }
+
+            if (domainNameSpidersRegex != null) {
+                Object[] regexArray = domainNameSpidersRegex.toArray();
+                for (Object regex : regexArray) {
+                    Matcher matcher = ((Pattern) regex).matcher(domainName);
+                    if (matcher.find()) {
+                        if (domainNameSpiderMatched == null) {
+                            domainNameSpiderMatched = new HashSet<String>();
+                        }
+
+                        //Prevent boundless set, perhaps a better caching object could be used instead (i.e. recency)
+                        if (domainNameSpiderMatched.size() >= 100) {
+                            domainNameSpiderMatched.clear();
+                        }
+
+                        domainNameSpiderMatched.add(domainName);
+                        log.info("SPIDER: " + domainName);
                         return true;
                     }
                 }
@@ -243,49 +289,64 @@ public class SpiderDetector {
 
     /**
      * Populate static Set spidersRegex from local txt file.
-     * Original file downloaded from http://www.projectcounter.org/r4/COUNTER_robot_txt_list_Jan_2011.txt during build
      */
-    public static void loadSpiderRegexFromFile() {
-        spidersRegex = new HashSet<Pattern>();
-        String spidersTxt = ConfigurationManager.getProperty("spider.agentregex.regexfile");
+    public static void loadRegexPatternFile(String spiderListPath, Set<Pattern> spidersRegexSet) {
+        spidersRegexSet = new HashSet<Pattern>();
+
         DataInputStream in = null;
         try {
-            FileInputStream fstream = new FileInputStream(spidersTxt);
+            FileInputStream fstream = new FileInputStream(spiderListPath);
             in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String strLine;
             while ((strLine = br.readLine()) != null) {
-                spidersRegex.add(Pattern.compile(strLine, Pattern.CASE_INSENSITIVE));
+                spidersRegexSet.add(Pattern.compile(strLine, Pattern.CASE_INSENSITIVE));
             }
-            log.info("Loaded Spider Regex file: " + spidersTxt);
+            log.info("Loaded Spider Regex file: " + spiderListPath);
         } catch (FileNotFoundException e) {
-            log.error("File with spiders regex not found @ " + spidersTxt);
+            log.info("File with spiders regex not found @ " + spiderListPath);
         } catch (IOException e) {
-            log.error("Could not read from file " + spidersTxt);
+            log.info("Could not read from file " + spiderListPath);
         } finally {
             try {
                 if (in != null) {
                     in.close();
                 }
             } catch (IOException e) {
-                log.error("Could not close file " + spidersTxt);
+                log.info("Could not close file " + spiderListPath);
             }
         }
     }
 
-    public static Set<Pattern> getSpidersRegex() {
-        return spidersRegex;
+    /*
+     * Original file downloaded from http://www.projectcounter.org/r4/COUNTER_robot_txt_list_Jan_2011.txt during build
+     */
+    public static void loadUserAgentSpiders() {
+        // /dspace/config/Spiders-UserAgent.txt
+        String spidersTxt = ConfigurationManager.getProperty("spider.agentregex.regexfile");
+        loadRegexPatternFile(spidersTxt, userAgentSpidersRegex);
     }
 
-    public static void setSpidersRegex(Set<Pattern> spidersRegex) {
-        SpiderDetector.spidersRegex = spidersRegex;
+    // Domain Name
+    public static void loadDomainNameSpiders() {
+        // /dspace/config/Spiders-DomainName.txt
+        String domainRegexPath = ConfigurationManager.getProperty("spider.domain.regexfile");
+        loadRegexPatternFile(domainRegexPath, domainNameSpidersRegex);
     }
 
-    public static Set<String> getSpidersMatched() {
-        return spidersMatched;
+    public static Set<Pattern> getUserAgentSpidersRegex() {
+        return userAgentSpidersRegex;
     }
 
-    public static void setSpidersMatched(Set<String> spidersMatched) {
-        SpiderDetector.spidersMatched = spidersMatched;
+    public static void setUserAgentSpidersRegex(Set<Pattern> spidersRegex) {
+        SpiderDetector.userAgentSpidersRegex = spidersRegex;
+    }
+
+    public static Set<String> getUserAgentSpidersMatched() {
+        return userAgentSpidersMatched;
+    }
+
+    public static void setUserAgentSpidersMatched(Set<String> spidersMatched) {
+        SpiderDetector.userAgentSpidersMatched = spidersMatched;
     }
 }
