@@ -323,6 +323,11 @@ public class ElasticSearchLogger {
                 log.debug(e.getMessage(), e);
             }
 
+            String userAgent = request.getHeader("User-Agent");
+            if(userAgent!=null) {
+                docBuilder.field("userAgent", userAgent);
+            }
+
             // Save the location information if valid, save the event without
             // location information if not valid
             if(locationService == null) {
@@ -579,6 +584,17 @@ public class ElasticSearchLogger {
         } else {
             return configDrivenValue;
         }
+    }
+
+    //Robot maintenance
+    public static void markRobots() {
+        log.info("Is GoogleBot a spider: " + SpiderDetector.isSpiderByUserAgentRegex("GoogleBot"));
+        // Use elasticsearch-reindex for performing markRobots maintenance.
+
+    }
+
+    public static void deleteRobotsByIsBotFlag() {
+
     }
 
 }
