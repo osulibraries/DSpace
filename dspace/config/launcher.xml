@@ -300,6 +300,14 @@
     </command>
 
     <command>
+        <name>stats-util-es</name>
+        <description>Statistics Client for Maintenance of ElasticSearch Statistics Indexes</description>
+        <step>
+            <class>org.dspace.statistics.util.StatisticsClientElasticSearch</class>
+        </step>
+    </command>
+
+    <command>
         <name>structure-builder</name>
         <description>Build DSpace community and collection structure</description>
         <step>

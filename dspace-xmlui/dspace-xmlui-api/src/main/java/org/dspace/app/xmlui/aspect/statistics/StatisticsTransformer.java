@@ -194,23 +194,18 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         dateStart = reportGenerator.getDateStart();
         dateEnd = reportGenerator.getDateEnd();
 
-        // 1 - Number of Items in The Container (Community/Collection) (monthly and cumulative for the year)
-        if(dso instanceof Collection || dso instanceof Community) {
+
+        if(isContainer(dso)) {
+            // 1 - Number of Items in The Container (Community/Collection) (monthly and cumulative for the year)
             addItemsInContainer(dso, division);
-        }
 
-        // 2 - Number of Files in The Container (monthly and cumulative)
-        if(dso instanceof Collection || dso instanceof Community) {
+            // 2 - Number of Files in The Container (monthly and cumulative)
             addFilesInContainer(dso, division);
-        }
 
-        // 3 - Number of File Downloads in the container (monthly and cumulative)
-        if(dso instanceof Collection || dso instanceof Community) {
+            // 3 - Number of File Downloads in the container (monthly and cumulative)
             addFileDownloadsInContainer(dso, division);
-        }
 
-        // 4 - Unique visitors
-        if(dso instanceof Collection || dso instanceof Community) {
+            // 4 - Unique visitors
             addUniqueVisitorsToContainer(dso, division);
         }
 
@@ -268,7 +263,7 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
      * @param division
      */
     public void addTopItems(DSpaceObject dso, Division division) {
-        if ((dso instanceof org.dspace.content.Collection) || (dso instanceof org.dspace.content.Community)) {
+        if (isContainer(dso)) {
             try {
 
                 StatisticsTable statisticsTable = new StatisticsTable(new StatisticsDataVisits(dso));
@@ -302,7 +297,7 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
      * @param division
      */
     public void addTopBitstreams(DSpaceObject dso, Division division) {
-        if ((dso instanceof org.dspace.content.Collection) || (dso instanceof org.dspace.content.Community)) {
+        if (isContainer(dso)) {
             try {
 
                 StatisticsTable statisticsTable = new StatisticsTable(new StatisticsDataVisits(dso));
@@ -413,11 +408,16 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         //TODO, I don't trust communities2item when it is for a recursive child.
 
         String querySpecifyContainer = "SELECT to_char(date_trunc('month', t1.ts), 'YYYY-MM') AS yearmo, count(*) as countitem " +
-                "FROM ( SELECT to_timestamp(text_value, 'YYYY-MM-DD') AS ts FROM metadatavalue, item, " +
-                typeTextLower + "2item " +
-                "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true AND item.withdrawn = false AND "+
-                typeTextLower + "2item.item_id = item.item_id AND "+
-                typeTextLower + "2item." + dso.getTypeText().toLowerCase() +"_id = ? ";
+                "FROM ( SELECT to_timestamp(text_value, 'YYYY-MM-DD') AS ts FROM metadatavalue, item ";
+
+        //If container is Coll/Comm, then scope to that container.
+        querySpecifyContainer += (dso instanceof Collection || dso instanceof Community) ? ", " + typeTextLower + "2item " : "";
+
+        querySpecifyContainer += "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true AND item.withdrawn = false ";
+
+        //If container is Coll/Comm, then scope to that container.
+        querySpecifyContainer += (dso instanceof Collection || dso instanceof Community) ? " AND " + typeTextLower + "2item.item_id = item.item_id "
+                              + "AND "+ typeTextLower + "2item." + dso.getTypeText().toLowerCase() +"_id = ? " : "";
 
         if (dateStart != null) {
             String start = dateFormat.format(dateStart);
@@ -432,7 +432,13 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
 
         try {
             TableRowIterator tri;
-            tri = DatabaseManager.query(context, querySpecifyContainer, dso.getID());
+
+            if(dso instanceof Collection || dso instanceof Community) {
+                tri = DatabaseManager.query(context, querySpecifyContainer, dso.getID());
+            } else {
+                tri = DatabaseManager.query(context, querySpecifyContainer);
+            }
+
 
             tableRowList = tri.toList();
             return tableRowList;
@@ -493,6 +499,8 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
                     prior = ((Collection) dso).countItemsBeforeDate(dateFormat.format(dateStart));
                 } else if(dso instanceof Community) {
                     prior = ((Community) dso).countItemsBeforeDate(dateFormat.format(dateStart));
+                } else if(dso instanceof Site) {
+                    prior = ((Site) dso).countItemsBeforeDate(dateFormat.format(dateStart));
                 }
             }
 
@@ -772,12 +780,15 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         }
 
         String querySpecifyContainer = "SELECT to_char(date_trunc('month', t1.ts), 'YYYY-MM') AS yearmo, count(*) as countitem " +
-                "FROM ( SELECT to_timestamp(text_value, 'YYYY-MM-DD') AS ts FROM metadatavalue, item, item2bundle, bundle, bundle2bitstream, " +
-                typeTextLower + "2item " +
-                "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true AND item.withdrawn = false AND " +
-                "item2bundle.bundle_id = bundle.bundle_id AND item2bundle.item_id = item.item_id AND bundle.bundle_id = bundle2bitstream.bundle_id AND bundle.\"name\" = 'ORIGINAL' AND "+
-                typeTextLower + "2item.item_id = item.item_id AND "+
-                typeTextLower + "2item."+dso.getTypeText().toLowerCase()+"_id = ? ";
+                "FROM ( SELECT to_timestamp(text_value, 'YYYY-MM-DD') AS ts FROM metadatavalue, item, item2bundle, bundle, bundle2bitstream ";
+
+        querySpecifyContainer += (dso instanceof Community || dso instanceof Collection) ? ", " + typeTextLower + "2item " : "";
+
+        querySpecifyContainer += "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true AND item.withdrawn = false AND " +
+                "item2bundle.bundle_id = bundle.bundle_id AND item2bundle.item_id = item.item_id AND bundle.bundle_id = bundle2bitstream.bundle_id AND bundle.\"name\" = 'ORIGINAL' ";
+
+        querySpecifyContainer += (dso instanceof Collection || dso instanceof Community) ? " AND " + typeTextLower + "2item.item_id = item.item_id AND "+
+                typeTextLower + "2item."+dso.getTypeText().toLowerCase()+"_id = ? " : "";
 
         if (dateStart != null) {
             String start = dateFormat.format(dateStart);
@@ -791,11 +802,16 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         querySpecifyContainer += ") t1 GROUP BY date_trunc('month', t1.ts) order by yearmo asc";
 
         try {
-            TableRowIterator tri = DatabaseManager.query(context, querySpecifyContainer, dso.getID());
+            TableRowIterator tri;
+            if(dso instanceof Collection || dso instanceof Community) {
+                tri = DatabaseManager.query(context, querySpecifyContainer, dso.getID());
+            } else {
+                tri = DatabaseManager.query(context, querySpecifyContainer);
+            }
 
             tableRowList = tri.toList();
         } catch (Exception e) {
-            
+            log.error(e.getMessage());
         }
 
         return tableRowList;
@@ -806,6 +822,8 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
             return ((Collection) dso).countBitstreams(Constants.CONTENT_BUNDLE_NAME);
         } else if(dso instanceof Community) {
             return ((Community) dso).countBitstreams(Constants.CONTENT_BUNDLE_NAME);
+        } else if(dso instanceof Site) {
+            return ((Site) dso).countBitstreams(Constants.CONTENT_BUNDLE_NAME);
         } else {
             return null;
         }
@@ -828,6 +846,8 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
                     prior = ((Collection)dso).countBitstreamsBeforeDate(Constants.CONTENT_BUNDLE_NAME, date);
                 } else if(dso instanceof Community) {
                     prior = ((Community)dso).countBitstreamsBeforeDate(Constants.CONTENT_BUNDLE_NAME, date);
+                } else if(dso instanceof Site) {
+                    prior = ((Site) dso).countBitstreamsBeforeDate(Constants.CONTENT_BUNDLE_NAME, date);
                 }
             }
             
@@ -837,9 +857,13 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         }
     }
 
+    private boolean isContainer(DSpaceObject dso) {
+        return (dso instanceof org.dspace.content.Collection || dso instanceof Community || dso instanceof Site);
+    }
+
     public void addFileDownloadsInContainer(DSpaceObject dso, Division division) {
         // Must be either collection or community.
-        if(!(dso instanceof Collection || dso instanceof Community)) {
+        if(! isContainer(dso) ) {
             return;
         }
 
@@ -863,9 +887,13 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
         }
  
 
-        String query = "type:0 AND -isBot:true AND "
-                + ((dso instanceof Collection) ? "owningColl:" : "owningComm:")
-                + dso.getID();
+        String query = "type:0 AND -isBot:true ";
+
+        if(dso instanceof Collection || dso instanceof Community) {
+            query += " AND ";
+            query += ((dso instanceof Collection) ? "owningColl" : "owningComm");
+            query += ":" + dso.getID();
+        }
 
         log.info("addFileDownloadsInContainer Query: "+query);
         log.info("addFileDownloadsInContainer monthEnd:" + monthEnd);
@@ -887,7 +915,7 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
 
     public void addUniqueVisitorsToContainer(DSpaceObject dso, Division division) {
         // Must be either collection or community.
-        if(!(dso instanceof Collection || dso instanceof Community)) {
+        if(! isContainer(dso) ) {
             return;
         }
 
@@ -917,9 +945,13 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
                 String monthStart = startCalendar.get(Calendar.YEAR) + "-" + humanMonthNumber + "-" + startCalendar.getActualMinimum(Calendar.DAY_OF_MONTH)   + "T00:00:00.000Z";
                 String monthEnd =  startCalendar.get(Calendar.YEAR) + "-" + humanMonthNumber + "-" + startCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)   + "T23:59:59.999Z";
 
-                String query = "type:0 AND -isBot:true AND time:[" + monthStart + " TO " + monthEnd + "]"
-                    + ((dso instanceof Collection) ? "owningColl:" : "owningComm:")
-                    + dso.getID();
+                String query = "type:0 AND -isBot:true AND time:[" + monthStart + " TO " + monthEnd + "]";
+
+                if(dso instanceof Collection || dso instanceof Community) {
+                    query += " AND ";
+                    query += ((dso instanceof Collection) ? "owningColl" : "owningComm");
+                    query += ":" + dso.getID();
+                }
 
                 ObjectCount[] objectCounts = SolrLogger.queryFacetField(query, "", "ip", -1, true, null);
 
@@ -1011,7 +1043,8 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
      */
     public void addTopDownloadsToContainer(DSpaceObject dso, Division division) {
         // Must be either collection or community.
-        if(!(dso instanceof Collection || dso instanceof Community)) {
+        //TODO solve for SITE
+        if(! isContainer(dso)) {
             return;
         }
 

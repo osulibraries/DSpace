@@ -519,8 +519,7 @@
         }
 
         // Add a pie chart that shows top DSO Types usage.
-        /*
-        if (typeof elasticJSON.facets.top_types !== 'undefined') {
+        if ((elasticJSON !== null) && typeof elasticJSON.facets.top_types !== 'undefined') {
             var chartDataPie = chartDataHelper('string', 'Type', 'Views', false, '');
             chartMaker.addChart({
                 entries: elasticJSON.facets.top_types.terms,
@@ -529,7 +528,38 @@
                 chartType: 'PieChart',
                 options: options});
         }
-        */
+
+        if ((elasticJSON !== null) && typeof elasticJSON.facets.top_unique_ips !== 'undefined') {
+              var chartDataIP = chartDataHelper({
+                  type : 'string',
+                  textKey : 'IP',
+                  textValue : 'Downloads'
+              });
+
+              chartMaker.addChart({
+                  entries: elasticJSON.facets.top_unique_ips.terms,
+                  name: 'topUniqueIPTable',
+                  chartData: chartDataIP,
+                  options:options,
+                  chartType: 'Table'
+              });
+        }
+
+        if ((elasticJSON !== null) && typeof elasticJSON.facets.top_unique_dns !== 'undefined') {
+              var chartDataDNS = chartDataHelper({
+                  type : 'string',
+                  textKey : 'DNS',
+                  textValue : 'Downloads'
+              });
+
+              chartMaker.addChart({
+                  entries: elasticJSON.facets.top_unique_dns.terms,
+                  name: 'topUniqueDNSTable',
+                  chartData: chartDataDNS,
+                  options:options,
+                  chartType: 'Table'
+              });
+        }
 
         // Finally, we draw all of the charts.
         chartMaker.drawAllCharts();
