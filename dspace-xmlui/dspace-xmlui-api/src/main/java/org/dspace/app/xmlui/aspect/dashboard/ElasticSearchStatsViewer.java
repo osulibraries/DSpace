@@ -10,6 +10,7 @@ import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.content.*;
+import org.dspace.content.Collection;
 import org.dspace.content.Item;
 import org.dspace.core.Constants;
 import org.dspace.statistics.ElasticSearchLogger;
@@ -88,6 +89,8 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
             ));
     
     protected static AbstractFacetBuilder facetTopUniqueIP = FacetBuilders.termsFacet("top_unique_ips").field("ip");
+
+    protected static AbstractFacetBuilder facetTopUniqueDNS = FacetBuilders.termsFacet("top_unique_dns").field("dns.untouched").size(50);
     
     protected static AbstractFacetBuilder facetTopTypes = FacetBuilders.termsFacet("top_types").field("type");
 
@@ -97,7 +100,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
     private static final Message T_trail = message("xmlui.ArtifactBrowser.ItemViewer.trail");
 
     public void addPageMeta(PageMeta pageMeta) throws WingException, SQLException {
-        DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
+        dso = getDSO();
 
         pageMeta.addMetadata("title").addContent("Statistics Report for : " + dso.getName());
 
@@ -119,8 +122,8 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
     
     public void addBody(Body body) throws WingException, SQLException {
         try {
-            //Try to find our dspace object
-            dso = HandleUtil.obtainHandle(objectModel);
+            //Try to find our DSpace object
+            dso = getDSO();
             client = ElasticSearchLogger.getInstance().getClient();
 
             division = body.addDivision("elastic-stats");
@@ -131,8 +134,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
             Request request = ObjectModelHelper.getRequest(objectModel);
             String[] requestURIElements = request.getRequestURI().split("/");
 
-            // If we are on the homepage of the statistics portal, then we just show the summary report
-            // Otherwise we will show a form to let user enter more information for deeper detail.
+            // Statistics:Home = Summary, otherwise, a detailed report of aspect of statistics.
             if(requestURIElements[requestURIElements.length-1].trim().equalsIgnoreCase(elasticStatisticsPath)) {
                 //Homepage will show the last 5 years worth of Data, and no form generator.
                 Calendar cal = Calendar.getInstance();
@@ -231,7 +233,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
                     StatisticsTransformer statisticsTransformerInstance = new StatisticsTransformer(dateStart, dateEnd);
 
                     // 1 - Number of Items in The Container (Community/Collection) (monthly and cumulative for the year)
-                    if(dso instanceof org.dspace.content.Collection || dso instanceof Community) {
+                    if(isContainer(dso)) {
                         statisticsTransformerInstance.addItemsInContainer(dso, division);
                         division.addDivision("chart_div");
                     }
@@ -240,7 +242,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
                 {
                     StatisticsTransformer statisticsTransformerInstance = new StatisticsTransformer(dateStart, dateEnd);
                     // 2 - Number of Files in The Container (monthly and cumulative)
-                    if(dso instanceof org.dspace.content.Collection || dso instanceof Community) {
+                    if(isContainer(dso)) {
                         statisticsTransformerInstance.addFilesInContainer(dso, division);
                         division.addDivision("chart_div");
                     }
@@ -251,6 +253,18 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
             //client.close();
         }
     }
+
+    private DSpaceObject getDSO() throws SQLException {
+        dso = HandleUtil.obtainHandle(objectModel);
+        if(dso == null) {
+            dso = Site.find(context, 0);
+        }
+        return dso;
+    }
+
+    private boolean isContainer(DSpaceObject dso) {
+        return (dso instanceof org.dspace.content.Collection || dso instanceof Community || dso instanceof Site);
+    }
     
     public void showAllReports() throws WingException, SQLException{
         // Show some non-usage-stats.
@@ -258,12 +272,12 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
         StatisticsTransformer statisticsTransformerInstance = new StatisticsTransformer(dateStart, dateEnd);
 
         // 1 - Number of Items in The Container (Community/Collection) (monthly and cumulative for the year)
-        if(dso instanceof org.dspace.content.Collection || dso instanceof Community) {
+        if(isContainer(dso)) {
             statisticsTransformerInstance.addItemsInContainer(dso, division);
         }
 
         // 2 - Number of Files in The Container (monthly and cumulative)
-        if(dso instanceof org.dspace.content.Collection || dso instanceof Community) {
+        if(isContainer(dso)) {
             statisticsTransformerInstance.addFilesInContainer(dso, division);
         }
 
@@ -272,11 +286,24 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
         summaryFacets.add(facetTopCountries);
         summaryFacets.add(facetTopBitstreamsLastMonth());
 
-        //Unused in current interfaces...
-        //summaryFacets.add(facetTopTypes);
-        //summaryFacets.add(facetTopUniqueIP);
-        //summaryFacets.add(facetTopUSCities);
-        //summaryFacets.add(facetTopBitstreamsAllTime);
+        if(dso instanceof Site) {
+            //Goodies for site-as-a-whole view.
+
+            //Hits to BITSTREAM vs ITEM vs COLLECTION vs COMMUNITY
+            summaryFacets.add(facetTopTypes);
+
+            //Top User IP's, probably Spiders
+            summaryFacets.add(facetTopUniqueIP);
+
+            summaryFacets.add(facetTopUniqueDNS);
+
+            //Not needed on homepage
+            summaryFacets.add(facetTopUSCities);
+
+
+            summaryFacets.add(facetTopBitstreamsAllTime);
+        }
+
 
         SearchRequestBuilder requestBuilder = facetedQueryBuilder(summaryFacets);
         SearchResponse resp = searchResponseToDRI(requestBuilder);
@@ -340,13 +367,26 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
     }
     
     public SearchRequestBuilder facetedQueryBuilder(List<AbstractFacetBuilder> facetList) {
-        TermQueryBuilder termQuery = QueryBuilders.termQuery(getOwningText(dso), dso.getID());
-        FilterBuilder rangeFilter = FilterBuilders.rangeFilter("time").from(dateStart).to(dateEnd);
-        FilteredQueryBuilder filteredQueryBuilder = QueryBuilders.filteredQuery(termQuery, rangeFilter);
+        FilterBuilder dateRangeFilter = FilterBuilders.rangeFilter("time").from(dateStart).to(dateEnd);
+
+        QueryBuilder containerScopeQuery;
+        if(dso instanceof Collection || dso instanceof Community) {
+            containerScopeQuery = QueryBuilders.termQuery(getOwningText(dso), dso.getID());
+        } else {
+            //Need a no-op query to join.. All, as opposed to specify a owning-something
+            containerScopeQuery = QueryBuilders.matchAllQuery();
+        }
+
+        FilteredQueryBuilder filteredQueryBuilder = QueryBuilders.filteredQuery(containerScopeQuery, dateRangeFilter);
+
+        QueryBuilder scopedDatedDebottedQuery = QueryBuilders.boolQuery()
+                .must(filteredQueryBuilder)
+                .mustNot(QueryBuilders.termQuery("isBot", true))
+                .mustNot(QueryBuilders.termQuery("isBotUA", true));
 
         SearchRequestBuilder searchRequestBuilder = client.prepareSearch(ElasticSearchLogger.getInstance().indexName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-                .setQuery(filteredQueryBuilder)
+                .setQuery(scopedDatedDebottedQuery)
                 .setSize(0);
 
         for(AbstractFacetBuilder facet : facetList) {

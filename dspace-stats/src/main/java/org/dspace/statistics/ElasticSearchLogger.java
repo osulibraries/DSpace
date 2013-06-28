@@ -586,4 +586,15 @@ public class ElasticSearchLogger {
         }
     }
 
+    //Robot maintenance
+    public static void markRobots() {
+        log.info("Is GoogleBot a spider: " + SpiderDetector.isSpiderByUserAgentRegex("GoogleBot"));
+        // Use elasticsearch-reindex for performing markRobots maintenance.
+
+    }
+
+    public static void deleteRobotsByIsBotFlag() {
+
+    }
+
 }
