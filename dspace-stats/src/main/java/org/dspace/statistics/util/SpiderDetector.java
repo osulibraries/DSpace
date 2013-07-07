@@ -13,6 +13,7 @@ import org.dspace.statistics.SolrLogger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -135,32 +136,21 @@ public class SpiderDetector {
      * @return true|false if the request was detected to be from a spider
      */
     public static boolean isSpider(HttpServletRequest request) {
-        /*
-        * 1) If the IP address matches the spider IP addresses (this is the current implementation)
-        */
-        boolean checkSpidersIP = ConfigurationManager.getBooleanProperty("usage-statistics", "spider.ipmatch.enabled", true);
-        if (checkSpidersIP) {
-            if (SolrLogger.isUseProxies() && request.getHeader("X-Forwarded-For") != null) {
-                /* This header is a comma delimited list */
-                for (String xfip : request.getHeader("X-Forwarded-For").split(",")) {
-                    if (isSpider(xfip)) {
-                        log.debug("spider.ipmatch");
-                        return true;
-                    }
-                }
-            } else if (isSpider(request.getRemoteAddr())) {
-                log.debug("spider.ipmatch");
-                return true;
-            }
+        String xForwardIPs = request.getHeader("X-Forwarded-For");
+        String ipAddress = request.getRemoteAddr();
+        Enumeration<String> headers = request.getHeaderNames();
+        while(headers.hasMoreElements()) {
+            String headerKey = headers.nextElement();
+            String headerValue = request.getHeader(headerKey);
+            log.info("Header: " + headerKey + " -- Value: " + headerValue);
         }
 
-        /*
-            2 - Determine if spider by the user agent. a) Blank, b) Match spider regex
-         */
-        String userAgent = request.getHeader("user-agent");
-        return isSpiderByUserAgent(userAgent);
 
-        // Todo isSpiderByDomainName(domainName)
+        String dns = null;
+        String userAgent = request.getHeader("user-agent");
+        log.info("UserAgent is: " + userAgent);
+
+        return isSpiderByIPOrDomainNameOrUserAgent(xForwardIPs, ipAddress, dns, userAgent);
     }
 
     /**
@@ -169,7 +159,7 @@ public class SpiderDetector {
      * @param ip
      * @return if is spider IP
      */
-    public static boolean isSpider(String ip) {
+    public static boolean isSpiderByIP(String ip) {
         if (table == null) {
             SpiderDetector.loadSpiderIpAddresses();
         }
@@ -182,6 +172,58 @@ public class SpiderDetector {
             return false;
         }
 
+        return false;
+    }
+
+    /**
+     * Using the information we have, check against the enabled methods of spider detection to see if this is a spider
+     * or human.
+     * @param xForwardForIPs (optional) A proxy server could have caught this request if enabled, comma separated
+     * @param ipAddress End Users IP address
+     * @param dns (optional) The hostname + domain for the end user, if null, we'll do a reverse-lookup based on IP
+     * @param userAgent What the client is claiming to be, i.e. Firefox or GoogleBot
+     * @return boolean of whether they are detected as a spider or not. true=spider, false=human
+     */
+    public static boolean isSpiderByIPOrDomainNameOrUserAgent(String xForwardForIPs, String ipAddress, String dns, String userAgent) {
+        boolean checkSpidersIP = ConfigurationManager.getBooleanProperty("usage-statistics", "spider.ipmatch.enabled", true);
+        if (checkSpidersIP) {
+            if (SolrLogger.isUseProxies() && xForwardForIPs != null) {
+                /* This header is a comma delimited list */
+                String[] xForwardForIPArray = xForwardForIPs.split(",");
+                for (String xfip : xForwardForIPArray) {
+                    if (isSpiderByIP(xfip)) {
+                        log.debug("spider.ipmatch");
+                        return true;
+                    }
+                }
+            } else if (isSpiderByIP(ipAddress)) {
+                log.debug("spider.ipmatch");
+                return true;
+            }
+        }
+
+        boolean checkSpiderDNS = ConfigurationManager.getBooleanProperty("usage-statistics", "spider.dnsmatch.enable", true);
+        if(checkSpiderDNS) {
+            //If no DNS provided, we'll determine it from the IP address
+            if(dns == null) {
+                try {
+                    dns = DnsLookup.reverseDns(ipAddress).toLowerCase();
+                } catch (IOException e) {
+                    log.warn("Unable to lookup DNS for IP address: " + ipAddress + " -- ERROR: " + e.getMessage());
+                }
+            }
+            log.info("DNS: " + dns);
+
+            if(isSpiderByDomainNameRegex(dns)) {
+                return true;
+            }
+        }
+
+        if(isSpiderByUserAgent(userAgent)) {
+            return true;
+        }
+
+        //If no match from the above, then its not detected as a spider.
         return false;
     }
 
@@ -253,7 +295,7 @@ public class SpiderDetector {
         }
     }
 
-    //TODO DRY up this code, tricky part is to loadxxSpiders()
+    //TODO DRY up this code, its very similar to isSpiderByUserAgent
     public static boolean isSpiderByDomainNameRegex(String domainName) {
         if (domainNameSpiderMatched != null && domainNameSpiderMatched.contains(domainName)) {
             log.info("SPIDER(M): " + domainName);
