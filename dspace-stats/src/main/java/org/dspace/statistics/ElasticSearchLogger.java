@@ -117,10 +117,10 @@ public class ElasticSearchLogger {
         log.info("useProxies=" + useProxies);
         
         // Configurable values for all elasticsearch connection constants
-        clusterName = getConfigurationStringWithFallBack("elastic-search-statistics", "clusterName", clusterName);
-        indexName   = getConfigurationStringWithFallBack("elastic-search-statistics", "indexName", indexName);
-        indexType   = getConfigurationStringWithFallBack("elastic-search-statistics", "indexType", indexType);
-        address     = getConfigurationStringWithFallBack("elastic-search-statistics", "address", address);
+        clusterName = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "clusterName", clusterName);
+        indexName   = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "indexName", indexName);
+        indexType   = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "indexType", indexType);
+        address     = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "address", address);
         port        = ConfigurationManager.getIntProperty("elastic-search-statistics", "port", port);
 
         //Initialize the connection to Elastic Search, and ensure our index is available.
@@ -508,10 +508,10 @@ public class ElasticSearchLogger {
     public void createTransportClient() {
         // Configurable values for all elasticsearch connection constants
         // Can't guarantee that these values are already loaded, since this can be called by a different JVM
-        clusterName = getConfigurationStringWithFallBack("elastic-search-statistics", "clusterName", clusterName);
-        indexName   = getConfigurationStringWithFallBack("elastic-search-statistics", "indexName", indexName);
-        indexType   = getConfigurationStringWithFallBack("elastic-search-statistics", "indexType", indexType);
-        address     = getConfigurationStringWithFallBack("elastic-search-statistics", "address", address);
+        clusterName = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "clusterName", clusterName);
+        indexName   = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "indexName", indexName);
+        indexType   = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "indexType", indexType);
+        address     = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "address", address);
         port        = ConfigurationManager.getIntProperty("elastic-search-statistics", "port", port);
 
         log.info("Creating TransportClient to [Address:" + address + "] [Port:" + port + "] [cluster.name:" + clusterName + "]");
@@ -529,7 +529,7 @@ public class ElasticSearchLogger {
     //   - Transport Client, specify IP address of server running ES.
     public Client getClient() {
         if(client == null) {
-            String defaultClientType = getConfigurationStringWithFallBack("elastic-search-statistics", "clientType", ClientType.NODE.name());
+            String defaultClientType = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "clientType", ClientType.NODE.name());
 
             if(defaultClientType.equalsIgnoreCase(ClientType.LOCAL.name())) {
                 createNodeClient(ClientType.LOCAL);
@@ -576,20 +576,11 @@ public class ElasticSearchLogger {
         client = node.client();
         log.info("Created new node client");
     }
-    
-    public String getConfigurationStringWithFallBack(String module, String configurationKey, String defaultFallbackValue) {
-        String configDrivenValue = ConfigurationManager.getProperty(module, configurationKey);
-        if(configDrivenValue == null || configDrivenValue.trim().equalsIgnoreCase("")) {
-            return defaultFallbackValue;
-        } else {
-            return configDrivenValue;
-        }
-    }
 
     //Robot maintenance
     public static void markRobots() {
         log.info("Is GoogleBot a spider: " + SpiderDetector.isSpiderByUserAgentRegex("GoogleBot"));
-        // Use elasticsearch-reindex for performing markRobots maintenance.
+        // Use elasticsearch-org.dspace.statistics.reindex for performing markRobots maintenance.
 
     }
 
