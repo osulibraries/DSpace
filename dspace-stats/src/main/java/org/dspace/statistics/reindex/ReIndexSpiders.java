@@ -29,7 +29,7 @@ public class ReIndexSpiders {
 
     private static Logger log = Logger.getLogger(ReIndexSpiders.class);
 
-    public static void main(String[] args) {
+    public static void markRobots() {
         //TODO consider reindexing to new type?
         String indexName   = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "indexName", "dspaceindex");
         String indexType   = ConfigurationManager.getConfigurationStringWithFallBack("elastic-search-statistics", "indexType", "stats");
