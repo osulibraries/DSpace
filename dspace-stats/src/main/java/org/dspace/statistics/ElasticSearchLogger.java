@@ -17,6 +17,7 @@ import org.dspace.content.*;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
 import org.dspace.eperson.EPerson;
+import org.dspace.statistics.reindex.ReIndexSpiders;
 import org.dspace.statistics.util.DnsLookup;
 import org.dspace.statistics.util.LocationUtils;
 import org.dspace.statistics.util.SpiderDetector;
@@ -579,9 +580,10 @@ public class ElasticSearchLogger {
 
     //Robot maintenance
     public static void markRobots() {
+        //TODO move to Tests
         log.info("Is GoogleBot a spider: " + SpiderDetector.isSpiderByUserAgentRegex("GoogleBot"));
         // Use elasticsearch-org.dspace.statistics.reindex for performing markRobots maintenance.
-
+        ReIndexSpiders.markRobots();
     }
 
     public static void deleteRobotsByIsBotFlag() {

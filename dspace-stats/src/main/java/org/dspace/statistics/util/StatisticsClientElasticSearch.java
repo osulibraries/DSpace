@@ -53,7 +53,13 @@ public class StatisticsClientElasticSearch
         options.addOption("f", "delete-spiders-by-flag", false, "Delete Spiders in ES By isBot Flag");
         options.addOption("h", "help", false, "help");
 
+        options.addOption("i", "ip", false, "Test if robot by IP Address");
+        options.addOption("d", "domain", false, "Test if robot by Domain Name");
+        options.addOption("u", "useragent", false, "Test if robot by User Agent");
+
         CommandLine line = parser.parse(options, args);
+
+        String[] realArgs = line.getArgs();
 
         // Did the user ask to see the help?
         if (line.hasOption('h'))
@@ -68,6 +74,25 @@ public class StatisticsClientElasticSearch
         else if(line.hasOption('f'))
         {
             ElasticSearchLogger.deleteRobotsByIsBotFlag();
+        } else if(line.hasOption('i')) {
+            if(realArgs != null && realArgs.length > 0) {
+                System.out.println("IpAddress (" + realArgs[0] + ") : " + SpiderDetector.isSpiderByIP(realArgs[0]));
+
+            } else {
+                System.out.println("Specify an IP Address to check.");
+            }
+        } else if(line.hasOption('d')) {
+            if(realArgs != null && realArgs.length > 0) {
+                System.out.println("Domain (" + realArgs[0] + ") : " + SpiderDetector.isSpiderByDomainNameRegex(realArgs[0]));
+            } else {
+                System.out.println("Specify a Domain Name to check.");
+            }
+        } else if(line.hasOption('u')) {
+            if(realArgs != null && realArgs.length > 0) {
+                System.out.println("UserAgentSpider (" + realArgs[0] + ") : " + SpiderDetector.isSpiderByUserAgent(realArgs[0]));
+            } else {
+                System.out.println("Specify a User Agent to check.");
+            }
         }
         else
         {

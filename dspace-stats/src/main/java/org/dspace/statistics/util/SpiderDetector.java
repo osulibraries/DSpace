@@ -175,6 +175,10 @@ public class SpiderDetector {
         return false;
     }
 
+    public static boolean isSpiderByIPOrDomainNameOrUserAgent(String ipAddress, String dns, String userAgent) {
+        return isSpiderByIPOrDomainNameOrUserAgent(null, ipAddress, dns, userAgent);
+    }
+
     /**
      * Using the information we have, check against the enabled methods of spider detection to see if this is a spider
      * or human.
@@ -281,11 +285,13 @@ public class SpiderDetector {
                         }
 
                         //Prevent boundless set, perhaps a better caching object could be used instead (i.e. recency)
+                        //TODO look into Google Guava cache objects.
                         if (userAgentSpidersMatched.size() >= 100) {
                             userAgentSpidersMatched.clear();
                         }
 
                         userAgentSpidersMatched.add(userAgent);
+                        //TODO Might also want to make a cache of non-bots to expedite misses.
                         log.info("SPIDER: " + userAgent);
                         return true;
                     }
