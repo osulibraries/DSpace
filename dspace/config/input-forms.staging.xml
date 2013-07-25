@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <!--DEVELOPMENT DSpace FILE -->
 <!--23 September 2008 DEVELOPMENT FILE DSpace04 version 1.5-->
 <!--8 January 2008 DEVELOPMENT FILE DSpace02 version 1.4.2-->
@@ -72,7 +72,7 @@
 <!--16 April 2013: edited eng-cap and living-lab forms and honors-departments and honors-majors value-pairs lists - mpw-->
 <!--25 April 2013: added denman form - mpw-->
 <!--25 April 2013: added denman-awards value-pairs list - mpw-->
-
+<!--25 July 2013: added Portuguese to common_iso_languages value-pairs list (supports alter/nativas) - bds-->
 
 
 <!-- 
@@ -7195,6 +7195,10 @@ add this to DOCTYPE tag (without single quotes) ' SYSTEM "J:/Working Groups/XML_
 			<pair>
 				<displayed-value>Spanish</displayed-value>
 				<stored-value>es</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Portuguese</displayed-value>
+				<stored-value>pt</stored-value>
 			</pair>
 			<pair>
 				<displayed-value>German</displayed-value>
