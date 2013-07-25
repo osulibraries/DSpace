@@ -140,7 +140,6 @@ public class SpiderDetector {
 
         String dns = null;
         String userAgent = request.getHeader("user-agent");
-        log.info("UserAgent is: " + userAgent);
 
         return isSpiderByIPOrDomainNameOrUserAgent(xForwardIPs, ipAddress, dns, userAgent);
     }
