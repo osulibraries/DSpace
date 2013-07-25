@@ -13,7 +13,6 @@ import org.dspace.statistics.SolrLogger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -138,13 +137,6 @@ public class SpiderDetector {
     public static boolean isSpider(HttpServletRequest request) {
         String xForwardIPs = request.getHeader("X-Forwarded-For");
         String ipAddress = request.getRemoteAddr();
-        Enumeration<String> headers = request.getHeaderNames();
-        while(headers.hasMoreElements()) {
-            String headerKey = headers.nextElement();
-            String headerValue = request.getHeader(headerKey);
-            log.info("Header: " + headerKey + " -- Value: " + headerValue);
-        }
-
 
         String dns = null;
         String userAgent = request.getHeader("user-agent");
@@ -216,7 +208,7 @@ public class SpiderDetector {
                     log.warn("Unable to lookup DNS for IP address: " + ipAddress + " -- ERROR: " + e.getMessage());
                 }
             }
-            log.info("DNS: " + dns);
+            log.debug("DNS: " + dns);
 
             if(isSpiderByDomainNameRegex(dns)) {
                 return true;
@@ -268,7 +260,6 @@ public class SpiderDetector {
      */
     public static boolean isSpiderByUserAgentRegex(String userAgent) {
         if (userAgentSpidersMatched != null && userAgentSpidersMatched.contains(userAgent)) {
-            log.info("SPIDER(M): " + userAgent);
             return true;
         } else {
             if (userAgentSpidersRegex == null) {
@@ -304,7 +295,6 @@ public class SpiderDetector {
     //TODO DRY up this code, its very similar to isSpiderByUserAgent
     public static boolean isSpiderByDomainNameRegex(String domainName) {
         if (domainNameSpiderMatched != null && domainNameSpiderMatched.contains(domainName)) {
-            log.info("SPIDER(M): " + domainName);
             return true;
         } else {
             if (domainNameSpidersRegex == null) {
