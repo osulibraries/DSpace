@@ -370,7 +370,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
         FilterBuilder dateRangeFilter = FilterBuilders.rangeFilter("time").from(dateStart).to(dateEnd);
 
         QueryBuilder containerScopeQuery;
-        if(dso instanceof Collection || dso instanceof Community) {
+        if(dso instanceof Collection || dso instanceof Community || dso instanceof Item) {
             containerScopeQuery = QueryBuilders.termQuery(getOwningText(dso), dso.getID());
         } else {
             //Need a no-op query to join.. All, as opposed to specify a owning-something
