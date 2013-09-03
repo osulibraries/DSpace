@@ -561,6 +561,15 @@ public class ConfigurationManager
         }
     }
 
+    public static String getConfigurationStringWithFallBack(String module, String configurationKey, String defaultFallbackValue) {
+        String configDrivenValue = ConfigurationManager.getProperty(module, configurationKey);
+        if(configDrivenValue == null || configDrivenValue.trim().equalsIgnoreCase("")) {
+            return defaultFallbackValue;
+        } else {
+            return configDrivenValue;
+        }
+    }
+
     /**
      * Returns an enumeration of all the keys in the DSpace configuration
      * 
