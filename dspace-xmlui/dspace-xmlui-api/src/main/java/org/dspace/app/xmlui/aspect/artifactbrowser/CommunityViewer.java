@@ -27,7 +27,6 @@ import org.dspace.content.Community;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.LiteCollection;
 import org.dspace.core.ConfigurationManager;
-import org.springframework.util.StopWatch;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -113,12 +112,10 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
      */
     public SourceValidity getValidity() 
     {
-        StopWatch stopWatch = new StopWatch("CommunityViewer.getValidity");
         if (this.validity == null)
     	{
             Community community = null;
 	        try {
-                stopWatch.start("Misc");
 	            DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
 	            
 	            if (dso == null)
@@ -135,13 +132,9 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
 	            
 	            DSpaceValidity validity = new DSpaceValidity();
 	            validity.add(community);
-                stopWatch.stop();
 
-                stopWatch.start("getSubComms");
 	            Community[] subCommunities = community.getSubcommunities();
-                stopWatch.stop();
 
-                stopWatch.start("validate subcomms");
 	            // Sub communities
 	            for (Community subCommunity : subCommunities)
 	            {
@@ -157,43 +150,12 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
 	                    } catch(ItemCountException e) { /* ignore */ }
 	        		}
 	            }
-                stopWatch.stop();
 
-	            // Sub collections
-                /*
-                stopWatch.start("getColls");
-                Collection[] collections = community.getCollections();
-                stopWatch.stop();
-
-                stopWatch.start("Validate colls");
-                for (Collection collection : collections)
-	            {
-	                validity.add(collection);
-	                
-	                // Include the item count in the validity, only if the value is cached.
-	                boolean useCache = ConfigurationManager.getBooleanProperty("webui.strengths.cache");
-	                if (useCache)
-	        		{
-	                    try {
-	                    	int size = new ItemCounter(context).getCount(collection);
-	                    	validity.add("size:"+size);
-	                    } catch(ItemCountException e) {
-                        }
-	        		}
-	            }
-                stopWatch.stop();*/
-
-
-                stopWatch.start("getLITEcolls");
                 ArrayList<LiteCollection> liteCollectionArrayList = community.getCollectionsLite();
-                stopWatch.stop();
 
-                stopWatch.start("Validate liteColls");
                 for(LiteCollection liteCollection : liteCollectionArrayList) {
                     validity.add(liteCollection.getHandle() + liteCollection.getName());
                 }
-                stopWatch.stop();
-
 
 	            this.validity = validity.complete();
 	        } 
@@ -203,8 +165,6 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
 	        }
 
     	}
-
-        log.info(stopWatch.prettyPrint());
 
         return this.validity;
     }
@@ -290,8 +250,6 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
         // Set up the major variables
         Community community = (Community) dso;
 
-        StopWatch stopWatch = new StopWatch("CommunityViewer Fetching subComms / colls (commID: " + community.getID());
-
         // Build the community viewer division.
         Division home = body.addDivision("community-home", "primary repository community");
         String name = community.getMetadata("name");
@@ -350,12 +308,9 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
                     ReferenceSet.TYPE_DETAIL_VIEW);
             Reference communityInclude = referenceSet.addReference(community);
 
-            stopWatch.start("Get SubComms");
             Community[] subCommunities = community.getSubcommunities();
-            stopWatch.stop();
 
-            stopWatch.start("Add Comms to ref");
-            // If the community has any children communities also refrence them.
+            // If the community has any children communities also reference them.
             if (subCommunities != null && subCommunities.length > 0)
             {
                 ReferenceSet communityReferenceSet = communityInclude
@@ -369,49 +324,18 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
                     communityReferenceSet.addReference(subCommunity);
                 }
             }
-            stopWatch.stop();
 
-
-
-            /*stopWatch.start("getCollections");
-            Collection[] collections = community.getCollections();
-            stopWatch.stop();
-
-            stopWatch.start("Add Colls to ref");
-            if (collections != null && collections.length > 0)
-            {
-                ReferenceSet communityReferenceSet = communityInclude
-                        .addReferenceSet(ReferenceSet.TYPE_SUMMARY_LIST,null,"hierarchy");
-
-                communityReferenceSet.setHead(T_head_sub_collections);
-                       
-
-                // Sub collections
-                for (Collection collection : collections)
-                {
-                    communityReferenceSet.addReference(collection);
-                }
-
-            }
-            stopWatch.stop();*/
-
-            stopWatch.start("getCollectionsLite");
             ArrayList<LiteCollection> liteCollectionList = community.getCollectionsLite();
-            stopWatch.stop();
 
-            stopWatch.start("Add lite-colls to dri");
             if(liteCollectionList != null && liteCollectionList.size() > 0) {
                 List liteCollList = viewer.addList("LiteCollectionList");
-                liteCollList.setHead("Collections in this Community (LITE)");
+                liteCollList.setHead(T_head_sub_collections);
                 for(LiteCollection liteCollection : liteCollectionList) {
                     liteCollList.addItemXref(contextPath + "/handle/" + liteCollection.getHandle(), liteCollection.getName());
                 }
 
             }
-            stopWatch.stop();
-        }// main refrence
-
-        log.info(stopWatch.prettyPrint());
+        }// main reference
     }
     
 
