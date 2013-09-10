@@ -7,15 +7,10 @@
  */
 package org.dspace.app.xmlui.aspect.artifactbrowser;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.HashMap;
-
 import org.apache.cocoon.caching.CacheableProcessingComponent;
 import org.apache.cocoon.util.HashUtil;
 import org.apache.excalibur.source.SourceValidity;
+import org.apache.log4j.Logger;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.DSpaceValidity;
 import org.dspace.app.xmlui.utils.HandleUtil;
@@ -28,11 +23,18 @@ import org.dspace.browse.BrowseException;
 import org.dspace.browse.BrowseIndex;
 import org.dspace.browse.ItemCountException;
 import org.dspace.browse.ItemCounter;
-import org.dspace.content.Collection;
 import org.dspace.content.Community;
 import org.dspace.content.DSpaceObject;
+import org.dspace.content.LiteCollection;
 import org.dspace.core.ConfigurationManager;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Display a single community. This includes a full text search, browse by list,
@@ -46,6 +48,8 @@ import org.xml.sax.SAXException;
  */
 public class CommunityViewer extends AbstractDSpaceTransformer implements CacheableProcessingComponent
 {
+    private static Logger log = Logger.getLogger(CommunityViewer.class);
+
     /** Language Strings */
     private static final Message T_dspace_home =
         message("xmlui.general.dspace_home");
@@ -128,9 +132,9 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
 	            
 	            DSpaceValidity validity = new DSpaceValidity();
 	            validity.add(community);
-	            
+
 	            Community[] subCommunities = community.getSubcommunities();
-	            Collection[] collections = community.getCollections();
+
 	            // Sub communities
 	            for (Community subCommunity : subCommunities)
 	            {
@@ -146,21 +150,12 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
 	                    } catch(ItemCountException e) { /* ignore */ }
 	        		}
 	            }
-	            // Sub collections
-	            for (Collection collection : collections)
-	            {
-	                validity.add(collection);
-	                
-	                // Include the item count in the validity, only if the value is cached.
-	                boolean useCache = ConfigurationManager.getBooleanProperty("webui.strengths.cache");
-	                if (useCache)
-	        		{
-	                    try {
-	                    	int size = new ItemCounter(context).getCount(collection);
-	                    	validity.add("size:"+size);
-	                    } catch(ItemCountException e) { /* ignore */ }
-	        		}
-	            }
+
+                ArrayList<LiteCollection> liteCollectionArrayList = community.getCollectionsLite();
+
+                for(LiteCollection liteCollection : liteCollectionArrayList) {
+                    validity.add(liteCollection.getHandle() + liteCollection.getName());
+                }
 
 	            this.validity = validity.complete();
 	        } 
@@ -170,6 +165,7 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
 	        }
 
     	}
+
         return this.validity;
     }
     
@@ -253,8 +249,6 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
 
         // Set up the major variables
         Community community = (Community) dso;
-        Community[] subCommunities = community.getSubcommunities();
-        Collection[] collections = community.getCollections();
 
         // Build the community viewer division.
         Division home = body.addDivision("community-home", "primary repository community");
@@ -314,7 +308,9 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
                     ReferenceSet.TYPE_DETAIL_VIEW);
             Reference communityInclude = referenceSet.addReference(community);
 
-            // If the community has any children communities also refrence them.
+            Community[] subCommunities = community.getSubcommunities();
+
+            // If the community has any children communities also reference them.
             if (subCommunities != null && subCommunities.length > 0)
             {
                 ReferenceSet communityReferenceSet = communityInclude
@@ -328,22 +324,18 @@ public class CommunityViewer extends AbstractDSpaceTransformer implements Cachea
                     communityReferenceSet.addReference(subCommunity);
                 }
             }
-            if (collections != null && collections.length > 0)
-            {
-                ReferenceSet communityReferenceSet = communityInclude
-                        .addReferenceSet(ReferenceSet.TYPE_SUMMARY_LIST,null,"hierarchy");
 
-                communityReferenceSet.setHead(T_head_sub_collections);
-                       
+            ArrayList<LiteCollection> liteCollectionList = community.getCollectionsLite();
 
-                // Sub collections
-                for (Collection collection : collections)
-                {
-                    communityReferenceSet.addReference(collection);
+            if(liteCollectionList != null && liteCollectionList.size() > 0) {
+                List liteCollList = viewer.addList("LiteCollectionList");
+                liteCollList.setHead(T_head_sub_collections);
+                for(LiteCollection liteCollection : liteCollectionList) {
+                    liteCollList.addItemXref(contextPath + "/handle/" + liteCollection.getHandle(), liteCollection.getName());
                 }
 
             }
-        }// main refrence
+        }// main reference
     }
     
 

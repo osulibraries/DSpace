@@ -670,6 +670,50 @@ public class Community extends DSpaceObject
         return collectionArray;
     }
 
+    public ArrayList<LiteCollection> getCollectionsLite() {
+        String getCollectionsQuery = "SELECT \n" +
+                "  handle.handle, \n" +
+                "  collection.name\n" +
+                "FROM \n" +
+                "  public.community2collection, \n" +
+                "  public.collection, \n" +
+                "  public.handle\n" +
+                "WHERE \n" +
+                "  community2collection.collection_id = collection.collection_id AND\n" +
+                "  handle.resource_id = collection.collection_id AND\n" +
+                "  community2collection.community_id = ? AND \n" +
+                "  handle.resource_type_id = 3 \n" +
+                "  ORDER by UPPER(collection.name) asc;";
+
+        //OJS comm = 34
+        Integer commID = this.getID();
+        ArrayList<LiteCollection> collectionList = new ArrayList<LiteCollection>();
+
+        try {
+            TableRowIterator tri = DatabaseManager.query(ourContext, getCollectionsQuery, commID);
+            while (tri.hasNext())
+            {
+                TableRow row = tri.next();
+
+                LiteCollection collection = new LiteCollection();
+
+                String handle = row.getStringColumn("handle");
+                String name = row.getStringColumn("name");
+                collection.setHandle(handle);
+                collection.setName(name);
+
+                collectionList.add(collection);
+
+            }
+
+
+        } catch (SQLException e) {
+
+        }
+
+        return collectionList;
+    }
+
     /*
     Fetch all Collections recursively, including within subcommunities.
      */
