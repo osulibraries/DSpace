@@ -41,19 +41,16 @@
 package org.dspace.app.xmlui.aspect.dashboard;
 
 import org.apache.cocoon.environment.Request;
-import org.apache.commons.validator.routines.DateValidator;
 import org.apache.log4j.Logger;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.*;
+import org.dspace.app.xmlui.wing.element.Body;
+import org.dspace.app.xmlui.wing.element.Division;
+import org.dspace.app.xmlui.wing.element.Para;
+import org.dspace.app.xmlui.wing.element.Text;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Use a form to dynamically generate a variety of reports.
@@ -70,16 +67,21 @@ public class ReportGenerator
     /**
      * The minimum date for the from or to field to be. (e.g. The beginning of DSpace)
      */
-    public static String MINIMUM_DATE = "2008-01-01";
+    public static String MINIMUM_DATE_USAGE = "2008-01-01";
+    public static String MINIMUM_DATE_GROWTH = "2003-07-11";
+    private String MINIMUM_DATE = MINIMUM_DATE_USAGE;
+
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-    // perfect input is 2008-01-22, an alternate format is 01/22/2008
-    static String[] formatStrings = {"MM/dd/yyyy", "yyyy-MM-dd"};
+    // perfect input is 2008-01-22, an alternate format is 01/22/2008, or 1/22/08
+    static String[] formatStrings = {"MM/dd/yy", "MM/dd/yyyy", "yyyy-MM-dd"};
 
     private Map<String, String> params;
     
     private Date dateStart;
     private Date dateEnd;
+
+    private StringBuilder notice = new StringBuilder();
 
     public Date getDateStart() {
         return dateStart;
@@ -98,6 +100,12 @@ public class ReportGenerator
             dateStart = null;
         } else {
             dateStart = tryParse(params.get("from"));
+
+            //Don't allow dates before min-date
+            if(dateStart.before(tryParse(MINIMUM_DATE))) {
+                notice.append("Start Date must be on/after the minimum date of: " + MINIMUM_DATE + ". ");
+                dateStart = tryParse(MINIMUM_DATE);
+            }
         }
     }
     
@@ -133,12 +141,48 @@ public class ReportGenerator
             dateEnd= null;
         } else {
             dateEnd = tryParse(params.get("to"));
+
+            //DateEnd must be later than a DateStart.
+            if(dateEnd != null && dateStart != null && dateEnd.before(dateStart)) {
+                //Cheat, and make dateEnd after dateStart. Should provide some type of UI hint about this.
+                notice.append("End Date must be after the start date. ");
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(dateStart);
+                calendar.add(Calendar.YEAR, +1);
+                dateEnd = calendar.getTime();
+            }
         }
     }
 
+    public String getNotice() {
+        return notice.toString();
+    }
+
+    public boolean hasNotice() {
+        if(notice.length() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String getMINIMUM_DATE() {
+        return MINIMUM_DATE;
+    }
+
+    /**
+     * Setting the minimum date effects the lower-bound that dates can have. We have usage and growth stats which have
+     * different start dates.
+     * @param date ReportGenerator.MINIMUM_DATE_USAGE or ReportGenerator.MINIMUM_DATE_GROWTH
+     */
+    public void setMINIMUM_DATE(String date) {
+        MINIMUM_DATE = date;
+    }
 
 
     /**
+     * This will parse the start/end dates out of the request, using "from" and to" params.
      * {@inheritDoc}
      * @see org.dspace.app.xmlui.cocoon.DSpaceTransformer#addBody(Body)
      */
@@ -157,8 +201,6 @@ public class ReportGenerator
                 params.put(param, request.getParameter(param));
             }
 
-            //params = checkAndNormalizeParameters(params);
-
             //Create Date Range part of form
             Para reportForm = search.addPara();
 
@@ -174,89 +216,9 @@ public class ReportGenerator
             to.setHelp("The end date of the report, ex 12/31/2012");
             to.setValue(getDateEndFormatted());
 
-            //Add whether it is fiscal or not
-            //CheckBox isFiscal = reportForm.addCheckBox("fiscal", "slick");
-            //isFiscal.setLabel("Use Fiscal Years?");
-            //Set up fiscal option with the correct default
-            //isFiscal.addOption(params.containsKey("fiscal") && params.get("fiscal").equals("1"), 1, "");
-
             reportForm.addButton("submit_add").setValue("Generate Report");
         } catch (WingException e) {
             log.error(e.getMessage());
-        }
-    }
-
-    /**
-     * Checks the parameters of the given request to see if they fit the
-     * necessary criteria to run generate a report. The following must be true:
-     *
-     *  * from - Must be convertable to a valid date that is greater than the
-     *    miniumum date and also less than or equal to the current date.
-     *  * to - Must be convertable to a valid date that is greater than from
-     *    and equal to or less than the current date.
-     *
-     * @return A map of valid parameters to their values.
-     * @throws InvalidFormatException
-     * @throws ParseException
-     */
-    private Map<String,String> checkAndNormalizeParameters(Map<String,String> params)  {
-        try {
-
-            //Create dateValidator and min and max dates
-            DateValidator dateValidator = new DateValidator(false, DateFormat.SHORT);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-
-            Date maximumDate = new Date();
-            Date minimumDate = dateFormat.parse(ReportGenerator.MINIMUM_DATE);
-
-            //Check the to and from dates
-            Date fromDate = null;
-            Date toDate = null;
-            boolean validToAndFrom = true;
-            boolean hasFrom = params.containsKey("from") && params.get("from").length() > 0;
-            boolean hasTo = params.containsKey("to") && params.get("to").length() > 0;
-
-            if (hasFrom || hasTo) {
-                if (hasFrom) {
-                    fromDate = tryParse(params.get("from"));
-                    params.put("from", dateFormat.format(fromDate));
-                    validToAndFrom = validToAndFrom && dateValidator.compareDates(minimumDate, fromDate, null) <= 0;
-                }
-                if (hasTo) {
-                    toDate = tryParse(params.get("to"));
-                    params.put("to", dateFormat.format(toDate));
-                    validToAndFrom = validToAndFrom && dateValidator.compareDates(toDate, maximumDate, null) <= 0;
-                }
-                if (hasFrom && hasTo) {
-                    //Make sure hasFrom <= hasTo
-                    validToAndFrom = validToAndFrom && dateValidator.compareDates(fromDate, toDate, null) <= 0;
-                } else if (hasFrom && !hasTo) {
-                    //Make sure hasFrom <= the max date
-                    validToAndFrom = validToAndFrom && dateValidator.compareDates(fromDate, maximumDate, null) <= 0;
-                } else {
-                    //hasTo && !hasFrom
-                    //Make sure hasTo >= the min date
-                    validToAndFrom = validToAndFrom && dateValidator.compareDates(minimumDate, toDate, null) <= 0;
-                }
-                // Short circuit if the to and from dates are not valid
-                if (!validToAndFrom) {
-                    log.error("To and from dates are not within max/min or are not in order. "+ params.get("from") + " -> " + params.get("to"));
-                    return null;
-                }
-
-                //Check fiscal
-                if (params.containsKey("fiscal")) {
-                    log.debug("fiscal: " + params.get("fiscal"));
-                    if (Integer.parseInt(params.get("fiscal")) != 1) {
-                        log.error("Fiscal field did not contain a proper value: " + params.get("fiscal"));
-                    }
-                }
-
-            }
-            return params;
-        } catch (ParseException e) {
-            log.error("ParseFormatException likely means a date format failed. "+e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
-            return null;
         }
     }
 }

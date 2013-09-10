@@ -166,12 +166,25 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
             } else {
                 //Other pages will show a form to choose which date range.
                 ReportGenerator reportGenerator = new ReportGenerator();
+                String requestedReport = requestURIElements[requestURIElements.length-1];
+
+                //Set the minimum date
+                if(isGrowthReport(requestedReport)) {
+                    reportGenerator.setMINIMUM_DATE(ReportGenerator.MINIMUM_DATE_GROWTH);
+                } else {
+                    reportGenerator.setMINIMUM_DATE(ReportGenerator.MINIMUM_DATE_USAGE);
+                }
+
                 reportGenerator.addReportGeneratorForm(division, request);
                 
                 dateStart = reportGenerator.getDateStart();
                 dateEnd = reportGenerator.getDateEnd();
 
-                String requestedReport = requestURIElements[requestURIElements.length-1];
+                //Pass the alert/error message if there was one.
+                if(reportGenerator.hasNotice()) {
+                    division.addHidden("report_notice").setValue(reportGenerator.getNotice());
+                }
+
                 log.info("Requested report is: "+ requestedReport);
                 division.addHidden("reportDepth").setValue("detail");
                 
@@ -194,6 +207,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
                     division.addHidden("dateEnd").setValue(dateFormat.format(dateEnd));
                 }
 
+                division.addHidden("minDate").setValue(reportGenerator.getMINIMUM_DATE());
 
                 division.addHidden("reportName").setValue(requestedReport);
 
@@ -251,6 +265,14 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
 
         } finally {
             //client.close();
+        }
+    }
+
+    private boolean isGrowthReport(String reportType) {
+        if(reportType.equalsIgnoreCase("itemsAdded") || reportType.equalsIgnoreCase("filesAdded")) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -519,7 +541,7 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
         if(dateBegin == null) {
             SimpleDateFormat dateFormatYMD = new SimpleDateFormat("yyyy-MM-dd");
             try {
-                dateBegin = dateFormatYMD.parse(ReportGenerator.MINIMUM_DATE);
+                dateBegin = dateFormatYMD.parse(ReportGenerator.MINIMUM_DATE_USAGE);
 
             } catch (ParseException e) {
                 log.error(e.getMessage());
