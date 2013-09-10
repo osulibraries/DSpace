@@ -73,8 +73,8 @@ public class ReportGenerator
     public static String MINIMUM_DATE = "2008-01-01";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-    // perfect input is 2008-01-22, an alternate format is 01/22/2008
-    static String[] formatStrings = {"MM/dd/yyyy", "yyyy-MM-dd"};
+    // perfect input is 2008-01-22, an alternate format is 01/22/2008, or 1/22/08
+    static String[] formatStrings = {"MM/dd/yy", "MM/dd/yyyy", "yyyy-MM-dd"};
 
     private Map<String, String> params;
     
