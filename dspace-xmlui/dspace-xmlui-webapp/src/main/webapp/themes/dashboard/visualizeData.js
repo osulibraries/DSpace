@@ -618,6 +618,13 @@
             }
 
         }
+
+        var report_notice = $('input[name=report_notice]').val();
+        if(report_notice !== null && report_notice !== undefined) {
+            var notice = '<div class="alert">' + report_notice + '</div>';
+            $(notice).insertAfter('#aspect_dashboard_ElasticSearchStatsViewer_div_report-generator');
+        }
+
       });
     });
 })(this);
