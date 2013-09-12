@@ -68,10 +68,10 @@
     </xsl:template>
 
     <xsl:template name="extraBody-end">
-        <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js">
+        <script type="text/javascript" src="https://code.jquery.com/ui/1.10.3/jquery-ui.js">
             <xsl:text> </xsl:text>
         </script>
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
             <xsl:text> </xsl:text>
         </link>
 
