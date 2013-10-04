@@ -133,7 +133,8 @@
     <theme path="ukrainianimmigration/" handle="1811/37294" name="Yurii Fedechko's Story" />    
     <theme path="ukrainianimmigration_gallery/" handle="1811/36653" name="Ukrainian Immigration" />
     <theme path="oca_gallery/" handle="1811/50311" name="Ohio Congressional - Glenn Photos" />
-    
+    <theme path="oca/" handle="1811/56630" name="Buckeye History Live Audio" />
+ 
     <theme path="gallery/" handle="1811/37313" name="University archives photo archives" />
     <theme path="gallery/" handle="1811/47556" name="Charles H. McCaghy Collection of Exotic Dance from Burlesque to Clubs" />
 
@@ -167,7 +168,7 @@
     <theme path="sesposters/" handle="1811/54651" name="Denman Undergraduate Research Forum" />    
     <theme path="oca_gallery/" handle="1811/53392" name="Image Gallery - Cromie"/>
     <theme path="oca_gallery/" handle="1811/53223" name="Image Gallery - Jesse Owens Photographs"/>
-
+    <theme path="oca_gallery/" handle="1811/56637" name="Image Gallery - Rubin"/>
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
