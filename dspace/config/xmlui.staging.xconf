@@ -141,6 +141,10 @@
 	<theme path="oca_gallery/" handle="1811/89439" name="Image Gallery - OCA"/>
 	<theme path="oca_gallery/" handle="1811/95427" name="Image Gallery - Rubin"/>
 	<theme path="oca_gallery/" handle="1811/97288" name="Image Gallery - Sims Sheet Music"/>
+	<theme path="oca_gallery/" handle="1811/97308" name="Image Gallery - Sims Sheet Music (MUS)"/>
+	<theme path="oca_gallery/" handle="1811/97313" name="Image Gallery - Sims Sheet Music (OSUL)"/>
+	<theme path="oca_gallery/" handle="1811/97326" name="Image Gallery - Ockerman Histology Slides"/>
+
 
 	<theme path="lep_gallery/" handle="1811/87248" name="Logan Elm Press" />
         
