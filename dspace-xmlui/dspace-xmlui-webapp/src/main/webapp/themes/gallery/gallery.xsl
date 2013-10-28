@@ -109,8 +109,22 @@
                     </xsl:attribute>
                     <xsl:choose>
                         <xsl:when test="//mets:fileGrp[@USE='THUMBNAIL']">
+
+                            <!-- Determine the thumbnail related to the primary bitstream -->
+                            <xsl:variable name="primary_FILEID">group_<xsl:value-of select="/mets:METS/mets:structMap/mets:div[@TYPE='DSpace Item']/mets:fptr/@FILEID" /></xsl:variable>
+                            <xsl:variable name="GROUPID">
+                                <xsl:choose>
+                                    <xsl:when test="//mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=$primary_FILEID]">
+                                        <xsl:value-of select="$primary_FILEID" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:value-of select="//mets:fileGrp[@USE='THUMBNAIL']/mets:file/@GROUPID" />
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </xsl:variable>
+
                             <xsl:attribute name="src">
-                                <xsl:value-of select="//mets:fileGrp[@USE='THUMBNAIL']/mets:file/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
+                                <xsl:value-of select="//mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=$GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href" />
                             </xsl:attribute>
                         </xsl:when>
                         <xsl:otherwise>
