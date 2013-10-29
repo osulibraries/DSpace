@@ -109,10 +109,10 @@ add this to DOCTYPE tag (without single quotes) ' SYSTEM "J:/Working Groups/XML_
 		<name-map collection-handle="1811/98480" form-name="mershon"/>
 		<!--2013-14 Conferences in Mershon Center for International Security Studies-->
 		<name-map collection-handle="1811/98478" form-name="mershon"/>
-      		<!--Furniss Book Award (Mershon Center)-->
-      		<name-map collection-handle="1811/52507" form-name="mershon"/>
-      		<!--Kruzel Memorial Lecture (Mershon Center)-->
-      		<name-map collection-handle="1811/52506" form-name="mershon"/>
+		<!--Furniss Book Award (Mershon Center)-->
+		<name-map collection-handle="1811/52507" form-name="mershon"/>
+		<!--Kruzel Memorial Lecture (Mershon Center)-->
+		<name-map collection-handle="1811/52506" form-name="mershon"/>
 		<!--Type Test 1 collection in Maureen Walsh Test Community-->
 		<name-map collection-handle="1811/56360" form-name="typetest1"/>
 		<!--Cornfield Review collection in Cornfield Review community-->
