@@ -186,6 +186,18 @@
             </modules>
         </profile>
 
+       <!-- REST Jersey -->
+       <profile>
+           <id>dspace-rest</id>
+           <activation>
+               <property>
+                   <name>!dummy</name>
+               </property>
+           </activation>
+           <modules>
+               <module>dspace-rest</module>
+           </modules>
+       </profile>
 
         <!--
            Builds SWORD WAR for DSpace
@@ -285,6 +297,7 @@
             <module>dspace-xmlui</module>
             <module>dspace-lni</module>
             <module>dspace-oai</module>
+            <module>dspace-rest</module>
             <module>dspace-sword</module>
             <module>dspace-swordv2</module>
             <module>dspace-sword-client</module>

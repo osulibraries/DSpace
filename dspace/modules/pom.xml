@@ -81,6 +81,17 @@
             </modules>
         </profile>
         <profile>
+            <id>dspace-rest</id>
+            <activation>
+                <property>
+                    <name>!dummy</name>
+                </property>
+            </activation>
+            <modules>
+                <module>rest</module>
+            </modules>
+        </profile>
+        <profile>
             <id>dspace-sword</id>
             <activation>
                 <!--<activeByDefault>true</activeByDefault>-->
