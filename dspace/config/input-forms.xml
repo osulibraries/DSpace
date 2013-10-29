@@ -171,6 +171,9 @@
 <!--25 April 2013: added denman-awards value-pairs list - mpw-->
 <!--1 May 2013: edited denman-awards value-pairs list - mpw-->
 <!--1 May 2013: added collections to denman form - mpw-->
+<!--11 October 2013: added collection to events form - mpw-->
+<!--11 October 2013: added collection to osu-oral-histories form - mpw-->
+<!--11 October 2013: added Portuguese to value-pairs-name="common_iso_languages"- mpw-->
 
 <!-- 
 add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_Projects/Test KB/Input Forms/input-forms.dtd"'
@@ -183,6 +186,7 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 	<form-map>
 		<name-map collection-handle="default" form-name="traditional"/>
 		<name-map collection-handle="1811/403" form-name="osu-oral-histories"/>
+		<name-map collection-handle="1811/56914" form-name="osu-oral-histories"/>
 		<name-map collection-handle="1811/6039" form-name="polar-oral-histories"/>
 		<name-map collection-handle="1811/134" form-name="theses"/>
 		<name-map collection-handle="1811/147" form-name="theses"/>
@@ -270,6 +274,7 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 		<name-map collection-handle="1811/44593" form-name="events"/>
 		<name-map collection-handle="1811/5954" form-name="events"/>
 		<name-map collection-handle="1811/48727" form-name="events"/>
+		<name-map collection-handle="1811/24835" form-name="events"/>
 		<name-map collection-handle="1811/29325" form-name="mershon"/>
 		<name-map collection-handle="1811/29326" form-name="mershon"/>
 		<name-map collection-handle="1811/29327" form-name="mershon"/>
@@ -8874,6 +8879,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 			<pair>
 				<displayed-value>Spanish</displayed-value>
 				<stored-value>es</stored-value>
+			</pair>
+			<pair>
+				<displayed-value>Portuguese</displayed-value>
+				<stored-value>pt</stored-value>
 			</pair>
 			<pair>
 				<displayed-value>German</displayed-value>
