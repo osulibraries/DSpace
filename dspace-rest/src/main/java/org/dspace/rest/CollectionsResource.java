@@ -10,10 +10,12 @@ package org.dspace.rest;
 
 import org.apache.log4j.Logger;
 import org.dspace.authorize.AuthorizeManager;
-import org.dspace.core.Context;
+import org.dspace.core.Constants;
+import org.dspace.rest.common.Collection;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -103,10 +105,11 @@ public class CollectionsResource {
     @GET
     @Path("/{collection_id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public org.dspace.rest.common.Collection getCollection(@PathParam("collection_id") Integer collection_id, @QueryParam("expand") String expand, @QueryParam("limit") @DefaultValue("100") Integer limit, @QueryParam("offset") @DefaultValue("0") Integer offset) {
+    public org.dspace.rest.common.Collection getCollection(@PathParam("collection_id") Integer collection_id, @QueryParam("expand") String expand, 
+    		@QueryParam("limit") @DefaultValue("100") Integer limit, @QueryParam("offset") @DefaultValue("0") Integer offset) {
         try {
             if(context == null || !context.isValid() ) {
-                context = new Context();
+                context = new org.dspace.core.Context();
                 //Failed SQL is ignored as a failed SQL statement, prevent: current transaction is aborted, commands ignored until end of transaction block
                 context.getDBConnection().setAutoCommit(true);
             }

@@ -10,10 +10,11 @@ package org.dspace.rest;
 import org.apache.log4j.Logger;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
-import org.dspace.core.Context;
+import org.dspace.core.Constants;
 import org.dspace.rest.common.Bitstream;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class BitstreamResource {
     public Bitstream getBitstream(@PathParam("bitstream_id") Integer bitstream_id, @QueryParam("expand") String expand) {
         try {
             if(context == null || !context.isValid()) {
-                context = new Context();
+                context = new org.dspace.core.Context();
                 //Failed SQL is ignored as a failed SQL statement, prevent: current transaction is aborted, commands ignored until end of transaction block
                 context.getDBConnection().setAutoCommit(true);
             }

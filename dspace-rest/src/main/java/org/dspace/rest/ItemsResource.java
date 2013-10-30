@@ -9,9 +9,10 @@ package org.dspace.rest;
 
 import org.apache.log4j.Logger;
 import org.dspace.authorize.AuthorizeManager;
-import org.dspace.core.Context;
+import org.dspace.core.Constants;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -25,7 +26,8 @@ import java.sql.SQLException;
  */
 @Path("/items")
 public class ItemsResource {
-    Logger log = Logger.getLogger(ItemsResource.class);
+	 /** log4j category */
+    private static final Logger log = Logger.getLogger(ItemsResource.class);
     //ItemList - Not Implemented
 
     private static org.dspace.core.Context context;
@@ -33,10 +35,11 @@ public class ItemsResource {
     @GET
     @Path("/{item_id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public org.dspace.rest.common.Item getItem(@PathParam("item_id") Integer item_id, @QueryParam("expand") String expand) throws WebApplicationException{
+    public org.dspace.rest.common.Item getItem(@PathParam("item_id") Integer item_id, @QueryParam("expand") String expand) throws WebApplicationException {
+    	
         try {
             if(context == null || !context.isValid()) {
-                context = new Context();
+                context = new org.dspace.core.Context();
                 //Failed SQL is ignored as a failed SQL statement, prevent: current transaction is aborted, commands ignored until end of transaction block
                 context.getDBConnection().setAutoCommit(true);
             }

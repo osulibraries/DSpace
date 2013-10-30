@@ -9,9 +9,10 @@ package org.dspace.rest;
 
 import org.apache.log4j.Logger;
 import org.dspace.authorize.AuthorizeManager;
-import org.dspace.core.Context;
+import org.dspace.core.Constants;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -40,7 +41,7 @@ public class CommunitiesResource {
         StringBuilder everything = new StringBuilder();
         try {
             if(context == null || !context.isValid() ) {
-                context = new Context();
+                context = new org.dspace.core.Context();
                 //Failed SQL is ignored as a failed SQL statement, prevent: current transaction is aborted, commands ignored until end of transaction block
                 context.getDBConnection().setAutoCommit(true);
             }
