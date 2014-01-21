@@ -170,6 +170,7 @@
     <theme path="oca_gallery/" handle="1811/53223" name="Image Gallery - Jesse Owens Photographs"/>
     <theme path="oca_gallery/" handle="1811/56637" name="Image Gallery - Rubin"/>
     <theme path="oca_gallery/" handle="1811/57108" name="Image Gallery - Ockerman Histology Slides"/>
+<theme path="oca_gallery/" handle="1811/24634" name="Image Gallery - Thompson Library Renovation"/>
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
