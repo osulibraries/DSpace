@@ -136,7 +136,6 @@
     <theme path="oca/" handle="1811/56630" name="Buckeye History Live Audio" />
  
     <theme path="gallery/" handle="1811/37313" name="University archives photo archives" />
-    <theme path="gallery/" handle="1811/47556" name="Charles H. McCaghy Collection of Exotic Dance from Burlesque to Clubs" />
 
     <theme path="lep_gallery/" handle="1811/54232" name="Logan Elm Press" />
     
@@ -170,7 +169,8 @@
     <theme path="oca_gallery/" handle="1811/53223" name="Image Gallery - Jesse Owens Photographs"/>
     <theme path="oca_gallery/" handle="1811/56637" name="Image Gallery - Rubin"/>
     <theme path="oca_gallery/" handle="1811/57108" name="Image Gallery - Ockerman Histology Slides"/>
-<theme path="oca_gallery/" handle="1811/24634" name="Image Gallery - Thompson Library Renovation"/>
+    <theme path="oca_gallery/" handle="1811/24634" name="Image Gallery - Thompson Library Renovation"/>
+    <theme path="oca_gallery/" handle="1811/59174" name="Image Gallery - McCaghy"/>
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
