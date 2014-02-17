@@ -191,7 +191,7 @@ public class ReportGenerator
             Division division = parentDivision.addDivision("report-generator", "primary");
 
             division.setHead("Report Generator");
-            division.addPara("Used to generate reports with an arbitrary date range.");
+            division.addPara("Generate reports by defining custom date range:");
 
             Division search = parentDivision.addInteractiveDivision("choose-report", request.getRequestURI(), Division.METHOD_GET, "primary");
 
