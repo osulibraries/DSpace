@@ -176,9 +176,10 @@
 <!--11 October 2013: added Portuguese to value-pairs-name="common_iso_languages"- mpw-->
 <!--22 November 2013: edited arv-oral-histories form - mpw-->
 <!--9 January 2014: year end changes - edited honors-departments value-pairs list, OARDC-posters-departments value-pairs list, ses-posters value-pairs list, and eng-cap-area value-pairs list - mpw-->
-<!--9 January 2014: edited honors-departments value-pairs list - mpw-->
+<!--9 January 2014: edited honors-majors value-pairs list - mpw-->
 <!--9 January 2014: added collection to events form - mpw-->
 <!--9 January 2014: edited events form - mpw-->
+<!--18 February 2014: added collection to forum form - mpw -->
 
 <!-- 
 add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_Projects/Test KB/Input Forms/input-forms.dtd"'
@@ -265,6 +266,7 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 		<name-map collection-handle="1811/47876" form-name="forum"/>
     		<name-map collection-handle="1811/51512" form-name="forum"/>
 		<name-map collection-handle="1811/53750" form-name="forum"/>
+		<name-map collection-handle="1811/59234" form-name="forum"/>
 		<name-map collection-handle="1811/5837" form-name="events"/>
 		<name-map collection-handle="1811/24839" form-name="events"/>
 		<name-map collection-handle="1811/25181" form-name="events"/>
