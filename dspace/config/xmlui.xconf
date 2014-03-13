@@ -171,6 +171,7 @@
     <theme path="oca_gallery/" handle="1811/57108" name="Image Gallery - Ockerman Histology Slides"/>
     <theme path="oca_gallery/" handle="1811/24634" name="Image Gallery - Thompson Library Renovation"/>
     <theme path="oca_gallery/" handle="1811/59174" name="Image Gallery - McCaghy"/>
+    <theme path="oca_gallery/" handle="1811/59388" name="Image Gallery - RAR Photographs"/>
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
