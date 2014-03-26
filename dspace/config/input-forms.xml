@@ -180,6 +180,7 @@
 <!--9 January 2014: added collection to events form - mpw-->
 <!--9 January 2014: edited events form - mpw-->
 <!--18 February 2014: added collection to forum form - mpw -->
+<!--4 March 2014: added collection to denman form - mpw -->
 
 <!-- 
 add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_Projects/Test KB/Input Forms/input-forms.dtd"'
@@ -345,6 +346,7 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 		<name-map collection-handle="1811/54721" form-name="denman"/>
 		<name-map collection-handle="1811/54722" form-name="denman"/>
 		<name-map collection-handle="1811/54723" form-name="denman"/>
+		<name-map collection-handle="1811/59274" form-name="denman"/>
 	</form-map>
 
 
