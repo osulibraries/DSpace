@@ -1,3 +1,6 @@
+//To regenerate the CSS file:
+// cd dspace-xmlui/dspace-xmlui-webapp/src/main/webapp/static/css/
+// sass --watch osukb_base.sass:osukb_base.css
 body
   font: sans-serif
   font-size: 0.93em
@@ -468,7 +471,8 @@ tr
   fieldset
     margin: 0
     padding: 0
-  a // "Advanced Search"
+  a
+    // "Advanced Search"
     color: #6F6F6F
     font-size: 11px
     text-decoration: none
@@ -518,7 +522,8 @@ tr
     transition: width  400ms ease-in-out
     outline: none
 
-.input-prompt // "Search the Knowledge Bank"
+.input-prompt
+  // "Search the Knowledge Bank"
   position: absolute
   right: 46px
   top: 6px
@@ -1346,3 +1351,9 @@ input[type="radio"]
 
 .alert
   clear: both
+
+.kb-banner
+  position: absolute
+  top: 0px
+  right: 95px
+  z-index: 10
