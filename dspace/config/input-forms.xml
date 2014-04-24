@@ -4901,10 +4901,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 					<dc-element>date</dc-element>
 					<dc-qualifier>issued</dc-qualifier>
 					<repeatable>false</repeatable>
-					<label>Quarter Completed</label>
+					<label>Semester Completed</label>
 					<input-type>date</input-type>
-					<hint>Please enter the last month of the current quarter and the current year below.</hint>
-					<required>Please enter the last month of the current quarter and the current year below.</required>
+					<hint>Please enter the last month of the current semester and the current year below.</hint>
+					<required>Please enter the last month of the current semester and the current year below.</required>
 				</field>
 				<field>
 					<dc-schema>dc</dc-schema>
