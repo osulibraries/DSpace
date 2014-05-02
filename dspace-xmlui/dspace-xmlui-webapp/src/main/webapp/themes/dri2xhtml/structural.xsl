@@ -194,7 +194,7 @@
             <link rel="stylesheet" type="text/css">
                 <xsl:attribute name="href">
                     <xsl:value-of select="$context-path"/>
-                    <xsl:text>/static/css/osukb_base.css</xsl:text>
+                    <xsl:text>/static/css/osukb_base_style.css</xsl:text>
                 </xsl:attribute>
             </link>
             <!-- Add stylsheets -->
