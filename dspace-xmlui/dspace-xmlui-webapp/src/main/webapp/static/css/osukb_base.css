@@ -131,7 +131,12 @@ h1, h2, h3, h4, h5, h6 {
   color: #3d473c;
   line-height: 1.2em; }
   h1 a:link,
-  h1 a:visited, h2 a:link, h2 a:visited, h3 a:link, h3 a:visited, h4 a:link, h4 a:visited, h5 a:link, h5 a:visited, h6 a:link, h6 a:visited {
+  h1 a:visited, h2 a:link,
+  h2 a:visited, h3 a:link,
+  h3 a:visited, h4 a:link,
+  h4 a:visited, h5 a:link,
+  h5 a:visited, h6 a:link,
+  h6 a:visited {
     color: inherit; }
 
 p {
@@ -394,7 +399,6 @@ tr.ds-table-row.even {
   src: url("../fonts/fontello.eot?#iefix") format("embedded-opentype"), url("../fonts/fontello.woff") format("woff"), url("../fonts/fontello.ttf") format("truetype"), url("../fonts/fontello.svg#fontello") format("svg");
   font-weight: normal;
   font-style: normal; }
-
 [class^="font-icon-"]:before,
 [class*=" font-icon-"]:before {
   font-family: "fontello";
@@ -1263,3 +1267,9 @@ input[type="radio"] {
 
 .alert {
   clear: both; }
+
+.kb-banner {
+  position: absolute;
+  top: 0px;
+  right: 95px;
+  z-index: 10; }

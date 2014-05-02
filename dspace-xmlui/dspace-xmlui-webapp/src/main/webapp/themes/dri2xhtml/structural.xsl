@@ -427,6 +427,19 @@
                     <xsl:text>display:none</xsl:text>
                 </xsl:attribute>
             </img>
+
+
+            <!-- Include the KB Anniversary header/banner/ribbon-->
+            <a class="kb-banner" title="OSU Knowledge Bank celebrates 10 years, 2004-2014" href="https://go.osu.edu/KB10th">
+                <img>
+                    <xsl:attribute name="src">
+                        <xsl:value-of select="$context-path"/>
+                        <xsl:text>/static/images/osu-kb-anniv-ribbon.png</xsl:text>
+                    </xsl:attribute>
+                </img>
+            </a>
+
+
             <!-- Commenting out default action of the header. It has broken into individual smaller blocks.
             -<h1 class="pagetitle">
             -    <xsl:choose>
