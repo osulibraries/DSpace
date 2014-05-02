@@ -430,7 +430,7 @@
 
 
             <!-- Include the KB Anniversary header/banner/ribbon-->
-            <a class="kb-banner" title="OSU Knowledge Bank celebrates 10 years, 2004-2014" href="http://kb.osu.edu">
+            <a class="kb-banner" title="OSU Knowledge Bank celebrates 10 years, 2004-2014" href="https://go.osu.edu/KB10th">
                 <img>
                     <xsl:attribute name="src">
                         <xsl:value-of select="$context-path"/>
