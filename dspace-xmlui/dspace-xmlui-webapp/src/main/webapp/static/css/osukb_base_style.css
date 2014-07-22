@@ -1274,3 +1274,4 @@ input[type="radio"] {
   right: 95px;
   z-index: 10; }
 #aspect_eperson_LoginChooser_list_login-options li {display:inline; margin-right: 35px}
+#aspect_eperson_LoginChooser_list_login-options li button {width:150px}
