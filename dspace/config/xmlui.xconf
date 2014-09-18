@@ -178,6 +178,8 @@
     <theme path="oca_gallery/" handle="1811/24842" name="Image Gallery - Foxe"/>
     <theme path="oca/" handle="1811/61520" name="Mosaic"/>
     <theme path="oca/" handle="1811/61521" name="Buckeye Barrister"/>
+    <theme path="oca/" handle="1811/61610" name="Law Record"/>
+    <theme path="oca/" handle="1811/61613" name="All Rise"/>
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
