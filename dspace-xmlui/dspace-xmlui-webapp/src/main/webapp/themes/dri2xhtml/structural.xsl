@@ -317,7 +317,8 @@
                     <xsl:attribute name="src">
                         <xsl:choose>
                             <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='request'][@qualifier='scheme']='https'">
-                                <xsl:text>https://c328740.ssl.cf1.rackcdn.com</xsl:text>
+                               <!-- <xsl:text>https://c328740.ssl.cf1.rackcdn.com</xsl:text> -->
+				<xsl:text>https://cdn.mathjax.org</xsl:text>
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:text>http://cdn.mathjax.org</xsl:text>
