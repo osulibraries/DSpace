@@ -873,8 +873,8 @@
             <div class="ds-option-set">
                 <ul>
                     <!--<li><a href="http://kb.osu.edu/dspace/help/index.html" target="_blank">Help</a></li>-->
-                    <li><a href="http://library.osu.edu/projects-initiatives/knowledge-bank/open-access-archiving/frequently-asked-questions">FAQs</a></li>
-                    <li><a href="http://library.osu.edu/projects-initiatives/knowledge-bank/knowledge-bank-2/">Contact Us</a></li>
+                   <!--  <li><a href="http://library.osu.edu/projects-initiatives/knowledge-bank/open-access-archiving/frequently-asked-questions">FAQs</a></li> -->
+                    <li><a href="/dspace/contact">Contact Us</a></li>
                 </ul>
             </div>
             
