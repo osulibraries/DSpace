@@ -181,6 +181,7 @@
     <theme path="oca/" handle="1811/61610" name="Law Record"/>
     <theme path="oca/" handle="1811/61613" name="All Rise"/>
     <theme path="oca/" handle="1811/62038" name="Lima Campus Newsletters"/>
+    <theme path="lep_gallery/" handle="1811/62198" name="Chafetz"/>
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
