@@ -8,9 +8,11 @@
 	<field>dc.date.issued</field>
 	<field>dc.publisher</field>
 	<field>dc.identifier.citation</field>
+	<field>dc.identifier.doi</field>
 	<field>dc.relation.ispartofseries</field>
 	<field>dc.description.abstract</field>
 	<field>dc.description</field>
+	<field>dc.relation</field>
 	<field>dc.identifier.govdoc</field>
 	<field>dc.identifier.uri</field>
 	<field>dc.identifier.isbn</field>

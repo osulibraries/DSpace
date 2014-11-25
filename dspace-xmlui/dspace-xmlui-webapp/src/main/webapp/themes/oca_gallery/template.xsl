@@ -95,28 +95,28 @@
         </xsl:call-template>
     </xsl:when>
     <xsl:when test="$clause = 10">
-        <xsl:call-template name="itemFieldDisplay.dc.relation.ispartofseries">
+        <xsl:call-template name="itemFieldDisplay.dc.identifier.doi">
             <xsl:with-param name="clause" select="$clause" />
             <xsl:with-param name="phase" select="$phase" />
             <xsl:with-param name="otherPhase" select="$otherPhase" />
         </xsl:call-template>
     </xsl:when>
     <xsl:when test="$clause = 11">
-        <xsl:call-template name="itemFieldDisplay.dc.description.abstract">
+        <xsl:call-template name="itemFieldDisplay.dc.relation.ispartofseries">
             <xsl:with-param name="clause" select="$clause" />
             <xsl:with-param name="phase" select="$phase" />
             <xsl:with-param name="otherPhase" select="$otherPhase" />
         </xsl:call-template>
     </xsl:when>
     <xsl:when test="$clause = 12">
-        <xsl:call-template name="itemFieldDisplay.dc.description">
+        <xsl:call-template name="itemFieldDisplay.dc.description.abstract">
             <xsl:with-param name="clause" select="$clause" />
             <xsl:with-param name="phase" select="$phase" />
             <xsl:with-param name="otherPhase" select="$otherPhase" />
         </xsl:call-template>
     </xsl:when>
     <xsl:when test="$clause = 13">
-        <xsl:call-template name="itemFieldDisplay.dc.relation">
+        <xsl:call-template name="itemFieldDisplay.dc.description">
             <xsl:with-param name="clause" select="$clause" />
             <xsl:with-param name="phase" select="$phase" />
             <xsl:with-param name="otherPhase" select="$otherPhase" />
