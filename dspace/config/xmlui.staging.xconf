@@ -151,6 +151,9 @@
 	<theme path="lep_gallery/" handle="1811/87248" name="Logan Elm Press" />
         <theme path="oca_gallery/" handle="1811/100030" name="Image Gallery - Fragments (RAR)"/>
         
+        <theme path="lep_gallery/" handle="1811/102206" name="Chafetz"/>
+        <theme path="oca/" handle="1811/101369" name="Japanese Naval Drawings and Notebooks"/>
+        
 	<!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
     
