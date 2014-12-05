@@ -587,6 +587,14 @@
             <!-- bds: override main page community list with two-column layout for other content -->
             <xsl:choose>
                 <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']/i18n:text='xmlui.ArtifactBrowser.HomePage.title'">
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                             $('#recent-submissions').rssfeed('http://kb.osu.edu/dspace/feed/rss_2.0/site', {
+                                limit: 5
+                              });
+                        })
+                    </script>
+
                     <!-- bds: homepage-body.xhtml contains <div id="homepage-body">...</div> -->
                     <xsl:copy-of select="document('../../static/homepage-body.xhtml')"/>
                     <!-- bds: homepage-featured.xhtml contains <div id="homepage-featured">...</div> -->

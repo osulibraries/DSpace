@@ -78,9 +78,9 @@
             To enable Discovery, uncomment this Aspect that will enable it
             within your existing XMLUI
             Also make sure to comment the SearchArtifacts aspect
-            as leaving it on together with discovery will cause UI overlap issues
-            <aspect name="Discovery" path="resource://aspects/Discovery/" />
-        -->
+            as leaving it on together with discovery will cause UI overlap issues 
+            <aspect name="Discovery" path="resource://aspects/Discovery/" /> -->
+        
         <!--<aspect name="SwordClient" path="resource://aspects/SwordClient/" />-->
 
         <!--
