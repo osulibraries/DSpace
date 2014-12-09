@@ -147,6 +147,10 @@
 			var sort = '';
 			var feedLink = entry.link;
 
+			//*****MY ADD*****
+			console.log(entry.author)
+			var author = entry.author
+
 			// Apply sort column
 			switch (options.sort) {
 				case 'title':
@@ -186,7 +190,7 @@
 			if (options.linkredirect) feedLink = encodeURIComponent(feedLink);
 			rowArray[rowIndex]['html'] = '<'+ options.titletag +'><a href="'+ options.linkredirect + feedLink +'" title="View this feed at '+ feeds.title +'">'+ entry.title +'</a></'+ options.titletag +'>'
 
-			if (options.date && pubDate) rowArray[rowIndex]['html'] += '<div>'+ pubDate +'</div>'
+			if (options.date && pubDate) rowArray[rowIndex]['html'] += '<div>'+ author + ' (' + pubDate +')</div>'
 			if (options.content) {
 			
 				// Use feed snippet if available and optioned

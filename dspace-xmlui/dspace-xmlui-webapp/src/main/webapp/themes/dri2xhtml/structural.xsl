@@ -589,9 +589,12 @@
                 <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']/i18n:text='xmlui.ArtifactBrowser.HomePage.title'">
                     <script type="text/javascript">
                         $(document).ready(function() {
-                             $('#recent-submissions').rssfeed('http://kb.osu.edu/dspace/feed/rss_2.0/site', {
-                                limit: 5
-                              });
+                             $('#recent-submissions').rssfeed('http://kb.osu.edu/dspace/feed/rss_2.0/site', {limit: 5, dateformat: 'yyyy-MM'}, function(e) {
+
+                                $('p',e).each(function(i) {
+                                    $(this).text('');
+                                });
+                             });
                         })
                     </script>
 
