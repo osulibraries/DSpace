@@ -57,7 +57,7 @@
         <script type="text/javascript">
             <xsl:attribute name="src">
                 <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='contextPath'][not(@qualifier)]"/>
-                <xsl:text>/static/js/jquery.zrssfeed.js</xsl:text>
+                <xsl:text>/static/js/osul-customized.jquery.zrssfeed.js</xsl:text>
             </xsl:attribute>
             <xsl:text> </xsl:text>
         </script>
