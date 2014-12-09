@@ -202,7 +202,7 @@ tr.ds-table-row.even {
   /*width: 1000px */
   height: 130px;
   padding: 0;
-  /*background: url("../images/header.jpg") no-repeat right;*/ }
+  background: url("../images/header_background-updated.png") no-repeat right; }
   #ds-header h1,
   #ds-header h2 {
     margin: 0;
@@ -220,14 +220,6 @@ tr.ds-table-row.even {
       #ds-header h2 a:hover, #ds-header h2 a:focus {
         border-bottom: 1px dotted black; }
 
-#kb-logo a {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  display: block;
-  width: 207px;
-  height: 80px;
-  background: url("../images/kb-logo.png") no-repeat; }
 
 #ds-trail {
   position: relative;
@@ -614,31 +606,50 @@ tr.ds-table-row.even {
   /*position: relative;
   float: left;
   width: 1021px;*/
-  /*padding: 1em;*/
-  font-size: 0.75em;
+  padding: 25px 45px 4% 0;
+  font-size: 0.8em;
   border-top: 1px solid #999999;
-  background: #edeaea; }
+  /*background: #edeaea; */
+  background: url("../images/bg-footer.jpg") no-repeat;
+  background-position:center;
+  background-size:cover;
+  overflow:auto;
+  color:#fff;
+}
+
 
 #ds-footer-left {
   float: left;
   width: 50%; }
-  #ds-footer-left p {
+#ds-footer-left p {
     margin-left: 1em;
     width: 350px;
     float: left; }
+#ds-footer-left a:link, #ds-footer-left a:visited {
+    color: #fff; }
+
+#osu-address p, #osu-copyright p{
+  line-height: 12px;
+  margin-top: 0px;
+  margin-bottom: 8px;
+}
+#osu-copyright p{
+  margin-top: 22px;
+}
 
 #footer-osu-logo {
-  width: 58px;
-  height: 58px;
-  background: url("../images/OSU_fulllogo.png") no-repeat;
-  float: left; }
+  margin-left:10px;
+  width: 295px;
+  height: 35px;
+  background: url("../images/OSU-Wordmark-White.png") no-repeat;
+}
 
 #ds-footer-right {
   float: right;
   text-align: right;
   width: 50%; }
   #ds-footer-right a:link, #ds-footer-right a:visited {
-    color: #3d473c; }
+    color: #fff; }
   #ds-footer-right a:hover, #ds-footer-right a:focus {
     border-bottom: 1px dotted #3d473c;
     text-decoration: none; }
@@ -822,9 +833,9 @@ ul.ds-artifact-list {
   top: 19px;
   left: 30px;
   display: block;
-  width: 207px;
-  height: 80px;
-  background: url("../images/kb-logo.png") no-repeat; }
+  width: 216px;
+  height: 89px;
+  background: url("../images/kb_logo-updated.png") no-repeat; }
 
 div.ds-static-div {
   padding: 0 2px;
@@ -1308,10 +1319,10 @@ input[type="radio"] {
 .alert {
   clear: both; }
 
-.kb-banner {
+.osu-logo {
   position: absolute;
   top: 0px;
-  right: 95px;
+  right: 0px;
   z-index: 10; }
 #aspect_eperson_LoginChooser_list_login-options {margin-top: 45px;}
 #aspect_eperson_LoginChooser_list_login-options li {display:inline; margin-right: 35px}

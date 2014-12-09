@@ -148,6 +148,7 @@
 			var feedLink = entry.link;
 
 			//*****MY ADD*****
+			console.log(entry)
 			var author = entry.author
 
 			// Apply sort column
@@ -166,7 +167,8 @@
 
 				var entryDate = new Date(entry.publishedDate);
 				var pubDate = entryDate.toLocaleDateString() + ' ' + entryDate.toLocaleTimeString();
-
+				console.log(pubDate)
+				console.log(options.dateformat)
 				switch (options.dateformat) {
 					case 'datetime':
 						break;
