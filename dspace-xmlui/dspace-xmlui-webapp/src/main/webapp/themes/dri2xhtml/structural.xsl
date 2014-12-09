@@ -197,6 +197,16 @@
                     <xsl:text>/static/css/osukb_base_style.css</xsl:text>
                 </xsl:attribute>
             </link>
+
+            <!-- Navbar Styling -->
+            <link rel="stylesheet" type="text/css">
+                <xsl:attribute name="href">
+                    <xsl:value-of select="$context-path"/>
+                    <xsl:text>/static/css/osu_navbar-resp.css</xsl:text>
+                </xsl:attribute>
+            </link>
+
+
             <!-- Add stylsheets -->
             <xsl:for-each select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='stylesheet']">
                 <link rel="stylesheet" type="text/css">
@@ -405,15 +415,7 @@
                     <xsl:text>Knowledge Bank</xsl:text>
                 </a>
             </h1>
-            <h2>
-                <a>
-                    <xsl:attribute name="href">
-                        <xsl:value-of select="$context-path"/>
-                        <xsl:text>/</xsl:text>
-                    </xsl:attribute>
-                    <xsl:text>University Libraries and the Office of the Chief Information Officer</xsl:text>
-                </a>
-            </h2>
+           
 
             <!-- Include an invisible KB logo, usefull for robots that "lint" the page, such as FaceBook-->
             <img>
@@ -589,19 +591,38 @@
                 <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']/i18n:text='xmlui.ArtifactBrowser.HomePage.title'">
                     <script type="text/javascript">
                         $(document).ready(function() {
-                             $('#recent-submissions').rssfeed('http://kb.osu.edu/dspace/feed/rss_2.0/site', {limit: 5, dateformat: 'yyyy-MM'}, function(e) {
+                            $('#recent-submissions').rssfeed('http://kb.osu.edu/dspace/feed/rss_2.0/site', {
+                                    header: false,
+                                    limit: 5, 
+                                    dateformat: 'yyyy-MM'
+                                }, function(e) {
 
                                 $('p',e).each(function(i) {
                                     $(this).text('');
                                 });
                              });
+
+
+                            $('#myCarousel').carousel({
+                                    interval: 8000
+                            })
+                            $('#myCarousel').on('slide', function() {
+                                var to_slide = $('.carousel-item.active').attr('data-slide-no');
+                                $('.myCarousel-target.active').removeClass('active');
+                                $('.carousel-indicators [data-slide-to=' + to_slide + ']').addClass('active');
+                            });
+                            $('.myCarousel-target').on('click', function() {
+                                $('#myCarousel').carousel(parseInt($(this).attr('data-slide-to')));
+                                $('.myCarousel-target.active').removeClass('active');
+                                $(this).addClass('active');
+                            });
                         })
                     </script>
 
                     <!-- bds: homepage-body.xhtml contains <div id="homepage-body">...</div> -->
                     <xsl:copy-of select="document('../../static/homepage-body.xhtml')"/>
                     <!-- bds: homepage-featured.xhtml contains <div id="homepage-featured">...</div> -->
-                    <xsl:copy-of select="document('../../static/homepage-featured.xhtml')"/>
+                    <!-- <xsl:copy-of select="document('../../static/homepage-featured.xhtml')"/> -->
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates />

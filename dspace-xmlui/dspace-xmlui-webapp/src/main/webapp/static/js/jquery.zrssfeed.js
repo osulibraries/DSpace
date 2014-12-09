@@ -148,7 +148,6 @@
 			var feedLink = entry.link;
 
 			//*****MY ADD*****
-			console.log(entry.author)
 			var author = entry.author
 
 			// Apply sort column
