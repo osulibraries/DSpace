@@ -497,10 +497,10 @@ tr.ds-table-row.even {
 
 .input-prompt {
   position: absolute;
-  right: 46px;
-  top: 6px;
+  right: 56px;
+  top: 6.5px;
   color: #777777;
-  font-size: 0.8em; }
+  font-size: 0.76em; }
 
 #ds-global-search-button {
   padding: 0.25em 0.5em;
