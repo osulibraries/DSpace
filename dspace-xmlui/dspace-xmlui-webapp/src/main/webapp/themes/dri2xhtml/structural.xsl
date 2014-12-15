@@ -556,9 +556,7 @@
                         <i18n:text>xmlui.dri2xhtml.structural.contact-link</i18n:text>
                     </a>
                     -->
-                    <a target="_blank" href="http://cio.osu.edu/">Office of the CIO</a>
-                    <xsl:text> | </xsl:text>
-                    <a target="_blank" href="http://library.osu.edu/">University Libraries</a>
+                    <a href="/dspace/contact">Contact Us</a>
                     <xsl:text> | </xsl:text>
                     <a target="_blank" href="http://library.osu.edu/projects-initiatives/knowledge-bank/">Knowledge Bank Center</a>
                     <xsl:text> | </xsl:text>
