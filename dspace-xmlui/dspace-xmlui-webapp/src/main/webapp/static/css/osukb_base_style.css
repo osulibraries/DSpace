@@ -827,7 +827,7 @@ ul.ds-artifact-list {
     .rssBody ul li h4 {
       float: none;
       font-weight: bold; 
-      font-size: 1em !important;
+      font-size: 1.1em !important;
     }
       .rssBody ul li h4 a:link, .rssBody ul li h4 a:visited {
         color: inherit; }
