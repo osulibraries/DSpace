@@ -799,7 +799,9 @@ ul.ds-artifact-list {
     ul.ds-artifact-list li div.artifact-preview {
       float: right; }
 
-
+#recent-submissions{
+  font-size:1em !important;
+}
 .rssBody ul {
   padding:0px;
 }
@@ -1358,3 +1360,6 @@ border-radius: 5px;
   margin: 0;
   color: #bb0000;
   font-weight: normal; }
+#homepage-body2 p {
+  font-size: 1.1em;    
+}
