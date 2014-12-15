@@ -605,7 +605,13 @@
                 <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']/i18n:text='xmlui.ArtifactBrowser.HomePage.title'">
                     <script type="text/javascript">
                         $(document).ready(function() {
-                            $('#recent-submissions').rssfeed('http://kb.osu.edu/dspace/feed/rss_2.0/site', {
+                            var uri = window.location.href
+                            if(uri.match('localhost') != null){
+                                uri = "http://kb.osu.edu/dspace/";
+                            }
+                            
+                            
+                            $('#recent-submissions').rssfeed(uri + 'feed/rss_2.0/site', {
                                     header: false,
                                     limit: 5, 
                                     ssl: true,
