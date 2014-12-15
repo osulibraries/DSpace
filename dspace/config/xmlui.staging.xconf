@@ -147,6 +147,7 @@
 	<theme path="oca_gallery/" handle="1811/97434" name="Image Gallery - Jesse Owens"/>
 	<theme path="oca_gallery/" handle="1811/99246" name="Image Gallery - Test"/>
 	<theme path="oca_gallery/" handle="1811/98495" name="Image Gallery - RAR Photographs"/>
+    <theme path="oca_gallery/" handle="1811/81200" name="Image Gallery - Football Programs"/>
 
 	<theme path="lep_gallery/" handle="1811/87248" name="Logan Elm Press" />
         <theme path="oca_gallery/" handle="1811/100030" name="Image Gallery - Fragments (RAR)"/>
