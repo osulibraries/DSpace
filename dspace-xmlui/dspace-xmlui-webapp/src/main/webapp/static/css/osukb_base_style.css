@@ -811,10 +811,10 @@ ul.ds-artifact-list {
     padding-bottom: 7px;
     padding-top: 5px;
     padding-left: 5px;
-    border: 1px solid #ddd;
-    border-bottom:none; }
+    /*border: 1px solid #ddd;
+    border-bottom:none; */ }
     .rssBody ul li:last-child {
-    border-bottom: 1px solid #ddd;
+    /*border-bottom: 1px solid #ddd;*/
     margin-bottom:20px;
 
     }
@@ -826,7 +826,9 @@ ul.ds-artifact-list {
       background-color: #f6f4f4; }
     .rssBody ul li h4 {
       float: none;
-      font-weight: bold; }
+      font-weight: bold; 
+      font-size: 1em !important;
+    }
       .rssBody ul li h4 a:link, .rssBody ul li h4 a:visited {
         color: inherit; }
 
