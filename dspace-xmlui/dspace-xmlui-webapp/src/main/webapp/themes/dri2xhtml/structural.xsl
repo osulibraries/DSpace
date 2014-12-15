@@ -609,6 +609,7 @@
                             if(uri.match('localhost') != null){
                                 uri = "http://kb.osu.edu/dspace/";
                             }
+                            console.log(uri + 'feed/rss_2.0/site' )
                             
                             
                             $('#recent-submissions').rssfeed(uri + 'feed/rss_2.0/site', {
