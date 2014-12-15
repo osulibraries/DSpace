@@ -187,7 +187,7 @@
 			
 			// Add feed row
 			if (options.linkredirect) feedLink = encodeURIComponent(feedLink);
-			rowArray[rowIndex]['html'] = '<'+ options.titletag +'><a href="'+ options.linkredirect + feedLink +'" title="View this feed at '+ feeds.title +'">'+ entry.title +'</a></'+ options.titletag +'>'
+			rowArray[rowIndex]['html'] = '<'+ options.titletag +'><a href="'+ options.linkredirect + feedLink +'" >'+ entry.title +'</a></'+ options.titletag +'>'
 
 			if (options.date && pubDate) rowArray[rowIndex]['html'] += '<div>'+ author + ' (' + pubDate +')</div>'
 			if (options.content) {
