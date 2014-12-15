@@ -820,10 +820,10 @@ ul.ds-artifact-list {
     }
     .rssBody ul li.odd {
       color: inherit;
-      background-color: #eaf0f1; }
+      background-color: #f6f4f4; }
     .rssBody ul li.even {
       color: inherit;
-      background-color: #f6f4f4; }
+      background-color: #eaf0f1; }
     .rssBody ul li h4 {
       float: none;
       font-weight: bold; 
