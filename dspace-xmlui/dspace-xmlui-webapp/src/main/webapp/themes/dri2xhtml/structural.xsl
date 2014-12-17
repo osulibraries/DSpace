@@ -535,7 +535,7 @@
             <h5 class="visuallyhidden">Footer</h5>
             <!--<i18n:text>xmlui.dri2xhtml.structural.footer-promotional</i18n:text>-->
             <div id="ds-footer-left">
-                <a href="https://library.osu.edu">
+                <a href="http://www.osu.edu">
                     <div class="ir" id="footer-osu-logo">The Ohio State University Logo</div>
                 </a>
                 <div id="osu-copyright">

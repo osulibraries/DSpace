@@ -567,9 +567,9 @@ tr.ds-table-row.even {
   padding: 0;
   margin: 1em 0; }
   .ds-option-set a:link, .ds-option-set a:visited {
-    color: #0f2a2c; }
+    color: #3d473c; }
   .ds-option-set a:hover, .ds-option-set a:focus {
-    color: #173e41;
+    color: #3d473c;
     text-decoration: none;
     border-bottom: 1px dotted #5b6a5a; }
 
