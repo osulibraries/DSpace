@@ -631,6 +631,8 @@ tr.ds-table-row.even {
   clear:both;
   margin-left: 1em;
 }
+#ds-footer-bottom a:link, #ds-footer-bottom a:visited {
+    color: #fff; }
 
 #osu-address p, #osu-copyright p{
   line-height: 12px;
@@ -834,7 +836,7 @@ ul.ds-artifact-list {
       font-size: 1.1em !important;
     }
       .rssBody ul li h4 a:link, .rssBody ul li h4 a:visited {
-        color: inherit; }
+        color: #3d473c; }
 
 #kb-logo a {
   position: absolute;
@@ -1358,6 +1360,8 @@ background-color: rgba(255, 255, 255, 0.25);
 border-radius: 5px;
 }
 #ds-body .carousel-caption h4{color: #fff;}
+#myCarousel a {text-decoration: none !important; }
+
 /*#homepage-body h2 {color: #225d62;}*/
 
 #homepage-body2 h1 {
