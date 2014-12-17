@@ -535,16 +535,13 @@
             <h5 class="visuallyhidden">Footer</h5>
             <!--<i18n:text>xmlui.dri2xhtml.structural.footer-promotional</i18n:text>-->
             <div id="ds-footer-left">
-                <div class="ir" id="footer-osu-logo">The Ohio State University Logo</div>
+                <a href="https://library.osu.edu">
+                    <div class="ir" id="footer-osu-logo">The Ohio State University Logo</div>
+                </a>
                 <div id="osu-copyright">
                     <p>&#169; 2014 The Ohio State University - <a href="http://library.osu.edu/">University Libraries</a></p>
                 </div>
 
-                  <address id="osu-address">
-                    <p>1858 Neil Avenue Mall, Columbus, OH 43210</p>
-                    <p>Phone: (614) 292-OSUL (6785) | Fax: (614) 292-9101</p>
-                    <p>If you have trouble accessing this page and need to request an alternate format, contact <a href="http://library.osu.edu/about/contact-us/webmaster-mail">the webmaster</a>.</p>
-                  </address>
             </div>
             <div id="ds-footer-right">
                 <div id="ds-footer-links">
@@ -576,6 +573,14 @@
                     </xsl:if>
                 </div>
             </div>
+            <div id="ds-footer-bottom">
+                <address id="osu-address">
+                    <p>1858 Neil Avenue Mall, Columbus, OH 43210</p>
+                    <p>Phone: (614) 292-OSUL (6785) | Fax: (614) 292-9101</p>
+                    <p>If you have trouble accessing this page and need to request an alternate format, contact <a href="http://library.osu.edu/about/contact-us/webmaster-mail">the webmaster</a>.</p>
+                </address>
+            </div>
+
             <a>
                 <xsl:attribute name="href">
                     <xsl:value-of select="$context-path"/>

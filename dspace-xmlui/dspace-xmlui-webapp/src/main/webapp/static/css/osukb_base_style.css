@@ -627,6 +627,10 @@ tr.ds-table-row.even {
     float: left; }
 #ds-footer-left a:link, #ds-footer-left a:visited {
     color: #fff; }
+#ds-footer-bottom {
+  clear:both;
+  margin-left: 1em;
+}
 
 #osu-address p, #osu-copyright p{
   line-height: 12px;
