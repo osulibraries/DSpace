@@ -441,11 +441,12 @@
                     </xsl:attribute>
                 </img>
             </a>-->
-            <a class="osu-logo" title="The Ohio State University">
+
+            <a href="https://library.osu.edu" class="osu-logo" title="The Ohio State University Libraries">
                 <img>
                     <xsl:attribute name="src">
                         <xsl:value-of select="$context-path"/>
-                        <xsl:text>/static/images/osu_logo_stacked_margins.png</xsl:text>
+                        <xsl:text>/static/images/osul_logo_stacked_margins.png</xsl:text>
                     </xsl:attribute>
                 </img>
             </a>
