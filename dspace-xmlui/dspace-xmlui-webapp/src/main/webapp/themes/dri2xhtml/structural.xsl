@@ -628,7 +628,7 @@
                                     $(this).text('');
                                 });
                              });
-                             //
+                             //This will update any mathjax characters after the rss renders.
                              MathJax.Hub.Queue(["Typeset",MathJax.Hub,"recent-submissions"]);
 
 
