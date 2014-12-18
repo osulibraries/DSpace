@@ -627,7 +627,7 @@
                              setTimeout(function(){
                                 console.log("We are now re-focusing mathjax.")
                                 MathJax.Hub.Queue(["Typeset",MathJax.Hub,"recent-submissions"]);
-                             }, 1000)
+                             }, 500)
                              
 
 
