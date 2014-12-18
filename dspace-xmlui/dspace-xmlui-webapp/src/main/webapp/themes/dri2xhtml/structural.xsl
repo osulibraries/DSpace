@@ -611,12 +611,6 @@
                 <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']/i18n:text='xmlui.ArtifactBrowser.HomePage.title'">
                     <script type="text/javascript">
                         $(document).ready(function() {
-                            // var uri = window.location.href
-                            //if(uri.match('localhost') != null){
-                            //    uri = "http://kb.osu.edu/dspace/";
-                            //}
-                            
-                            
                             $('#recent-submissions').rssfeed('https://kb.osu.edu/dspace/feed/rss_2.0/site', {
                                     header: false,
                                     limit: 5, 
@@ -628,8 +622,12 @@
                                     $(this).text('');
                                 });
                              });
+
                              //This will update any mathjax characters after the rss renders.
-                             MathJax.Hub.Queue(["Typeset",MathJax.Hub,"recent-submissions"]);
+                             setTimeout(function(){
+                                MathJax.Hub.Queue(["Typeset",MathJax.Hub,"recent-submissions"]);
+                             }, 10)
+                             
 
 
                             $('#myCarousel').carousel({
