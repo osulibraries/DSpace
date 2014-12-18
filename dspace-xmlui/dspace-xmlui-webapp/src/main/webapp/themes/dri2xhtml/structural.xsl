@@ -628,6 +628,8 @@
                                     $(this).text('');
                                 });
                              });
+                             //
+                             MathJax.Hub.Queue(["Typeset",MathJax.Hub,"recent-submissions"]);
 
 
                             $('#myCarousel').carousel({
