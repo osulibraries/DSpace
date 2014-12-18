@@ -625,8 +625,9 @@
 
                              //This will update any mathjax characters after the rss renders.
                              setTimeout(function(){
+                                console.log("We are now re-focusing mathjax.")
                                 MathJax.Hub.Queue(["Typeset",MathJax.Hub,"recent-submissions"]);
-                             }, 10)
+                             }, 1000)
                              
 
 
