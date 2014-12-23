@@ -765,7 +765,10 @@ ul a:hover {
   text-decoration: underline; }
 
 #aspect_artifactbrowser_CommunityBrowser_list_comunity-browser a.community {
-  color:#51868a !important;
+  color:#225d62 !important;
+}
+#aspect_artifactbrowser_CommunityBrowser_list_comunity-browser a.collection {
+  color:#3d473c !important;
 }
 
 ul.ds-artifact-list {
@@ -1360,6 +1363,7 @@ background-color: rgba(255, 255, 255, 0.25);
 border-radius: 5px;
 }
 #ds-body .carousel-caption h4{color: #fff;}
+#ds-body .carousel-caption em{color: #fff;}
 #myCarousel a {text-decoration: none !important; }
 
 /*#homepage-body h2 {color: #225d62;}*/
