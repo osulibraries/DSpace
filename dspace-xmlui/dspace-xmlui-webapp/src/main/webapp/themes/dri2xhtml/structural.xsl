@@ -576,7 +576,7 @@
             <div id="ds-footer-bottom">
                 <address id="osu-address">
                     <p>1858 Neil Avenue Mall, Columbus, OH 43210</p>
-                    <p>Phone: (614) 292-OSUL (6785) | Fax: (614) 292-9101</p>
+                    <p>Phone: (614) 292-OSUL (6785)</p>
                     <p>If you have trouble accessing this page and need to request an alternate format, contact <a href="http://library.osu.edu/about/contact-us/webmaster-mail">the webmaster</a>.</p>
                 </address>
             </div>
