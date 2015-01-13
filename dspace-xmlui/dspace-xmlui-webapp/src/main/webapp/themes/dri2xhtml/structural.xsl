@@ -615,7 +615,8 @@
                                     header: false,
                                     limit: 5, 
                                     ssl: true,
-                                    dateformat: 'yyyy'
+                                    dateformat: 'yyyy',
+                                    historical: true
                                 }, function(e) {
 
                                 $('p',e).each(function(i) {
