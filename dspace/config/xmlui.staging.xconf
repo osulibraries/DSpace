@@ -154,6 +154,7 @@
         
         <theme path="lep_gallery/" handle="1811/102206" name="Chafetz"/>
         <theme path="oca/" handle="1811/101369" name="Japanese Naval Drawings and Notebooks"/>
+	<theme path="oca_gallery/" handle="1811/103998" name="Image Gallery - Fragments (RAR)"/>
         
 	<!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
