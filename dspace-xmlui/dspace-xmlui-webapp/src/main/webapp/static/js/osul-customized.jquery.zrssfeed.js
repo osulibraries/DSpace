@@ -144,6 +144,7 @@
 
 			// Get individual feed
 			var entry = feeds.entries[i];
+			var xmlEntry = xmlEntries[i]
 			var pubDate;
 			var sort = '';
 			var feedLink = entry.link;
@@ -151,7 +152,13 @@
 			//*****MY ADD*****
 			var author = entry.author
 			var authors = ""
-			// console.log(entry.title)
+			var description = $(xmlEntry.getElementsByTagName('description')[0]).text();
+			
+			if(!entry.publishedDate){
+				entry.publishedDate = $(xmlEntry.getElementsByTagName('pubDate')[0]).text();
+			} 
+			
+
 
 			//remove the title from this content area.
 			contents = entry.content.replace(entry.title, '').trim();
