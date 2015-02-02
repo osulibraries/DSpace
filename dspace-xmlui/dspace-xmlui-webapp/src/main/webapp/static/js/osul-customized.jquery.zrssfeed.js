@@ -74,9 +74,10 @@
 			// Create Google Feed API address
 			var api = "http"+ s +"://ajax.googleapis.com/ajax/services/feed/load?v=1.0&callback=?&q=" + encodeURIComponent(url);
 			api += "&num=" + options.limit;
-			if (options.historical) api += "&scoring=h";
+			// if (options.historical) api += "&scoring=h";
 			if (options.key != null) api += "&key=" + options.key;
 			api += "&output=json_xml"
+			api += "&" + Math.floor((Math.random() * 10000000000) + 1); + "=true"
 
 			// Send request
 			$.getJSON(api, function(data){
@@ -108,6 +109,8 @@
 	// Function to create HTML result
 	var _process = function(e, data, options) {
 
+		console.log("Here's the data....");
+		console.log(data);
 		// Get JSON feed data
 		var feeds = data.feed;
 		if (!feeds) {
@@ -149,6 +152,14 @@
 
 			//*****MY ADD*****
 			var author = entry.author
+			// console.log(entry.title)
+			console.log(entry)
+
+			contents = entry.content.replace(entry.title, '').trim();
+			authors = contents.replace(contents.substr(contents.indexOf('\n')), '')
+			if(authors != ""){
+				author = authors
+			}
 
 			// Apply sort column
 			switch (options.sort) {
