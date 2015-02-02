@@ -109,8 +109,6 @@
 	// Function to create HTML result
 	var _process = function(e, data, options) {
 
-		console.log("Here's the data....");
-		console.log(data);
 		// Get JSON feed data
 		var feeds = data.feed;
 		if (!feeds) {
@@ -152,11 +150,21 @@
 
 			//*****MY ADD*****
 			var author = entry.author
+			var authors = ""
 			// console.log(entry.title)
-			console.log(entry)
 
+			//remove the title from this content area.
 			contents = entry.content.replace(entry.title, '').trim();
-			authors = contents.replace(contents.substr(contents.indexOf('\n')), '')
+			//remove everything after the first newline character. This make the assumption that 
+			//everything before the newline character are dc:creators.
+			contents_indexafter_authors = contents.indexOf('\n')
+			if (contents_indexafter_authors > 0){
+				authors = contents.replace(contents.substr(contents_indexafter_authors), '');	
+			}
+			else{
+				authors = contents;
+			}
+			
 			if(authors != ""){
 				author = authors
 			}
