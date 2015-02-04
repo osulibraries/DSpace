@@ -152,7 +152,7 @@
 			//*****MY ADD*****
 			var author = entry.author
 			var authors = ""
-			var description = $(xmlEntry.getElementsByTagName('description')[0]).text();
+			// var description = $(xmlEntry.getElementsByTagName('description')[0]).text();
 			
 			if(!entry.publishedDate){
 				entry.publishedDate = $(xmlEntry.getElementsByTagName('pubDate')[0]).text();
@@ -160,21 +160,24 @@
 			
 
 
-			//remove the title from this content area.
-			contents = entry.content.replace(entry.title, '').trim();
-			//remove everything after the first newline character. This make the assumption that 
-			//everything before the newline character are dc:creators.
-			contents_indexafter_authors = contents.indexOf('\n')
-			if (contents_indexafter_authors > 0){
-				authors = contents.replace(contents.substr(contents_indexafter_authors), '');	
-			}
-			else{
-				authors = contents;
+			if(xmlEntry.getElementsByTagName('dc:creator').length > 0){
+				//remove the title from this content area.
+				contents = entry.content.replace(entry.title, '').trim();
+				//remove everything after the first newline character. This make the assumption that 
+				//everything before the newline character are dc:creators.
+				contents_indexafter_authors = contents.indexOf('\n')
+				if (contents_indexafter_authors > 0){
+					authors = contents.replace(contents.substr(contents_indexafter_authors), '');	
+				}
+				else{
+					authors = contents;
+				}
+				
+				if(authors != ""){
+					author = authors
+				}
 			}
 			
-			if(authors != ""){
-				author = authors
-			}
 
 			// Apply sort column
 			switch (options.sort) {
