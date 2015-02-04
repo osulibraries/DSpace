@@ -159,8 +159,9 @@
 			} 
 			
 
+			console.log($(xmlEntry.getElementsByTagName('creator')[0]).length)
+			if($(xmlEntry.getElementsByTagName('creator')[0]).length > 0){
 
-			if(xmlEntry.getElementsByTagName('dc:creator').length > 0){
 				//remove the title from this content area.
 				contents = entry.content.replace(entry.title, '').trim();
 				//remove everything after the first newline character. This make the assumption that 
