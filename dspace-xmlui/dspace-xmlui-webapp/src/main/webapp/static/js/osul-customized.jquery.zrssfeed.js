@@ -158,9 +158,8 @@
 				entry.publishedDate = $(xmlEntry.getElementsByTagName('pubDate')[0]).text();
 			} 
 			
-
-			console.log($(xmlEntry.getElementsByTagName('creator')[0]).length)
-			if($(xmlEntry.getElementsByTagName('creator')[0]).length > 0){
+			// alert($(xmlEntry.getElementsByTagName('dc:creator')[0]).text())
+			if($(xmlEntry.getElementsByTagName('creator')[0]).length > 0 || $(xmlEntry.getElementsByTagName('dc:creator')[0]).length > 0){
 
 				//remove the title from this content area.
 				contents = entry.content.replace(entry.title, '').trim();
