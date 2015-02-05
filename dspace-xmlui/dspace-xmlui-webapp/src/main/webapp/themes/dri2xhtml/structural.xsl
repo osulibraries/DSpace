@@ -197,6 +197,16 @@
                     <xsl:text>/static/css/osukb_base_style.css</xsl:text>
                 </xsl:attribute>
             </link>
+
+            <!-- Navbar Styling -->
+            <link rel="stylesheet" type="text/css">
+                <xsl:attribute name="href">
+                    <xsl:value-of select="$context-path"/>
+                    <xsl:text>/static/css/osu_navbar-resp.css</xsl:text>
+                </xsl:attribute>
+            </link>
+
+
             <!-- Add stylsheets -->
             <xsl:for-each select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='stylesheet']">
                 <link rel="stylesheet" type="text/css">
@@ -405,15 +415,7 @@
                     <xsl:text>Knowledge Bank</xsl:text>
                 </a>
             </h1>
-            <h2>
-                <a>
-                    <xsl:attribute name="href">
-                        <xsl:value-of select="$context-path"/>
-                        <xsl:text>/</xsl:text>
-                    </xsl:attribute>
-                    <xsl:text>University Libraries and the Office of the Chief Information Officer</xsl:text>
-                </a>
-            </h2>
+           
 
             <!-- Include an invisible KB logo, usefull for robots that "lint" the page, such as FaceBook-->
             <img>
@@ -431,11 +433,20 @@
 
 
             <!-- Include the KB Anniversary header/banner/ribbon-->
-            <a class="kb-banner" title="OSU Knowledge Bank celebrates 10 years, 2004-2014" href="https://go.osu.edu/KB10th">
+            <!--<a class="kb-banner" title="OSU Knowledge Bank celebrates 10 years, 2004-2014" href="https://go.osu.edu/KB10th">
                 <img>
                     <xsl:attribute name="src">
                         <xsl:value-of select="$context-path"/>
                         <xsl:text>/static/images/osu-kb-anniv-ribbon.png</xsl:text>
+                    </xsl:attribute>
+                </img>
+            </a>-->
+
+            <a href="https://library.osu.edu" class="osu-logo" title="The Ohio State University Libraries">
+                <img>
+                    <xsl:attribute name="src">
+                        <xsl:value-of select="$context-path"/>
+                        <xsl:text>/static/images/osul_logo_stacked_margins.png</xsl:text>
                     </xsl:attribute>
                 </img>
             </a>
@@ -524,8 +535,13 @@
             <h5 class="visuallyhidden">Footer</h5>
             <!--<i18n:text>xmlui.dri2xhtml.structural.footer-promotional</i18n:text>-->
             <div id="ds-footer-left">
-                <div class="ir" id="footer-osu-logo">The Ohio State University Logo</div>
-                <p>If you have problems with the site, difficulty accessing portions of it due to incompatibility with adaptive technology, or need information in an alternative format, please contact the <a href="mailto:libkbhelp@lists.osu.edu">system administrators</a>.</p>
+                <a href="http://www.osu.edu">
+                    <div class="ir" id="footer-osu-logo">The Ohio State University Logo</div>
+                </a>
+                <div id="osu-copyright">
+                    <p>&#169; 2014 The Ohio State University - <a href="http://library.osu.edu/">University Libraries</a></p>
+                </div>
+
             </div>
             <div id="ds-footer-right">
                 <div id="ds-footer-links">
@@ -538,9 +554,7 @@
                         <i18n:text>xmlui.dri2xhtml.structural.contact-link</i18n:text>
                     </a>
                     -->
-                    <a target="_blank" href="http://cio.osu.edu/">Office of the CIO</a>
-                    <xsl:text> | </xsl:text>
-                    <a target="_blank" href="http://library.osu.edu/">University Libraries</a>
+                    <a href="/dspace/contact">Contact Us</a>
                     <xsl:text> | </xsl:text>
                     <a target="_blank" href="http://library.osu.edu/projects-initiatives/knowledge-bank/">Knowledge Bank Center</a>
                     <xsl:text> | </xsl:text>
@@ -559,6 +573,14 @@
                     </xsl:if>
                 </div>
             </div>
+            <div id="ds-footer-bottom">
+                <address id="osu-address">
+                    <p>1858 Neil Avenue Mall, Columbus, OH 43210</p>
+                    <p>Phone: (614) 292-OSUL (6785)</p>
+                    <p>If you have trouble accessing this page and need to request an alternate format, contact <a href="http://library.osu.edu/about/contact-us/webmaster-mail">the webmaster</a>.</p>
+                </address>
+            </div>
+
             <a>
                 <xsl:attribute name="href">
                     <xsl:value-of select="$context-path"/>
@@ -587,10 +609,49 @@
             <!-- bds: override main page community list with two-column layout for other content -->
             <xsl:choose>
                 <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']/i18n:text='xmlui.ArtifactBrowser.HomePage.title'">
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $('#recent-submissions').rssfeed('https://kb.osu.edu/dspace/feed/rss_2.0/site', {
+                                    header: false,
+                                    limit: 5, 
+                                    ssl: true,
+                                    dateformat: 'yyyy',
+                                    historical: true
+                                }, function(e) {
+
+                                $('p',e).each(function(i) {
+                                    $(this).text('');
+                                });
+                             });
+
+                             //This will update any mathjax characters after the rss renders.
+                             setTimeout(function(){
+                                /*We need to time this out because this rss gets output after the initial load, so mathjax doesn't pick up on it the first time. */
+                                MathJax.Hub.Queue(["Typeset",MathJax.Hub,"recent-submissions"]);
+                             }, 500)
+                             
+
+
+                            $('#myCarousel').carousel({
+                                    interval: 8000
+                            })
+                            $('#myCarousel').on('slide', function() {
+                                var to_slide = $('.carousel-item.active').attr('data-slide-no');
+                                $('.myCarousel-target.active').removeClass('active');
+                                $('.carousel-indicators [data-slide-to=' + to_slide + ']').addClass('active');
+                            });
+                            $('.myCarousel-target').on('click', function() {
+                                $('#myCarousel').carousel(parseInt($(this).attr('data-slide-to')));
+                                $('.myCarousel-target.active').removeClass('active');
+                                $(this).addClass('active');
+                            });
+                        })
+                    </script>
+
                     <!-- bds: homepage-body.xhtml contains <div id="homepage-body">...</div> -->
                     <xsl:copy-of select="document('../../static/homepage-body.xhtml')"/>
                     <!-- bds: homepage-featured.xhtml contains <div id="homepage-featured">...</div> -->
-                    <xsl:copy-of select="document('../../static/homepage-featured.xhtml')"/>
+                    <!-- <xsl:copy-of select="document('../../static/homepage-featured.xhtml')"/> -->
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates />

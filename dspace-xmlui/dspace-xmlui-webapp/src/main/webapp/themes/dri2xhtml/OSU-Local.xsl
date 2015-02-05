@@ -53,6 +53,15 @@
             <xsl:text> </xsl:text>
         </script>
 
+
+        <script type="text/javascript">
+            <xsl:attribute name="src">
+                <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='contextPath'][not(@qualifier)]"/>
+                <xsl:text>/static/js/osul-customized.jquery.zrssfeed.js</xsl:text>
+            </xsl:attribute>
+            <xsl:text> </xsl:text>
+        </script>
+
         <!-- KB - Custom Javascript for entire application. -->
         <script type="text/javascript">
             <xsl:attribute name="src">
@@ -107,7 +116,32 @@
 
     <!-- 2012-07-31 DE Redid the OSU Navbar -->
     <xsl:template name="buildBodyOSU">
-        <div id="osu-nav-bar" class="clearfix">
+        <div role="navigation" id="osu_navbar" aria-labelledby="osu_navbar_heading">
+            
+            <h2 id="osu_navbar_heading" class="osu-semantic">Ohio State nav bar</h2>
+            <a href="#page-content" id="skip" class="osu-semantic">Skip to main content</a>
+            
+            <div class="container">
+                <div class="univ_info">
+                    <p class="univ_name"><a href="http://osu.edu" title="The Ohio State University">The Ohio State University</a></p>
+                </div><!-- /univ_info -->
+                <div class="univ_links">
+                    <div class="links">
+                        <ul>
+                            <li><a href="http://www.osu.edu/help.php" class="help">Help</a></li>
+                            <li><a href="http://buckeyelink.osu.edu/" class="buckeyelink" >BuckeyeLink</a></li>
+                            <li><a href="http://www.osu.edu/map/" class="map">Map</a></li>
+                            <li><a href="http://www.osu.edu/findpeople.php" class="findpeople">Find People</a></li>
+                            <li><a href="https://email.osu.edu/" class="webmail">Webmail</a></li> 
+                            <li><a href="http://www.osu.edu/search/" class="search">Search Ohio State</a></li>
+                        </ul>
+                    </div><!-- /links -->
+                </div><!-- /univ_links -->
+            </div><!-- /container -->
+
+        </div><!-- /osu_navbar -->
+        <!-- OLD!! -->
+        <!--<div id="osu-nav-bar" class="clearfix">
             <h2 class="visuallyhidden">OSU Navigation Bar</h2>
             <a href="#main-content" id="skip" class="osu-semantic">Skip to main content</a>
             <p id="osu-site-title">
@@ -126,7 +160,7 @@
                     <li><a href="http://www.osu.edu/search.php" title="Search Ohio State">Search Ohio State</a></li>
                 </ul>
             </div>
-        </div>
+        </div>-->
     </xsl:template>
     <!-- This is a named template to be an easy way to override to add something to the buildHead -->
     <xsl:template name="extraHead-top"></xsl:template>
