@@ -188,6 +188,7 @@
 <!--9 February 2015: added Polish to value-pairs-name="common_iso_languages"- mpw -->
 <!--9 February 2015: edited denman-awards value-pairs list - mpw-->
 <!--9 February 2015: edited denman form - mpw-->
+<!--23 February 2015: edited doctor-nursing form - mpw-->
 
 <!--
 add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_Projects/Knowledge Bank/Input Forms/input-forms.dtd"'
@@ -4910,10 +4911,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
 					<dc-element>date</dc-element>
 					<dc-qualifier>issued</dc-qualifier>
 					<repeatable>false</repeatable>
-					<label>Quarter Completed</label>
+					<label>Semester Completed</label>
 					<input-type>date</input-type>
-					<hint>Please enter the last month of the current quarter and the current year below.</hint>
-					<required>Please enter the last month of the current quarter and the current year below.</required>
+					<hint>Please enter the last month of the current semester and the current year below.</hint>
+					<required>Please enter the last month of the current semester and the current year below.</required>
 				</field>
 				<field>
 					<dc-schema>dc</dc-schema>
