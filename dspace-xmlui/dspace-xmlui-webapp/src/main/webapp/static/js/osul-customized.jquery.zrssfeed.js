@@ -161,8 +161,10 @@
 			// alert($(xmlEntry.getElementsByTagName('dc:creator')[0]).text())
 			if($(xmlEntry.getElementsByTagName('creator')[0]).length > 0 || $(xmlEntry.getElementsByTagName('dc:creator')[0]).length > 0){
 
+				contents = decodeHtmlEntity(entry.content)
 				//remove the title from this content area.
-				contents = entry.content.replace(entry.title, '').trim();
+				contents = contents.replace(entry.title, '').trim();
+
 				//remove everything after the first newline character. This make the assumption that 
 				//everything before the newline character are dc:creators.
 				contents_indexafter_authors = contents.indexOf('\n')
@@ -378,4 +380,13 @@
 		return t + ' ' + u;
 	}
 
+	//From https://gist.github.com/CatTail/4174511
+	var decodeHtmlEntity = function(str) {
+	  return str.replace(/&#(\d+);/g, function(match, dec) {
+	    return String.fromCharCode(dec);
+	  });
+	};
+
 })(jQuery);
+
+
