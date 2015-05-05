@@ -189,6 +189,7 @@
 <!--9 February 2015: edited denman-awards value-pairs list - mpw-->
 <!--9 February 2015: edited denman form - mpw-->
 <!--23 February 2015: edited doctor-nursing form - mpw-->
+<!--4 May 2015: added collections to mershon form - mpw-->
 
 <!--
 add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_Projects/Knowledge Bank/Input Forms/input-forms.dtd"'
@@ -316,6 +317,10 @@ add this to DOCTYPE tag (without single quotes) 'SYSTEM "J:/Working Groups/XML_P
     		<name-map collection-handle="1811/53016" form-name="mershon"/>
 		<name-map collection-handle="1811/53017" form-name="mershon"/>
 		<name-map collection-handle="1811/53391" form-name="mershon"/>
+		<name-map collection-handle="1811/60452" form-name="mershon"/>
+		<name-map collection-handle="1811/60453" form-name="mershon"/>
+		<name-map collection-handle="1811/68907" form-name="mershon"/>
+		<name-map collection-handle="1811/68908" form-name="mershon"/>
 		<name-map collection-handle="1811/36766" form-name="ukrainian"/>
 		<name-map collection-handle="1811/36767" form-name="ukrainian"/>
 		<name-map collection-handle="1811/37374" form-name="ukrainian"/>
