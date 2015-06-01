@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div id="homepage-featured" class="column">
+    <h2>Featured</h2>
+    <div class="feature-item">
+
+        <div class="feature-item-logo">
+<<<<<<< HEAD
+            <a href="http://hdl.handle.net/1811/50311"><img src="/dspace/static/images/OCA_GlennArchives_G066-02-1x-SMALL.JPG"
+               alt="John H. Glenn Archives Photo Gallery logo" width="200"/></a>
+        </div>
+        <h3><a href="http://hdl.handle.net/1811/50311">John H. Glenn Archives Photo Gallery</a></h3>
+        <p>In honor of the 50th anniversary of John Glenn's historic space flight aboard Friendship 7, the Knowledge Bank is proud to feature the John H. Glenn Archives Photo Gallery collection. The gallery contains 537 photographs from John Glenn's family and his military, NASA, Senate, and post-Senate careers dating from 1917 to 2009.</p>
+=======
+            <a href="http://hdl.handle.net/1811/45174"><img src="/dspace/static/images/writersTalkLogo.jpg"
+                                                                      alt="Writers Talk" style="width:144px; height:144px"/></a>
+        </div>
+        <h3><a href="http://hdl.handle.net/1811/45174">Writers Talk</a></h3>
+        <p>Broadcast weekly on WCBE and WCRS radio and the Ohio Channel television network, Writers Talk interviews cover a wide range of writers and writing, from bestselling authors to singer-songwriters to web writers. Our interviewers discuss writing so that listeners and viewers have a better appreciation for and interest in writing.
+        </p>
+>>>>>>> Featured and top downloads April 2011
+    </div>
+
+    <br />
+
+    <div class="top-downloads">
+        <h2>Top downloads</h2>
+<<<<<<< HEAD
+        <h4>January 2012</h4>
+        <ul class="ds-artifact-list">
+            <li class="ds-artifact-item odd">
+                <div class="artifact-title">
+                    <a href="http://hdl.handle.net/1811/40879">Gra&#269;anica, St. John the Baptist (Sveti Jovan Krstitelj) -- detail</a>
+=======
+        <h4>April 2011</h4>
+        <ul class="ds-artifact-list">
+            <li class="ds-artifact-item odd">
+                <div class="artifact-title">
+                    <a href="http://hdl.handle.net/1811/21">Project Management of Your Learning Community</a>
+>>>>>>> Featured and top downloads April 2011
+                </div>
+            </li>
+            <li class="ds-artifact-item even">
+                <div class="artifact-title">
+<<<<<<< HEAD
+                    <a href="http://hdl.handle.net/1811/24538">Engine Modeling of an Internal Combustion Engine with Twin Independent Cam Phasing</a>
+=======
+                    <a href="http://hdl.handle.net/1811/669">Book Review: Osaka: The Merchants. Capital of Early Modern Japan, James L. McClain and Wakita Osamu, eds.</a>
+>>>>>>> Featured and top downloads April 2011
+                </div>
+            </li>
+            <li class="ds-artifact-item odd">
+                <div class="artifact-title">
+<<<<<<< HEAD
+                    <a href="http://hdl.handle.net/1811/4757">The Glands of the Anal Canal in Man</a>
+                    
+=======
+                    <a href="http://hdl.handle.net/1811/2795">The Food and Breeding Habits of the Raccoon</a>
+>>>>>>> Featured and top downloads April 2011
+                </div>
+            </li>
+            <li class="ds-artifact-item even">
+                <div class="artifact-title">
+<<<<<<< HEAD
+                    <a href="http://hdl.handle.net/1811/35774">Design and Experimental Study of a Mechanical System with Air Springs</a>
+=======
+                    <a href="http://hdl.handle.net/1811/5981">Modeling and Simulation of the Algae to Biodiesel Fuel Cycle</a>
+>>>>>>> Featured and top downloads April 2011
+                </div>
+            </li>
+            <li class="ds-artifact-item odd">
+                <div class="artifact-title">
+<<<<<<< HEAD
+                    <a href="http://hdl.handle.net/1811/37243">The History of the Jamestown Colony: Seventeenth-Century and Modern Interpretations</a>
+=======
+                    <a href="http://hdl.handle.net/1811/34353">Cancer in the Hills</a>
+>>>>>>> Featured and top downloads April 2011
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+

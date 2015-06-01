@@ -185,18 +185,18 @@
 	 <!-- Step 1. Since DSpace 4.0, the initial questions has been disabled. Metadata are shown exactly as 
 	 	  required in input-forms and items are assumed to have always multiple-files attached.
 	      If re-enable the initial questions step you should comment out this step-->
-	 <step>
+	 <!--<step>
 		<processing-class>org.dspace.submit.step.SkipInitialQuestionsStep</processing-class>
-	 </step>
+	 </step> -->
           
-     <!--Disabled by default Since DSpace 4.0: Step 1 will be to gather initial information
+     <!--Disabled by default Since DSpace 4.0: Step 1 will be to gather initial information -->
 	  <step>
 	    <heading>submit.progressbar.initial-questions</heading>
 		<processing-class>org.dspace.submit.step.InitialQuestionsStep</processing-class>
 		<jspui-binding>org.dspace.app.webui.submit.step.JSPInitialQuestionsStep</jspui-binding>   	    
 		<xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.InitialQuestionsStep</xmlui-binding>
 	    <workflow-editable>true</workflow-editable>
-	  </step> -->
+	  </step> 
       
       <!--Step 2 will be to Describe the item.-->
       <step>
@@ -249,7 +249,6 @@
 
       <!--Step 6 will be to select a Creative Commons License-->
       <!-- Uncomment this step to allow the user to select a Creative Commons license -->
-       <!--
       <step>
         <heading>submit.progressbar.CClicense</heading>
         <processing-class>org.dspace.submit.step.CCLicenseStep</processing-class>
@@ -257,7 +256,7 @@
 		<xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.CCLicenseStep</xmlui-binding>
 		<workflow-editable>false</workflow-editable>
       </step>
-      -->
+
 
       <!--Step 7 will be to Sign off on the License-->
       <step>
