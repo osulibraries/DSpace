@@ -243,13 +243,13 @@
     <theme path="oca_gallery/" handle="1811/46456" name="Image Gallery - Football Programs"/>
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
-        <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
+        <theme name="Atmire Mirage Theme" regex=".*" path="osu-mirage2/" />
     
     <!-- Everything Else is Default Theme -->
 
-	<theme path="community-list/" regex="community-list" name="Community List"/>
+	<!-- <theme path="community-list/" regex="community-list" name="Community List"/> -->
 
-    <theme path="template/" regex=".*" name="Default Theme"/>
+    <!-- <theme path="template/" regex=".*" name="Default Theme"/> -->
 
 </themes>
 </xmlui>
