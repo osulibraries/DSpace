@@ -98,7 +98,7 @@
              aspect and COMMENT OUT the default "Statistics" aspect above.
              You must also enable the ElasticSearchLoggerEventListener.
         -->
-        <!-- <aspect name="Statistics - Elastic Search" path="resource://aspects/StatisticsElasticSearch/" /> -->
+        <aspect name="Statistics - Elastic Search" path="resource://aspects/StatisticsElasticSearch/" />
 
         <!-- Additionally you may choose to expose your Google Analytics statistics in DSpace -->
         <!-- <aspect name="StatisticsGoogleAnalytics" path="resource://aspects/StatisticsGoogleAnalytics/" /> -->
@@ -178,24 +178,78 @@
     <themes>
         <!-- Example configuration -->
 
-        <!-- <theme name="Test Theme 1" handle="123456789/1" path="theme1/"/>    -->
-        <!-- <theme name="Test Theme 2" regex="community-list" path="theme2/"/> -->
+    <!-- gallery theme -->
+    <theme path="gallery/" handle="1811/25246" name="Byrd Photo Albums" />
+    <theme path="ukrainianimmigration/" handle="1811/36654" name="Ukrainian Immigration Introduction" />
+    <theme path="ukrainianimmigration/" handle="1811/44503" name="Alexandra Melnyk's Story" />
+    <theme path="ukrainianimmigration/" handle="1811/44885" name="Anna Maria Kobrynska Essenhigh's Story" />
+    <theme path="ukrainianimmigration/" handle="1811/38909" name="Lena Dyedukh's Story" />
+    <theme path="ukrainianimmigration/" handle="1811/45163" name="Magda Ostapiuk Kolcio's Story" />
+    <theme path="ukrainianimmigration/" handle="1811/37216" name="Olha Balaban's Story" />
+    <theme path="ukrainianimmigration/" handle="1811/38804" name="Rosalia Magora's Story" />
+    <theme path="ukrainianimmigration/" handle="1811/38808" name="Sophia Shymkiw's Story" />
+    <theme path="ukrainianimmigration/" handle="1811/37295" name="Yulia Fedechko's Story" />
+    <theme path="ukrainianimmigration/" handle="1811/37294" name="Yurii Fedechko's Story" />    
+    <theme path="ukrainianimmigration_gallery/" handle="1811/36653" name="Ukrainian Immigration" />
+    <theme path="oca_gallery/" handle="1811/50311" name="Ohio Congressional - Glenn Photos" />
+    <theme path="oca/" handle="1811/56630" name="Buckeye History Live Audio" />
+ 
+    <theme path="gallery/" handle="1811/37313" name="University archives photo archives" />
 
-        <!-- Mirage theme, @mire contributed theme, default since DSpace 3.0 -->
-        <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" />
+    <theme path="lep_gallery/" handle="1811/54232" name="Logan Elm Press" />
+    
+    <!-- webui styles imports -->
+    <theme path="video/" handle="1811/5951" name="Videos of Ohio rivers" />
+    <theme path="video/" handle="1811/5991" name="Latino/a Studies In the Midwest: A Symposium" />        
+    <theme path="video/" handle="1811/5954" name="University Archives Collections" />                     
+    <theme path="theses/" handle="1811/133" name="Honors Theses" />                                       
+    <theme path="theses/" handle="1811/5949" name="Senior Theses (SES)" />                                
+    <theme path="forum/" handle="1811/29270" name="Edward F. Hayes Graduate Research Forum" />            
+    <theme path="osupress/" handle="1811/131" name="Ohio State University Press Publications" />          
+    <theme path="osupress/" handle="1811/36289" name="Project Completion Reports (Ohio Water Resources Center)" />
+    <theme path="uruguayanindex/" handle="1811/36394" name="Critical Index of Uruguayan Theater" />       
+    <theme path="sesposters/" handle="1811/5840" name="Poster Presentations (SES)" />                     
+    <theme path="ukrainianimmigration/" handle="1811/36653" name="Ukrainian Immigration to Columbus, Ohio" />
+    <theme path="herrick/" handle="1811/24059" name="John H. Herrick Archives" />                         
+    <theme path="hilltop/" handle="1811/38652" name="Stories from the Columbus Hilltop neighborhood" />   
+    <theme path="oncampus/" handle="1811/38775" name="onCampus: The Ohio State University Faculty Staff Newspaper" />
+    <theme path="enich/" handle="1811/37112" name="The Steven Enich Serbian Orthodox Culture Slide Collection" />
+    <theme path="lecture/" handle="1811/44593" name="Lectures (Department of English)" />                 
+    <theme path="article/" handle="1811/36698" name="Aquatic Ecology Laboratory Publications" />          
+    <theme path="article/" handle="1811/127" name="OSUL Research, Publications, and Presentations" />     
+    <theme path="article/" handle="1811/44573" name="Ohio State University Research and Scholarship" />   
+    <theme path="article/" handle="1811/5916" name="Empirical Musicology Review" />
+    <theme path="archives/" handle="1811/46669" name="Makio" />
+    <theme path="sesposters/" handle="1811/54587" name="Campus as a Living Laboratory Archive" />
+    <theme path="sesposters/" handle="1811/54562" name="Engineering Capstone Design Showcase Projects" />
+    <theme path="sesposters/" handle="1811/54651" name="Denman Undergraduate Research Forum" />    
+    <theme path="oca_gallery/" handle="1811/53392" name="Image Gallery - Cromie"/>
+    <theme path="oca_gallery/" handle="1811/53223" name="Image Gallery - Jesse Owens Photographs"/>
+    <theme path="oca_gallery/" handle="1811/56637" name="Image Gallery - Rubin"/>
+    <theme path="oca_gallery/" handle="1811/57108" name="Image Gallery - Ockerman Histology Slides"/>
+    <theme path="oca_gallery/" handle="1811/24634" name="Image Gallery - Thompson Library Renovation"/>
+    <theme path="oca_gallery/" handle="1811/59174" name="Image Gallery - McCaghy"/>
+    <theme path="oca_gallery/" handle="1811/59388" name="Image Gallery - RAR Photographs"/>
+    <theme path="oca/" handle="1811/61316" name="Japanese Naval Drawings and Notebooks"/>
+    <theme path="oca_gallery/" handle="1811/61405" name="Image Gallery - Sims Sheet Music (MUS)"/>
+    <theme path="oca/" handle="1811/61473" name="James Stevens-Cox Collection" />
+    <theme path="oca_gallery/" handle="1811/24842" name="Image Gallery - Foxe"/>
+    <theme path="oca/" handle="1811/61520" name="Mosaic"/>
+    <theme path="oca/" handle="1811/61521" name="Buckeye Barrister"/>
+    <theme path="oca/" handle="1811/61610" name="Law Record"/>
+    <theme path="oca/" handle="1811/61613" name="All Rise"/>
+    <theme path="oca/" handle="1811/62038" name="Lima Campus Newsletters"/>
+    <theme path="lep_gallery/" handle="1811/62198" name="Chafetz"/>
+    <theme path="oca_gallery/" handle="1811/46456" name="Image Gallery - Football Programs"/>
 
-        <!-- Reference theme, the default Manakin XMLUI layout up to DSpace 1.8 -->
-        <!-- <theme name="Default Reference Theme" regex=".*" path="Reference/" /> -->
+    <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
+        <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
+    
+    <!-- Everything Else is Default Theme -->
 
-        <!-- Classic theme, inspired by the JSP UI -->
-        <!-- <theme name="Classic" regex=".*" path="Classic/" /> -->
+	<theme path="community-list/" regex="community-list" name="Community List"/>
 
-        <!-- The Kubrick theme -->
-        <!-- <theme name="Kubrick" regex=".*" path="Kubrick/" /> -->
+    <theme path="template/" regex=".*" name="Default Theme"/>
 
-        <!--
-             For information on configuring the mobile theme, see:
-             dspace-xmlui/src/main/webapp/themes/mobile/readme.txt
-        -->
-    </themes>
+</themes>
 </xmlui>

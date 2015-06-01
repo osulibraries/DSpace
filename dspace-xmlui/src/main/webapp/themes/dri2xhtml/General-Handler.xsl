@@ -15,23 +15,27 @@
     Version: Manakin-1.1 and up (basically, those version making use of the Virtual Object Store)
 -->    
 
+<!-- bds: added rdf and cc namespaces for CC-License linking section -->
+<!-- PMD: There are some minor OSU customizations within this stylesheet, but anything major would be in OSU-Local.-->
 <xsl:stylesheet 
     xmlns:dri="http://di.tamu.edu/DRI/1.0/"
     xmlns:i18n="http://apache.org/cocoon/i18n/2.1"
     xmlns:mets="http://www.loc.gov/METS/"
     xmlns:xlink="http://www.w3.org/TR/xlink/"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+    xmlns:dim="http://www.dspace.org/xmlns/dspace/dim"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:cc="http://creativecommons.org/ns#"
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:jstring="java.lang.String"
-    xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/"
-    exclude-result-prefixes="i18n dri mets xlink xsl jstring rights">
-    
+    exclude-result-prefixes="i18n dri mets xlink xsl dim rdf cc">
+
     <xsl:output indent="yes"/>
     
 
     
     
     <!-- Generate the thunbnail, if present, from the file section -->
+    <!-- bds: Overridden in OSU-Local -->
     <xsl:template match="mets:fileSec" mode="artifact-preview">
         <xsl:if test="mets:fileGrp[@USE='THUMBNAIL']">
             <div class="artifact-preview">
@@ -52,8 +56,8 @@
     <xsl:template match="mets:fileGrp[@USE='CONTENT']">
         <xsl:param name="context"/>
         <xsl:param name="primaryBitstream" select="-1"/>
-        
-        <h2><i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-head</i18n:text></h2>
+        <!-- bds: this is the most common place for file-list items to be built -->
+        <!-- <h2><i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-head</i18n:text></h2> -->
         <table class="ds-table file-list">
             <tr class="ds-table-header-row">
                 <th><i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-file</i18n:text></th>
@@ -83,7 +87,7 @@
     </xsl:template>   
     
     
-    <!-- Build a single row in the bitstreams table of the item view page -->
+    <!-- Build a single row in the bitsreams table of the item view page -->
     <xsl:template match="mets:file">
         <xsl:param name="context" select="."/>
         <tr>
@@ -111,16 +115,6 @@
                             <xsl:value-of select="mets:FLocat[@LOCTYPE='URL']/@xlink:title"/>
                         </xsl:otherwise>
                     </xsl:choose>
-                    <xsl:if test="contains(mets:FLocat[@LOCTYPE='URL']/@xlink:href,'isAllowed=n')">
-                        <img>
-                            <xsl:attribute name="src">
-                                <xsl:value-of select="$context-path"/>
-                                <xsl:text>/static/icons/lock24.png</xsl:text>
-                            </xsl:attribute>
-                            <xsl:attribute name="alt">xmlui.dri2xhtml.METS-1.0.blocked</xsl:attribute>
-                            <xsl:attribute name="attr" namespace="http://apache.org/cocoon/i18n/2.1">alt</xsl:attribute>
-                        </img>
-                     </xsl:if>
                 </a>
             </td>
             <!-- File size always comes in bytes and thus needs conversion --> 
@@ -165,7 +159,12 @@
                             <xsl:attribute name="href">
                                 <xsl:value-of select="mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
                             </xsl:attribute>
-                            <img alt="Thumbnail">
+                            <img>
+				<!-- Accessibility fix for alt tags for images -->
+                                <xsl:attribute name="alt">
+                                    <xsl:text>Thumbnail of </xsl:text>
+                                    <xsl:value-of select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='title']"/>
+                                </xsl:attribute>
                                 <xsl:attribute name="src">
                                     <xsl:value-of select="$context/mets:fileSec/mets:fileGrp[@USE='THUMBNAIL']/
                                         mets:file[@GROUPID=current()/@GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
@@ -174,14 +173,12 @@
                         </a>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:choose>
-                            <xsl:when test="@ADMID">
-                                <xsl:call-template name="display-rights"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:call-template name="view-open"/>
-                            </xsl:otherwise>
-                        </xsl:choose>
+                        <a>
+                            <xsl:attribute name="href">
+                                <xsl:value-of select="mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
+                            </xsl:attribute>
+                            <i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-viewOpen</i18n:text>
+                        </a>
                     </xsl:otherwise>
                 </xsl:choose>                        
             </td>
@@ -195,52 +192,6 @@
         </tr>
     </xsl:template>
     
-    <xsl:template name="view-open">
-        <a>
-            <xsl:attribute name="href">
-                <xsl:value-of select="mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
-            </xsl:attribute>
-            <i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-viewOpen</i18n:text>
-        </a>
-    </xsl:template>
-
-    <xsl:template name="display-rights">
-        <xsl:variable name="file_id" select="jstring:replaceAll(jstring:replaceAll(string(@ADMID), '_METSRIGHTS', ''), 'rightsMD_', '')"/>
-        <xsl:variable name="rights_declaration" select="../../../mets:amdSec/mets:rightsMD[@ID = concat('rightsMD_', $file_id, '_METSRIGHTS')]/mets:mdWrap/mets:xmlData/rights:RightsDeclarationMD"/>
-        <xsl:variable name="rights_context" select="$rights_declaration/rights:Context"/>
-        <xsl:variable name="users">
-            <xsl:for-each select="$rights_declaration/*">
-                <xsl:value-of select="rights:UserName"/>
-                <xsl:choose>
-                    <xsl:when test="rights:UserName/@USERTYPE = 'GROUP'">
-                       <xsl:text> (group)</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="rights:UserName/@USERTYPE = 'INDIVIDUAL'">
-                       <xsl:text> (individual)</xsl:text>
-                    </xsl:when>
-                </xsl:choose>
-                <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>
-        </xsl:variable>
-        <xsl:variable name="alt-text"><i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-access-rights</i18n:text> <xsl:value-of select="$users"/></xsl:variable>
-
-        <xsl:choose>
-            <xsl:when test="not ($rights_context/@CONTEXTCLASS = 'GENERAL PUBLIC') and ($rights_context/rights:Permissions/@DISPLAY = 'true')">
-                <a href="{mets:FLocat[@LOCTYPE='URL']/@xlink:href}">
-                    <img width="64" height="64" src="{concat($theme-path,'/images/Crystal_Clear_action_lock3_64px.png')}">
-                        <xsl:attribute name="title"><xsl:value-of select="$alt-text"/></xsl:attribute>
-                        <xsl:attribute name="alt"><xsl:value-of select="$alt-text"/></xsl:attribute>
-                    </img>
-                    <!-- icon source: http://commons.wikimedia.org/wiki/File:Crystal_Clear_action_lock3.png -->
-                </a>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:call-template name="view-open"/>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
-
-
     <!--
     File Type Mapping template
 
@@ -263,7 +214,7 @@
       <i18n:text i18n:key="{$mimetype-key}"><xsl:value-of select="$mimetype"/></i18n:text>
     </xsl:template>
 
-
+    <!-- This gets overridden in OSULOCAL -->
     <!-- Generate the license information from the file section -->
     <xsl:template match="mets:fileGrp[@USE='CC-LICENSE' or @USE='LICENSE']">
         <div class="license-info">
@@ -285,8 +236,11 @@
     <xsl:template match="mets:fileGrp[@USE='LOGO']">
         <div class="ds-logo-wrapper">
             <img src="{mets:file/mets:FLocat[@LOCTYPE='URL']/@xlink:href}" class="logo">
-                <xsl:attribute name="alt">xmlui.dri2xhtml.METS-1.0.collection-logo-alt</xsl:attribute>
-                <xsl:attribute name="attr" namespace="http://apache.org/cocoon/i18n/2.1">alt</xsl:attribute>
+                <xsl:attribute name="alt">
+		    <!-- Add Accessibility alt tag to image-->
+                    <xsl:value-of select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='title']"/>
+                    <xsl:text> logo</xsl:text>
+                </xsl:attribute>
             </img>
         </div>
     </xsl:template>
