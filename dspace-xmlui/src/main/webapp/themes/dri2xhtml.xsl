@@ -24,12 +24,16 @@
     xmlns:xlink="http://www.w3.org/TR/xlink/"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
     
+    <xsl:import href="dri2xhtml/config.xsl"/>
     <xsl:import href="dri2xhtml/structural.xsl"/>
     <xsl:import href="dri2xhtml/DIM-Handler.xsl"/>
     <!--<xsl:import href="dri2xhtml/QDC-Handler.xsl"/>
         <xsl:import href="dri2xhtml/MODS-Handler.xsl"/>-->
     
     <xsl:import href="dri2xhtml/General-Handler.xsl"/>
+<!-- bds: local customization imports -->
+    <xsl:import href="dri2xhtml/OSU-Local.xsl"/>
+    <xsl:import href="dri2xhtml/simple_item_fields.xsl"/>
     <xsl:output indent="yes"/>       
     
 </xsl:stylesheet>

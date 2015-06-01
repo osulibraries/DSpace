@@ -1,0 +1,63 @@
+
+/*
+	root element for the scrollable.
+	when scrolling occurs this element stays still.
+*/
+.scrollable {
+
+	/* required settings */
+	position:relative;
+	overflow:hidden;
+	/*width: 680px;*/
+	min-height:120px;
+
+	/* custom decorations */
+	border:1px solid #ccc;
+	background: #F2F2F2;
+}
+
+/*
+    To disable scrollable, and just go wicked wide, we'll let the container grow vertically. Probably just a hack.
+
+	To be Scrollable...
+	root element for scrollable items. Must be absolutely positioned
+	and it should have a extremely large width to accomodate scrollable items.
+	it's enough that you set the width and height for the root element and
+	not for this element.
+*/
+.scrollable .items {
+	/* Scrollable (uncomment if using scrollable. with prev/next buttons)
+	    width:20000em;
+	    position:absolute;
+	*/
+	clear:both;
+}
+
+.items div {
+	float:left;
+	width:680px;
+}
+
+/* single scrollable item */
+.scrollable img {
+	float:left;
+	margin:20px 5px 20px 21px;
+	background-color:#fff;
+	padding:2px;
+	border:1px solid #ccc;
+	width:100px;
+	height:75px;
+
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+}
+
+/* active item */
+.scrollable .active {
+	border:2px solid #000;
+	position:relative;
+	cursor:default;
+    margin: 20px 3px 18px 19px;
+}
+
+
