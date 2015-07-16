@@ -308,7 +308,8 @@
             </xsl:for-each>
 
             <!-- Add MathJAX CDN, can do a local install, or possibly get SSL enabled-->
-            <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='render'][@qualifier='scientificFormulas'] = 'true'">
+            <!-- <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='render'][@qualifier='scientificFormulas'] = 'true'"> -->
+            <xsl:if test="confman:getProperty('webui.browse.render-scientific-formulas') = 'true'">
                 <script type="text/x-mathjax-config">
                     MathJax.Hub.Config({
                         tex2jax: {
