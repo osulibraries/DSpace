@@ -24,6 +24,7 @@
         xmlns:mods="http://www.loc.gov/mods/v3"
         xmlns:dc="http://purl.org/dc/elements/1.1/"
         xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:confman="org.dspace.core.ConfigurationManager"
         exclude-result-prefixes="i18n dri mets xlink xsl dim xhtml mods dc">
     
     <xsl:output indent="yes"/>
@@ -323,13 +324,12 @@
                         }
                     });
                 </script>
-
                 <script type="text/javascript">
                     <xsl:attribute name="src">
                         <xsl:choose>
                             <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='request'][@qualifier='scheme']='https'">
                                <!-- <xsl:text>https://c328740.ssl.cf1.rackcdn.com</xsl:text> -->
-				<xsl:text>https://cdn.mathjax.org</xsl:text>
+				                <xsl:text>https://cdn.mathjax.org</xsl:text>
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:text>http://cdn.mathjax.org</xsl:text>
