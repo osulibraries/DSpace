@@ -31,11 +31,11 @@
 
 			// Add tree links
 			$("li", $(this)).prepend('<span class="something">&nbsp;</span>');
-			$("li:has(> ul:not(.hide)) > span", $(this)).addClass('expanded').html('-');
-			$("li:has(> ul.hide) > span", $(this)).addClass('collapsed').html('+');
+			$("li:has(> ul:not(.hide)) > span.something", $(this)).addClass('expanded').html('-');
+			$("li:has(> ul.hide) > span.something", $(this)).addClass('collapsed').html('+');
 
 			// Tree function
-			$("li:has(> ul) span", $(this)).click(function(){
+			$("li:has(> ul) span.something", $(this)).click(function(){
 
 				// If was previously collapsed...
 				if ($(this).is(".collapsed")) {
@@ -63,7 +63,7 @@
 				// Show all children
 				$("ul", $root).removeClass('hide');
 				// and update the html
-				$("li:has(> ul) > span", $root).removeClass("collapsed").addClass("expanded").html('-');
+				$("li:has(> ul) > span.something", $root).removeClass("collapsed").addClass("expanded").html('-');
 				return false;
 			});
 			// Collapse all
@@ -71,7 +71,7 @@
 				// Hide all children
 				$("ul", $root).addClass('hide');
 				// and update the html
-				$("li:has(> ul) > span", $root).removeClass("expanded").addClass("collapsed").html('+');
+				$("li:has(> ul) > span.something", $root).removeClass("expanded").addClass("collapsed").html('+');
 				return false;
 			});
 			// Wrap around checked boxes
@@ -80,8 +80,8 @@
 				$("ul", $root).addClass('hide');
 
 				// and update the html
-				$("li:has(> ul:not(.hide)) > span", $root).removeClass('collapsed').addClass('expanded').html('-');
-				$("li:has(> ul.hide) > span", $root).removeClass('expanded').addClass('collapsed').html('+');
+				$("li:has(> ul:not(.hide)) > span.something", $root).removeClass('collapsed').addClass('expanded').html('-');
+				$("li:has(> ul.hide) > span.something", $root).removeClass('expanded').addClass('collapsed').html('+');
 				return false;
 			});
 
