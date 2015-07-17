@@ -32,3 +32,4 @@ META-INF/
 profiles.xml
 respace-local.sh
 respace-local-5.sh
+local.properties
