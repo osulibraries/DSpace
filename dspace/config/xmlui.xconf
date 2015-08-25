@@ -182,6 +182,8 @@
     <theme path="oca/" handle="1811/62038" name="Lima Campus Newsletters"/>
     <theme path="lep_gallery/" handle="1811/62198" name="Chafetz"/>
     <theme path="oca_gallery/" handle="1811/46456" name="Image Gallery - Football Programs"/>
+    <theme path="sesposters/" handle="1811/48671" name="Doctor of Nursing Practice" />
+    <theme path="sesposters/" handle="1811/71642" name="Fall Undergraduate Research Student Poster Forum" />
 
     <!-- Mirage theme, @mire contribution of new theme to support easier development and branding -->
         <!-- <theme name="Atmire Mirage Theme" regex=".*" path="Mirage/" /> -->
