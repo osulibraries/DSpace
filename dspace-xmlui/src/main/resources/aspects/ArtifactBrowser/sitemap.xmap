@@ -95,9 +95,6 @@ and searching the repository.
                             </map:act>
 
                             <map:transform type="FrontPageFeeds"/>
-                            <map:transform type="CommunityBrowser">
-                                <map:parameter name="depth" value="1"/>
-                            </map:transform>
                             <map:serialize type="xml"/>
                         </map:match>
                         
