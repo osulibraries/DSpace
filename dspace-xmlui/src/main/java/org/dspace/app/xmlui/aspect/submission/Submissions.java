@@ -208,10 +208,10 @@ public class Submissions extends AbstractDSpaceTransformer
 
     	Table table = unfinished.addTable("unfinished-submissions",rows,5);
         Row header = table.addRow(Row.ROLE_HEADER);
-        header.addCellContent(T_s_column1);
-        header.addCellContent(T_s_column2);
-        header.addCellContent(T_s_column3);
-        header.addCellContent(T_s_column4);
+        header.addCellContent(T_s_column1);     //checkbox
+        header.addCellContent(T_s_column2);     //title
+        header.addCellContent(T_s_column3);     //collection
+        header.addCellContent(T_s_column4);     //submitter
 
         if (supervisedItems.length > 0 && unfinishedItems.length > 0)
         {
@@ -233,23 +233,36 @@ public class Submissions extends AbstractDSpaceTransformer
                 String collectionName = workspaceItem.getCollection().getMetadata("name");
 
                 Row row = table.addRow(Row.ROLE_DATA);
+
+                // checkbox
                 CheckBox remove = row.addCell().addCheckBox("workspaceID");
                 remove.setLabel("remove");
                 remove.addOption(workspaceItemID);
+                // /checkbox
 
+                // title
                 if (titles.length > 0)
                 {
                     String displayTitle = titles[0].value;
-                    if (displayTitle.length() > 50)
+                    if (displayTitle.length() > 50) {
                         displayTitle = displayTitle.substring(0, 50) + " ...";
-                    row.addCell().addXref(url,displayTitle);
+                    }
+                    row.addCell().addXref(url, displayTitle);
                 }
-                else
-                    row.addCell().addXref(url,T_untitled);
-                row.addCell().addXref(url,collectionName);
+                else {
+                    row.addCell().addXref(url, T_untitled);
+                }
+                // /title
+
+                // collection
+                String collectionURL = contextPath + "/handle/" + workspaceItem.getCollection().getHandle();
+                row.addCell().addXref(collectionURL,collectionName);
+                // /collection
+
                 Cell cell = row.addCell();
                 cell.addContent(T_email);
                 cell.addXref("mailto:"+submitterEmail,submitterName);
+                // /submitter
             }
         } 
         else
@@ -340,8 +353,8 @@ public class Submissions extends AbstractDSpaceTransformer
         if(displayAll) {
             limit = -1;
         } else {
-            //Set a default limit of 50
-            limit = 50;
+            //Set a default limit of 5
+            limit = 5;
         }
         ItemIterator subs = Item.findBySubmitterDateSorted(context, context.getCurrentUser(), limit);
 
