@@ -100,12 +100,12 @@
             <xsl:text> </xsl:text>
         </script>
         <script type="text/javascript">
-            $(document).ready(function() {
-                $("#breadCrumb0").jBreadCrumb();
+            jQuery(document).ready(function() {
+                jQuery("#breadCrumb0").jBreadCrumb();
 
                 /* Linkify All Item Metadata content */
-                $('#aspect_artifactbrowser_ItemViewer_div_item-view table.ds-includeSet-table tr.ds-table-row td span').each(function(){
-                    var that = $(this),
+                jQuery('#aspect_artifactbrowser_ItemViewer_div_item-view table.ds-includeSet-table tr.ds-table-row td span').each(function(){
+                    var that = jQuery(this),
                     text = that.html(),
                     options = {callback: function( text, href ) {return href ? '<a href="' + href + '" title="' + text + '">' + text + '</a>' : text;}};
                     that.html(linkify(text, options ));
