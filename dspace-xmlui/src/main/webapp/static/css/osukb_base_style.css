@@ -1377,3 +1377,8 @@ border-radius: 5px;
 #homepage-body2 p {
   font-size: 1.1em;    
 }
+
+/** Have cell text not hide */
+.ds-table-cell .fade {
+    opacity: 1;
+}
