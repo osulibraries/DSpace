@@ -391,40 +391,7 @@ tr.ds-table-row.even {
       color: white;
       border-bottom: 1px dotted #eeeeee; }
 
-@font-face {
-  font-family: "fontello";
-  src: url("../fonts/fontello.eot");
-  src: url("../fonts/fontello.eot?#iefix") format("embedded-opentype"), url("../fonts/fontello.woff") format("woff"), url("../fonts/fontello.ttf") format("truetype"), url("../fonts/fontello.svg#fontello") format("svg");
-  font-weight: normal;
-  font-style: normal; }
-[class^="font-icon-"]:before,
-[class*=" font-icon-"]:before {
-  font-family: "fontello";
-  font-style: normal;
-  font-weight: normal;
-  speak: none;
-  display: inline-block;
-  text-decoration: inherit;
-  width: 1em;
-  margin-right: 0.2em;
-  text-align: center;
-  line-height: 1em; }
 
-#ds-user-box [class^="font-icon-"]:hover:before,
-#ds-user-box [class*=" font-icon-"]:hover:before {
-  border-bottom: 1px solid #990000; }
-
-.font-icon-login:before {
-  content: "\e740"; }
-
-.font-icon-logout:before {
-  content: "\e741"; }
-
-.font-icon-user:before {
-  content: "👤"; }
-
-.font-icon-cog:before {
-  content: "\2699"; }
 
 #grey-bar {
   background: #edeaea;
