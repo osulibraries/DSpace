@@ -308,6 +308,9 @@
                     </xsl:attribute>&#160;</script>
             </xsl:for-each>
 
+            <!-- Font Awesome CDN for icons -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+
             <!-- Add MathJAX CDN, can do a local install, or possibly get SSL enabled-->
             <!-- <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='render'][@qualifier='scientificFormulas'] = 'true'"> -->
             <xsl:if test="confman:getProperty('webui.browse.render-scientific-formulas') = 'true'">
@@ -677,11 +680,12 @@
                 <xsl:when test="/dri:document/dri:meta/dri:userMeta/@authenticated = 'yes'">
                     <div id="ds-user-box">
                         <p>
-                            <a class="font-icon-user">
+                            <a class="">
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="/dri:document/dri:meta/dri:userMeta/
                                                   dri:metadata[@element='identifier' and @qualifier='url']"/>
                                 </xsl:attribute>
+                                <i class="fa fa-user">&#160;</i>
                                 <i18n:text>xmlui.dri2xhtml.structural.profile</i18n:text>
                                 <xsl:value-of select="/dri:document/dri:meta/dri:userMeta/
                                               dri:metadata[@element='identifier' and @qualifier='firstName']"/>
@@ -690,11 +694,13 @@
                                               dri:metadata[@element='identifier' and @qualifier='lastName']"/>
                             </a>
                             <xsl:text> | </xsl:text>
-                            <a class="font-icon-logout">
+
+                            <a class="">
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="/dri:document/dri:meta/dri:userMeta/
                                                   dri:metadata[@element='identifier' and @qualifier='logoutURL']"/>
                                 </xsl:attribute>
+                                <i class="fa fa-sign-out">&#160;</i>
                                 <i18n:text>xmlui.dri2xhtml.structural.logout</i18n:text>
                             </a>
                         </p>
@@ -703,11 +709,13 @@
                 <xsl:otherwise>
                     <div id="ds-user-box">
                         <p>
-                            <a class="font-icon-login">
+
+                            <a class="">
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="/dri:document/dri:meta/dri:userMeta/
                                         dri:metadata[@element='identifier' and @qualifier='loginURL']"/>
                                 </xsl:attribute>
+                                <i class="fa fa-sign-in">&#160;</i>
                                 <i18n:text>xmlui.dri2xhtml.structural.login</i18n:text>
                             </a>
                         </p>
@@ -842,10 +850,12 @@
                                     </xsl:choose>
                                 </label>
                             </xsl:if>
-                            <a class="font-icon-cog">
+
+                            <a class="">
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='search'][@qualifier='advancedURL']"/>
                                 </xsl:attribute>
+                                <i class="fa fa-cog">&#160;</i>
                                 <i18n:text>xmlui.dri2xhtml.structural.search-advanced</i18n:text>
                             </a>
                         </div>
