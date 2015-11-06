@@ -1382,3 +1382,13 @@ border-radius: 5px;
 .ds-table-cell .fade {
     opacity: 1;
 }
+
+.something + span > a {
+    color: #3d473c !important;
+    font-weight: bold;
+}
+
+.collapsed + span > a, .expanded + span > a {
+  color: #225d62 !important;
+  font-weight: bold;
+}
