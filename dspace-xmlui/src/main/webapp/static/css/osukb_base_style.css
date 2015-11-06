@@ -1383,7 +1383,7 @@ border-radius: 5px;
     opacity: 1;
 }
 
-.something + span > a {
+.something + a {
     color: #3d473c !important;
     font-weight: bold;
 }
