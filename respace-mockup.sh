@@ -8,6 +8,7 @@ configDir="/dspace/config"
 sourceDir="/dspace-source/osulibrariesDSpace"
 tomcatStop="sudo /etc/init.d/tomcat6 stop"
 tomcatStart="sudo /etc/init.d/tomcat6 start"
+mavenCommand="/opt/apache-maven-3.3.3/bin/mvn"
 
 echo "Rebuild and Redeploy $site"
 
@@ -32,7 +33,7 @@ echo "DSpace-Source Git Repository is clean, continuing"
 
 cd $sourceDir
 git pull
-mvn clean package
+$mavenCommand clean package
 cd dspace/target/dspace-installer/
 
 $tomcatStop
