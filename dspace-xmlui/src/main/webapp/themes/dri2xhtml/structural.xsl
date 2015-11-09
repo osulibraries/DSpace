@@ -58,6 +58,21 @@
         "[context-path]/themes/[theme-dir]/".
     -->
     <xsl:variable name="theme-path" select="concat($context-path,'/themes/',/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='theme'][@qualifier='path'])"/>
+
+<!--
+        Full URI of the current page. Composed of scheme, server name and port and request URI.
+    -->
+    <xsl:variable name="current-uri">
+        <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='request'][@qualifier='scheme']"/>
+        <xsl:text>://</xsl:text>
+        <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='request'][@qualifier='serverName']"/>
+        <xsl:text>:</xsl:text>
+        <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='request'][@qualifier='serverPort']"/>
+        <xsl:text>/</xsl:text>
+        <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='request'][@qualifier='URI']"/>
+    </xsl:variable>
+
+
 <!-- bds: This is rather ungraceful.. I wasn't able to get apply-templates with-param name="browseMode" to work
         with the summaryList sections, so by last resort I am shamefully using this global variable.
         This allows us to detect browse type so as to display submit dates when browsing by submit date.
@@ -1477,6 +1492,9 @@
     
     <xsl:template match="dri:list[not(@type)]/dri:item" priority="2" mode="nested">
         <li>
+            <xsl:call-template name="standardAttributes">
+                <xsl:with-param name="class">ds-simple-list-item</xsl:with-param>
+            </xsl:call-template>
             <xsl:apply-templates />
             <!-- Wrap orphaned sub-lists into the preceding item -->
             <xsl:variable name="node-set1" select="./following-sibling::dri:list"/>
@@ -1864,6 +1882,9 @@ Disable Authority
     <!-- Generic item handling for cases where nothing special needs to be done -->
     <xsl:template match="dri:item" mode="nested">
         <li>
+            <xsl:call-template name="standardAttributes">
+                <xsl:with-param name="class">ds-simple-list-item</xsl:with-param>
+            </xsl:call-template>
             <xsl:apply-templates />
         </li>
     </xsl:template>
@@ -2004,6 +2025,10 @@ Disable Authority
             
             <xsl:if test="@n">
                 <xsl:attribute name="name"><xsl:value-of select="@n"/></xsl:attribute>
+            </xsl:if>
+
+            <xsl:if test="@onclick">
+                <xsl:attribute name="onclick"><xsl:value-of select="@onclick"/></xsl:attribute>
             </xsl:if>
 
             <xsl:apply-templates />
@@ -2985,94 +3010,117 @@ Disable Choice
             </xsl:when>
             <xsl:when test=". = 'masked'">
                 <div class="pagination-masked {$position}">
-                    <div class="previous-page-link">
-                        <xsl:if test="not(parent::node()/@firstItemIndex = 0 or parent::node()/@firstItemIndex = 1)">
-                            <a>
-                                <xsl:attribute name="href">
-                                    <xsl:value-of select="substring-before(parent::node()/@pageURLMask,'{pageNum}')"/>
-                                    <xsl:value-of select="parent::node()/@currentPage - 1"/>
-                                    <xsl:value-of select="substring-after(parent::node()/@pageURLMask,'{pageNum}')"/>
-                                </xsl:attribute>
-                                <i18n:text>xmlui.dri2xhtml.structural.pagination-previous</i18n:text>
-                            </a>
-                        </xsl:if><xsl:text>&#160;</xsl:text>
-                    </div>
-                    <div class="pagination-info">
-                        <p>
-                            <i18n:translate>
-                                <i18n:text>xmlui.dri2xhtml.structural.pagination-info</i18n:text>
-                                <i18n:param><xsl:value-of select="parent::node()/@firstItemIndex"/></i18n:param>
-                                <i18n:param><xsl:value-of select="parent::node()/@lastItemIndex"/></i18n:param>
-                                <i18n:param><xsl:value-of select="parent::node()/@itemsTotal"/></i18n:param>
-                            </i18n:translate>
-                        </p>
-                        <ul class="pagination-links">
-                            <xsl:if test="(parent::node()/@currentPage - 4) &gt; 0">
-                                <li class="first-page-link">
-                                    <a>
-                                        <xsl:attribute name="href">
-                                            <xsl:value-of select="substring-before(parent::node()/@pageURLMask,'{pageNum}')"/>
-                                            <xsl:text>1</xsl:text>
-                                            <xsl:value-of select="substring-after(parent::node()/@pageURLMask,'{pageNum}')"/>
-                                        </xsl:attribute>
+                    <xsl:if test="not(parent::node()/@firstItemIndex = 0 or parent::node()/@firstItemIndex = 1)">
+                        <a class="previous-page-link">
+                            <xsl:attribute name="href">
+                                <xsl:value-of select="substring-before(parent::node()/@pageURLMask,'{pageNum}')"/>
+                                <xsl:value-of select="parent::node()/@currentPage - 1"/>
+                                <xsl:value-of select="substring-after(parent::node()/@pageURLMask,'{pageNum}')"/>
+                            </xsl:attribute>
+                            <i18n:text>xmlui.dri2xhtml.structural.pagination-previous</i18n:text>
+                        </a>
+                    </xsl:if>
+                    <p class="pagination-info">
+                        <i18n:translate>
+                            <xsl:choose>
+                                <xsl:when test="parent::node()/@itemsTotal = -1">
+                                    <i18n:text>xmlui.dri2xhtml.structural.pagination-info.nototal</i18n:text>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <i18n:text>xmlui.dri2xhtml.structural.pagination-info</i18n:text>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            <i18n:param><xsl:value-of select="parent::node()/@firstItemIndex"/></i18n:param>
+                            <i18n:param><xsl:value-of select="parent::node()/@lastItemIndex"/></i18n:param>
+                            <i18n:param><xsl:value-of select="parent::node()/@itemsTotal"/></i18n:param>
+                        </i18n:translate>
+                    </p>
+                    <ul class="pagination-links">
+                        <xsl:if test="(parent::node()/@currentPage - 4) &gt; 0">
+                            <li class="first-page-link">
+                                <a>
+                                    <xsl:attribute name="href">
+                                        <xsl:value-of select="substring-before(parent::node()/@pageURLMask,'{pageNum}')"/>
                                         <xsl:text>1</xsl:text>
-                                    </a>
-                                    <xsl:text> . . . </xsl:text>
-                                </li>
-                            </xsl:if>
-                            <xsl:call-template name="offset-link">
-                                <xsl:with-param name="pageOffset">-3</xsl:with-param>
-                            </xsl:call-template>
-                            <xsl:call-template name="offset-link">
-                                <xsl:with-param name="pageOffset">-2</xsl:with-param>
-                            </xsl:call-template>
-                            <xsl:call-template name="offset-link">
-                                <xsl:with-param name="pageOffset">-1</xsl:with-param>
-                            </xsl:call-template>
-                            <xsl:call-template name="offset-link">
-                                <xsl:with-param name="pageOffset">0</xsl:with-param>
-                            </xsl:call-template>
-                            <xsl:call-template name="offset-link">
-                                <xsl:with-param name="pageOffset">1</xsl:with-param>
-                            </xsl:call-template>
-                            <xsl:call-template name="offset-link">
-                                <xsl:with-param name="pageOffset">2</xsl:with-param>
-                            </xsl:call-template>
-                            <xsl:call-template name="offset-link">
-                                <xsl:with-param name="pageOffset">3</xsl:with-param>
-                            </xsl:call-template>
-                            <xsl:if test="(parent::node()/@currentPage + 4) &lt;= (parent::node()/@pagesTotal)">
-                                <li class="last-page-link">
-                                    <xsl:text> . . . </xsl:text>
-                                    <a>
-                                        <xsl:attribute name="href">
-                                            <xsl:value-of select="substring-before(parent::node()/@pageURLMask,'{pageNum}')"/>
-                                            <xsl:value-of select="parent::node()/@pagesTotal"/>
-                                            <xsl:value-of select="substring-after(parent::node()/@pageURLMask,'{pageNum}')"/>
-                                        </xsl:attribute>
+                                        <xsl:value-of select="substring-after(parent::node()/@pageURLMask,'{pageNum}')"/>
+                                    </xsl:attribute>
+                                    <xsl:text>1</xsl:text>
+                                </a>
+                                <xsl:text> . . . </xsl:text>
+                            </li>
+                        </xsl:if>
+                        <xsl:call-template name="offset-link">
+                            <xsl:with-param name="pageOffset">-3</xsl:with-param>
+                        </xsl:call-template>
+                        <xsl:call-template name="offset-link">
+                            <xsl:with-param name="pageOffset">-2</xsl:with-param>
+                        </xsl:call-template>
+                        <xsl:call-template name="offset-link">
+                            <xsl:with-param name="pageOffset">-1</xsl:with-param>
+                        </xsl:call-template>
+                        <xsl:call-template name="offset-link">
+                            <xsl:with-param name="pageOffset">0</xsl:with-param>
+                        </xsl:call-template>
+                        <xsl:call-template name="offset-link">
+                            <xsl:with-param name="pageOffset">1</xsl:with-param>
+                        </xsl:call-template>
+                        <xsl:call-template name="offset-link">
+                            <xsl:with-param name="pageOffset">2</xsl:with-param>
+                        </xsl:call-template>
+                        <xsl:call-template name="offset-link">
+                            <xsl:with-param name="pageOffset">3</xsl:with-param>
+                        </xsl:call-template>
+                        <xsl:if test="(parent::node()/@currentPage + 4) &lt;= (parent::node()/@pagesTotal)">
+                            <li class="last-page-link">
+                                <xsl:text> . . . </xsl:text>
+                                <a>
+                                    <xsl:attribute name="href">
+                                        <xsl:value-of select="substring-before(parent::node()/@pageURLMask,'{pageNum}')"/>
                                         <xsl:value-of select="parent::node()/@pagesTotal"/>
-                                    </a>
-                                </li>
-                            </xsl:if>
-                        </ul>
-                    </div>
-                    <div class="next-page-link">
-                        <xsl:if test="not(parent::node()/@lastItemIndex = parent::node()/@itemsTotal)">
-                            <a>
-                                <xsl:attribute name="href">
-                                    <xsl:value-of select="substring-before(parent::node()/@pageURLMask,'{pageNum}')"/>
-                                    <xsl:value-of select="parent::node()/@currentPage + 1"/>
-                                    <xsl:value-of select="substring-after(parent::node()/@pageURLMask,'{pageNum}')"/>
-                                </xsl:attribute>
-                                <i18n:text>xmlui.dri2xhtml.structural.pagination-next</i18n:text>
-                            </a>
-                        </xsl:if><xsl:text>&#160;</xsl:text>
-                    </div>
+                                        <xsl:value-of select="substring-after(parent::node()/@pageURLMask,'{pageNum}')"/>
+                                    </xsl:attribute>
+                                    <xsl:value-of select="parent::node()/@pagesTotal"/>
+                                </a>
+                            </li>
+                        </xsl:if>
+                    </ul>
+                    <xsl:if test="not(parent::node()/@lastItemIndex = parent::node()/@itemsTotal)">
+                        <a class="next-page-link">
+                            <xsl:attribute name="href">
+                                <xsl:value-of select="substring-before(parent::node()/@pageURLMask,'{pageNum}')"/>
+                                <xsl:value-of select="parent::node()/@currentPage + 1"/>
+                                <xsl:value-of select="substring-after(parent::node()/@pageURLMask,'{pageNum}')"/>
+                            </xsl:attribute>
+                            <i18n:text>xmlui.dri2xhtml.structural.pagination-next</i18n:text>
+                        </a>
+                    </xsl:if>
+                    <xsl:if test="parent::node()/dri:div[@n = 'masked-page-control']">
+                        <xsl:apply-templates select="parent::node()/dri:div[@n='masked-page-control']/dri:div">
+                            <xsl:with-param name="position" select="$position"/>
+                        </xsl:apply-templates>
+                    </xsl:if>
                 </div>
             </xsl:when>
         </xsl:choose>
     </xsl:template>
-    
+
+    <xsl:template match="dri:div[@n = 'masked-page-control']" priority="5">
+        <!--Do not render this division, this is handled by the xsl-->
+    </xsl:template>
+
+    <xsl:template match="dri:div[@n ='search-controls-gear']">
+        <xsl:param name="position"/>
+        <div>
+            <xsl:call-template name="standardAttributes">
+                <xsl:with-param name="class"><xsl:value-of select="$position"/></xsl:with-param>
+            </xsl:call-template>
+
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+
+
+
     <!-- A quick helper function used by the @pagination template for repetitive tasks -->
     <xsl:template name="offset-link">
         <xsl:param name="pageOffset"/>
@@ -3310,14 +3358,18 @@ Disable Choice
     </xsl:template>
     
     <xsl:template match="dri:reference" mode="summaryView">
+        <xsl:variable name='METSRIGHTS-enabled' select="contains(confman:getProperty('plugin.named.org.dspace.content.crosswalk.DisseminationCrosswalk'), 'METSRIGHTS')" />
         <xsl:variable name="externalMetadataURL">
             <xsl:text>cocoon:/</xsl:text>
             <xsl:value-of select="@url"/>
-            <!-- No options selected, render the full METS document -->
+            <!-- If this is an Item, display the METSRIGHTS section, so we
+                 know which files have access restrictions.
+                 This requires the METSRightsCrosswalk to be enabled! -->
+            <xsl:if test="@type='DSpace Item' and $METSRIGHTS-enabled">
+                <xsl:text>?rightsMDTypes=METSRIGHTS</xsl:text>
+            </xsl:if>
         </xsl:variable>
-        <!-- bds: removing this External Metadata URL comment from the HTML output
-        -<xsl:comment> External Metadata URL: <xsl:value-of select="$externalMetadataURL"/> </xsl:comment>
-        -->
+        <xsl:comment> External Metadata URL: <xsl:value-of select="$externalMetadataURL"/> </xsl:comment>
         <xsl:apply-templates select="document($externalMetadataURL)" mode="summaryView"/>
         <xsl:apply-templates />
     </xsl:template>
@@ -3328,9 +3380,7 @@ Disable Choice
             <xsl:value-of select="@url"/>
             <!-- No options selected, render the full METS document -->
         </xsl:variable>
-        <!-- bds: removing this External Metadata URL comment from the HTML output
-        -<xsl:comment> External Metadata URL: <xsl:value-of select="$externalMetadataURL"/> </xsl:comment>
-        -->
+        <xsl:comment> External Metadata URL: <xsl:value-of select="$externalMetadataURL"/> </xsl:comment>
         <xsl:apply-templates select="document($externalMetadataURL)" mode="detailView"/>
         <xsl:apply-templates />
     </xsl:template>
@@ -3876,6 +3926,293 @@ Disable Choice
         <td>
             <xsl:apply-templates select="dri:field[@type='button']"/>
         </td>
+    </xsl:template>
+
+
+
+    <xsl:template match="dri:list[@type='dsolist']" priority="2">
+        <xsl:apply-templates select="dri:head"/>
+        <ul class="ds-artifact-list">
+            <xsl:apply-templates select="*[not(name()='head')]" mode="dsoList"/>
+        </ul>
+    </xsl:template>
+
+    <xsl:template match="dri:list/dri:list" mode="dsoList" priority="7">
+        <xsl:apply-templates select="dri:head"/>
+        <ul>
+            <xsl:apply-templates select="*[not(name()='head')]" mode="dsoList"/>
+        </ul>
+    </xsl:template>
+
+    <xsl:template match="dri:list/dri:list/dri:list" mode="dsoList" priority="8">
+        <li>
+            <xsl:attribute name="class">
+                <xsl:text>ds-artifact-item clearfix </xsl:text>
+                <xsl:choose>
+                    <xsl:when test="position() mod 2 = 0">even</xsl:when>
+                    <xsl:otherwise>odd</xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+            <!--
+                Retrieve the type from our name, the name contains the following format:
+                    {handle}:{metadata}
+            -->
+            <xsl:variable name="handle">
+                <xsl:value-of select="substring-before(@n, ':')"/>
+            </xsl:variable>
+            <xsl:variable name="type">
+                <xsl:value-of select="substring-after(@n, ':')"/>
+            </xsl:variable>
+            <xsl:variable name="externalMetadataURL">
+                <xsl:text>cocoon://metadata/handle/</xsl:text>
+                <xsl:value-of select="$handle"/>
+                <xsl:text>/mets.xml</xsl:text>
+                <!-- Since this is a summary only grab the descriptive metadata, and the thumbnails -->
+                <xsl:text>?sections=dmdSec,fileSec&amp;fileGrpTypes=THUMBNAIL</xsl:text>
+                <!-- An example of requesting a specific metadata standard (MODS and QDC crosswalks only work for items)->
+                <xsl:if test="@type='DSpace Item'">
+                    <xsl:text>&amp;dmdTypes=DC</xsl:text>
+                </xsl:if>-->
+            </xsl:variable>
+
+
+            <xsl:choose>
+                <xsl:when test="$type='community'">
+                    <xsl:call-template name="communitySummaryList">
+                        <xsl:with-param name="handle">
+                            <xsl:value-of select="$handle"/>
+                        </xsl:with-param>
+                        <xsl:with-param name="externalMetadataUrl">
+                            <xsl:value-of select="$externalMetadataURL"/>
+                        </xsl:with-param>
+                    </xsl:call-template>
+                </xsl:when>
+                <xsl:when test="$type='collection'">
+                    <xsl:call-template name="collectionSummaryList">
+                        <xsl:with-param name="handle">
+                            <xsl:value-of select="$handle"/>
+                        </xsl:with-param>
+                        <xsl:with-param name="externalMetadataUrl">
+                            <xsl:value-of select="$externalMetadataURL"/>
+                        </xsl:with-param>
+                    </xsl:call-template>
+                </xsl:when>
+                <xsl:when test="$type='item'">
+                    <xsl:call-template name="itemSummaryList">
+                        <xsl:with-param name="handle">
+                            <xsl:value-of select="$handle"/>
+                        </xsl:with-param>
+                        <xsl:with-param name="externalMetadataUrl">
+                            <xsl:value-of select="$externalMetadataURL"/>
+                        </xsl:with-param>
+                    </xsl:call-template>
+                </xsl:when>
+            </xsl:choose>
+        </li>
+    </xsl:template>
+
+    <xsl:template name="communitySummaryList">
+        <xsl:param name="handle"/>
+        <xsl:param name="externalMetadataUrl"/>
+
+        <xsl:variable name="metsDoc" select="document($externalMetadataUrl)"/>
+
+        <div class="artifact-title">
+            <a href="{$metsDoc/mets:METS/@OBJID}">
+                <xsl:choose>
+                    <xsl:when test="dri:list[@n=(concat($handle, ':dc.title'))]">
+                        <xsl:apply-templates select="dri:list[@n=(concat($handle, ':dc.title'))]/dri:item"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <i18n:text>xmlui.dri2xhtml.METS-1.0.no-title</i18n:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </a>
+            <!--Display community strengths (item counts) if they exist-->
+            <xsl:if test="string-length($metsDoc/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='format'][@qualifier='extent'][1]) &gt; 0">
+                <xsl:text> [</xsl:text>
+                <xsl:value-of
+                        select="$metsDoc/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='format'][@qualifier='extent'][1]"/>
+                <xsl:text>]</xsl:text>
+            </xsl:if>
+        </div>
+    </xsl:template>
+
+    <xsl:template name="collectionSummaryList">
+        <xsl:param name="handle"/>
+        <xsl:param name="externalMetadataUrl"/>
+
+        <xsl:variable name="metsDoc" select="document($externalMetadataUrl)"/>
+
+        <div class="artifact-title">
+            <a href="{$metsDoc/mets:METS/@OBJID}">
+                <xsl:choose>
+                    <xsl:when test="dri:list[@n=(concat($handle, ':dc.title'))]">
+                        <xsl:apply-templates select="dri:list[@n=(concat($handle, ':dc.title'))]/dri:item"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <i18n:text>xmlui.dri2xhtml.METS-1.0.no-title</i18n:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </a>
+
+        </div>
+        <!--Display collection strengths (item counts) if they exist-->
+        <xsl:if test="string-length($metsDoc/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='format'][@qualifier='extent'][1]) &gt; 0">
+            <xsl:text> [</xsl:text>
+            <xsl:value-of
+                    select="$metsDoc/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='format'][@qualifier='extent'][1]"/>
+            <xsl:text>]</xsl:text>
+        </xsl:if>
+
+
+    </xsl:template>
+
+    <xsl:template name="itemSummaryList">
+        <xsl:param name="handle"/>
+        <xsl:param name="externalMetadataUrl"/>
+
+        <xsl:variable name="metsDoc" select="document($externalMetadataUrl)"/>
+
+        <div class="artifact-description">
+            <div class="artifact-title">
+                <xsl:element name="a">
+                    <xsl:attribute name="href">
+                        <xsl:choose>
+                            <xsl:when test="$metsDoc/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/@withdrawn">
+                                <xsl:value-of select="$metsDoc/mets:METS/@OBJEDIT"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="concat($context-path, '/handle/', $handle)"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:attribute>
+                    <xsl:choose>
+                        <xsl:when test="dri:list[@n=(concat($handle, ':dc.title'))]">
+                            <xsl:apply-templates select="dri:list[@n=(concat($handle, ':dc.title'))]/dri:item"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <i18n:text>xmlui.dri2xhtml.METS-1.0.no-title</i18n:text>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:element>
+                <!-- Generate COinS with empty content per spec but force Cocoon to not create a minified tag  -->
+                <span class="Z3988">
+                    <xsl:attribute name="title">
+                        <xsl:for-each select="$metsDoc/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim">
+                            <xsl:call-template name="renderCOinS"/>
+                        </xsl:for-each>
+                    </xsl:attribute>
+                    &#xFEFF; <!-- non-breaking space to force separating the end tag -->
+                </span>
+            </div>
+            <div class="artifact-info">
+                <span class="author">
+                    <xsl:choose>
+                        <xsl:when test="dri:list[@n=(concat($handle, ':dc.contributor.author'))]">
+                            <xsl:for-each select="dri:list[@n=(concat($handle, ':dc.contributor.author'))]/dri:item">
+                                <xsl:variable name="author">
+                                    <xsl:value-of select="."/>
+                                </xsl:variable>
+                                <span>
+                                    <!--Check authority in the mets document-->
+                                    <xsl:if test="$metsDoc/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='contributor' and @qualifier='author' and . = $author]/@authority">
+                                        <xsl:attribute name="class">
+                                            <xsl:text>ds-dc_contributor_author-authority</xsl:text>
+                                        </xsl:attribute>
+                                    </xsl:if>
+                                    <xsl:apply-templates select="."/>
+                                </span>
+
+                                <xsl:if test="count(following-sibling::dri:item) != 0">
+                                    <xsl:text>; </xsl:text>
+                                </xsl:if>
+                            </xsl:for-each>
+                        </xsl:when>
+                        <xsl:when test="dri:list[@n=(concat($handle, ':dc.creator'))]">
+                            <xsl:for-each select="dri:list[@n=(concat($handle, ':dc.creator'))]/dri:item">
+                                <xsl:apply-templates select="."/>
+                                <xsl:if test="count(following-sibling::dri:item) != 0">
+                                    <xsl:text>; </xsl:text>
+                                </xsl:if>
+                            </xsl:for-each>
+                        </xsl:when>
+                        <xsl:when test="dri:list[@n=(concat($handle, ':dc.contributor'))]">
+                            <xsl:for-each select="dri:list[@n=(concat($handle, ':dc.contributor'))]/dri:item">
+                                <xsl:apply-templates select="."/>
+                                <xsl:if test="count(following-sibling::dri:item) != 0">
+                                    <xsl:text>; </xsl:text>
+                                </xsl:if>
+                            </xsl:for-each>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <i18n:text>xmlui.dri2xhtml.METS-1.0.no-author</i18n:text>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </span>
+                <xsl:text> </xsl:text>
+                <xsl:if test="dri:list[@n=(concat($handle, ':dc.date.issued'))] or dri:list[@n=(concat($handle, ':dc.publisher'))]">
+                    <span class="publisher-date">
+                        <xsl:text>(</xsl:text>
+                        <xsl:if test="dri:list[@n=(concat($handle, ':dc.publisher'))]">
+                            <span class="publisher">
+                                <xsl:apply-templates select="dri:list[@n=(concat($handle, ':dc.publisher'))]/dri:item"/>
+                            </span>
+                            <xsl:text>, </xsl:text>
+                        </xsl:if>
+                        <span class="date">
+                            <xsl:value-of
+                                    select="substring(dri:list[@n=(concat($handle, ':dc.date.issued'))]/dri:item,1,10)"/>
+                        </span>
+                        <xsl:text>)</xsl:text>
+                    </span>
+                </xsl:if>
+                <xsl:choose>
+                    <xsl:when test="dri:list[@n=(concat($handle, ':dc.description.abstract'))]/dri:item/dri:hi">
+                        <div class="abstract">
+                            <xsl:for-each select="dri:list[@n=(concat($handle, ':dc.description.abstract'))]/dri:item">
+                                <xsl:apply-templates select="."/>
+                                <xsl:text>...</xsl:text>
+                                <br/>
+                            </xsl:for-each>
+
+                        </div>
+                    </xsl:when>
+                    <xsl:when test="dri:list[@n=(concat($handle, ':fulltext'))]">
+                        <div class="abstract">
+                            <xsl:for-each select="dri:list[@n=(concat($handle, ':fulltext'))]/dri:item">
+                                <xsl:apply-templates select="."/>
+                                <xsl:text>...</xsl:text>
+                                <br/>
+                            </xsl:for-each>
+                        </div>
+                    </xsl:when>
+                </xsl:choose>
+            </div>
+        </div>
+
+        <!--Generates thumbnails (if present)-->
+        <xsl:apply-templates select="$metsDoc/mets:METS/mets:fileSec" mode="artifact-preview"/>
+
+    </xsl:template>
+    
+    <!-- Display language selection if more than 1 language is supported -->
+    <xsl:template name="languageSelection">
+        <xsl:if test="count(/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='page'][@qualifier='supportedLocale']) &gt; 1">
+            <div id="ds-language-selection">
+                <xsl:for-each select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='page'][@qualifier='supportedLocale']">
+                    <xsl:variable name="locale" select="."/>
+                    <a>
+                        <xsl:attribute name="href">
+                            <xsl:value-of select="$current-uri"/>
+                            <xsl:text>?locale-attribute=</xsl:text>
+                            <xsl:value-of select="$locale"/>
+                        </xsl:attribute>
+                        <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='supportedLocale'][@qualifier=$locale]"/>
+                    </a>
+                </xsl:for-each>
+            </div>
+        </xsl:if>
     </xsl:template>
 
 </xsl:stylesheet>
