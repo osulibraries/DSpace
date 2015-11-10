@@ -630,27 +630,6 @@
                 <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']/i18n:text='xmlui.ArtifactBrowser.HomePage.title'">
                     <script type="text/javascript">
                         $(document).ready(function() {
-                            $('#recent-submissions').rssfeed('https://kb.osu.edu/dspace/feed/rss_2.0/site', {
-                                    header: false,
-                                    limit: 5, 
-                                    ssl: true,
-                                    dateformat: 'yyyy',
-                                    historical: true
-                                }, function(e) {
-
-                                $('p',e).each(function(i) {
-                                    $(this).text('');
-                                });
-                             });
-
-                             //This will update any mathjax characters after the rss renders.
-                             setTimeout(function(){
-                                /*We need to time this out because this rss gets output after the initial load, so mathjax doesn't pick up on it the first time. */
-                                MathJax.Hub.Queue(["Typeset",MathJax.Hub,"recent-submissions"]);
-                             }, 500)
-                             
-
-
                             $('#myCarousel').carousel({
                                     interval: 8000
                             })
@@ -667,10 +646,8 @@
                         })
                     </script>
 
-                    <!-- bds: homepage-body.xhtml contains <div id="homepage-body">...</div> -->
                     <xsl:copy-of select="document('../../static/homepage-body.xhtml')"/>
-                    <!-- bds: homepage-featured.xhtml contains <div id="homepage-featured">...</div> -->
-                    <!-- <xsl:copy-of select="document('../../static/homepage-featured.xhtml')"/> -->
+                    <xsl:apply-templates/>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates />
