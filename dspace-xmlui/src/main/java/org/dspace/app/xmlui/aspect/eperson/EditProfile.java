@@ -375,10 +375,9 @@ public class EditProfile extends AbstractDSpaceTransformer
            subscriptions.enableDeleteOperation();
            
            subscriptions.addOption(-1,T_select_collection);
-	       CollectionDropDown.CollectionPathEntry[] possibleEntries = CollectionDropDown.annotateWithPaths(possibleList);
-           for (CollectionDropDown.CollectionPathEntry possible : possibleEntries)
-           {
-               subscriptions.addOption(possible.collection.getID(), possible.path);
+           //OSU - Show collection list without parent com context
+           for(Collection collection : possibleList) {
+               subscriptions.addOption(collection.getID(), collection.getName());
            }
 
            for (Collection collection: currentList)
