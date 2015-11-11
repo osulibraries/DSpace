@@ -66,6 +66,7 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
 	private static final Message T_bundle_label = message("xmlui.administrative.item.EditItemBitstreamsForm.bundle_label");
 	private static final Message T_primary_label = message("xmlui.administrative.item.EditItemBitstreamsForm.primary_label");
 	private static final Message T_view_link = message("xmlui.administrative.item.EditItemBitstreamsForm.view_link");
+	private static final Message T_add_bitstream_label = message("xmlui.administrative.item.EditItemBitstreamsForm.add_bitstream_label");
 	private static final Message T_submit_add = message("xmlui.administrative.item.EditItemBitstreamsForm.submit_add");
 	private static final Message T_submit_delete = message("xmlui.administrative.item.EditItemBitstreamsForm.submit_delete");
 
@@ -105,7 +106,9 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
 		options.addItem().addHighlight("bold").addXref(baseURL+"&submit_bitstreams",T_option_bitstreams);
 		options.addItem().addXref(baseURL+"&submit_metadata",T_option_metadata);
 		options.addItem().addXref(baseURL + "&view_item", T_option_view);
-                options.addItem().addXref(baseURL + "&submit_curate", T_option_curate);
+                if(AuthorizeManager.isSuperAdmin(context)) {
+                    options.addItem().addXref(baseURL + "&submit_curate", T_option_curate);
+                }
 
 		
 		
@@ -122,6 +125,8 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
 		header.addCellContent(T_column5);
 		header.addCellContent(T_column6);
 		header.addCellContent(T_column7);
+        
+        final int COLUMN_LENGTH = 7;
 
 		Bundle[] bundles = item.getBundles();
 
@@ -129,7 +134,7 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
 		for (Bundle bundle : bundles)
 		{
 
-			Cell bundleCell = files.addRow("bundle_head_" + bundle.getID(), Row.ROLE_DATA, "").addCell(1, 5);
+			Cell bundleCell = files.addRow("bundle_head_" + bundle.getID(), Row.ROLE_DATA, "").addCell(1, COLUMN_LENGTH);
 			bundleCell.addContent(T_bundle_label.parameterize(bundle.getName()));
 
 			Bitstream[] bitstreams = bundle.getBitstreams();
@@ -157,17 +162,13 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
                 if (bitstreamFormat != null) {
                     format = bitstreamFormat.getShortDescription();
                 }
-                String editURL = contextPath + "/admin/item?administrative-continue=" + knot.getId() + "&bitstreamID=" + bitstream.getID() + "&submit_edit";
-                String viewURL = contextPath + "/bitstream/id/" + bitstream.getID() + "/" + bitstream.getName();
+				String editURL = contextPath + "/admin/item?administrative-continue="+knot.getId()+"&bitstreamID="+bitstream.getID()+"&submit_edit";
+				String viewURL = contextPath + "/bitstream/id/"+bitstream.getID()+"/"+bitstream.getName();
+				String bitstreamBundlePair = bitstream.getBundles()[0].getID()+"/"+bitstream.getID();
+                                String deleteURL = contextPath + "/admin/item?administrative-continue="+knot.getId()+"&bitstreamID="+bitstreamBundlePair+"&submit_delete";
 
 
-                Row row = files.addRow("bitstream_row_" + bitstream.getID(), Row.ROLE_DATA, "");
-                CheckBox remove = row.addCell().addCheckBox("remove");
-                remove.setLabel("remove");
-                remove.addOption(bundle.getID() + "/" + bitstream.getID());
-                if (!AuthorizeManager.authorizeActionBoolean(context, item, Constants.REMOVE)) {
-                    remove.setDisabled();
-                }
+				Row row = files.addRow();
 
                 if (AuthorizeManager.authorizeActionBoolean(context, bitstream, Constants.WRITE)) {
                     // The user can edit the bitstream give them a link.
@@ -187,6 +188,8 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
                         cell.addContent(T_primary_label);
                     }
 
+
+
                     row.addCell().addContent(description);
                     row.addCell().addContent(format);
                 }
@@ -196,18 +199,32 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
                 highlight.addXref(viewURL, T_view_link);
                 highlight.addContent("]");
 
+                // Provide a link to delete just this one
+                Highlight deleteLink = row.addCell().addHighlight("muted");
+                deleteLink.addContent("[");
+
+                if (AuthorizeManager.authorizeActionBoolean(context, item, Constants.REMOVE))
+                {
+                    deleteLink.addXref(deleteURL,"delete");
+                } else {
+                    deleteLink.addContent("delete");
+                }
+                deleteLink.addContent("]");
+
                 if (AuthorizeManager.authorizeActionBoolean(context, bundle, Constants.WRITE)) {
                     Cell cell = row.addCell("bitstream_order_" + bitstream.getID(), Cell.ROLE_DATA, "");
                     //Add the +1 to make it more human readable
                     cell.addHidden("order_" + bitstream.getID()).setValue(String.valueOf(bitstreamIndex + 1));
                     showBitstreamUpdateOrderButton = true;
-                    Button upButton = cell.addButton("submit_order_" + bundle.getID() + "_" + bitstream.getID() + "_up", ((bitstreamIndex == 0) ? "disabled" : "") + " icon-button arrowUp ");
+
+                    Button upButton = cell.addButton("submit_order_" + bundle.getID() + "_" + bitstream.getID() + "_up", ((bitstreamIndex == 0) ? "disabled" : "") + " reorder-up ");
                     if((bitstreamIndex == 0)){
                         upButton.setDisabled();
                     }
                     upButton.setValue(T_order_up);
                     upButton.setHelp(T_order_up);
-                    Button downButton = cell.addButton("submit_order_" + bundle.getID() + "_" + bitstream.getID() + "_down", (bitstreamIndex == (bitstreams.length - 1) ? "disabled" : "") + " icon-button arrowDown ");
+
+                    Button downButton = cell.addButton("submit_order_" + bundle.getID() + "_" + bitstream.getID() + "_down", (bitstreamIndex == (bitstreams.length - 1) ? "disabled" : "") + " reorder-down ");
                     if(bitstreamIndex == (bitstreams.length - 1)){
                         downButton.setDisabled();
                     }
@@ -223,15 +240,17 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
             }
 		}
 
+		Cell addBitstreamHeader = files.addRow(Row.ROLE_HEADER).addCell(1, COLUMN_LENGTH);
+                addBitstreamHeader.addContent(T_add_bitstream_label);
 		if (AuthorizeManager.authorizeActionBoolean(context, item, Constants.ADD))
 		{
-			Cell cell = files.addRow().addCell(1, 5);
+			Cell cell = files.addRow().addCell("", Row.ROLE_DATA, 1, COLUMN_LENGTH, "add_bitstream");
 			cell.addXref(contextPath+"/admin/item?administrative-continue="+knot.getId()+"&submit_add",T_submit_add);
 		}
 		else
 		{
-			Cell cell = files.addRow().addCell(1, 5);
-			cell.addHighlight("fade").addContent(T_no_upload);
+			Cell cell = files.addRow().addCell("", Row.ROLE_DATA, 1, COLUMN_LENGTH, "add_bitstream");
+			cell.addHighlight("muted").addContent(T_no_upload);
 		}
 
 		
@@ -244,19 +263,6 @@ public class EditItemBitstreamsForm extends AbstractDSpaceTransformer {
             actions.addButton("submit_update_order", "hidden").setValue(T_submit_reorder);
         }
 
-        // Only System Administrators can delete bitstreams
-		if (AuthorizeManager.authorizeActionBoolean(context, item, Constants.REMOVE))
-        {
-            actions.addButton("submit_delete").setValue(T_submit_delete);
-        }
-		else
-		{
-			Button button = actions.addButton("submit_delete");
-			button.setValue(T_submit_delete);
-			button.setDisabled();
-			
-			main.addPara().addHighlight("fade").addContent(T_no_remove);
-		}
 		actions.addButton("submit_return").setValue(T_submit_return);
 
 
