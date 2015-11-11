@@ -67,9 +67,10 @@ public class BatchImportMain extends AbstractDSpaceTransformer {
         select.setHelp(T_collection_help);
 
         select.addOption("",T_collection_default);
+        //OSU - Display collection name without community path
         for (Collection collection : collections)
         {
-            select.addOption(collection.getHandle(), CollectionDropDown.collectionPath(collection));
+            select.addOption(collection.getHandle(), collection.getName());
         }
 
         //Zip File Upload

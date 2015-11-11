@@ -98,10 +98,10 @@ public class SelectCollectionStep extends AbstractSubmissionStep
         select.setHelp(T_collection_help);
         
         select.addOption("",T_collection_default);
-	    CollectionDropDown.CollectionPathEntry[] collectionPaths = CollectionDropDown.annotateWithPaths(collections);
-        for (CollectionDropDown.CollectionPathEntry entry : collectionPaths)
-        {
-            select.addOption(entry.collection.getHandle(), entry.path);
+
+        //OSU - Show collection list without parent com context
+        for(Collection collection : collections) {
+            select.addOption(collection.getHandle(), collection.getName());
         }
         
         Button submit = list.addItem().addButton("submit");
