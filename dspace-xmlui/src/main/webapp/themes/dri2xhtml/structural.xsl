@@ -2720,13 +2720,13 @@ Disable Choice
 
                     <xsl:choose>
                         <xsl:when test="contains(@rend, 'disabled')">
-                            &#160;
+                            <i class="fa fa-ellipsis-h"><xsl:text>&#160;</xsl:text></i>
                         </xsl:when>
                         <xsl:when test="contains(@rend, 'reorder-up')">
-                            <i class="icon-chevron-up"><xsl:text>&#160;</xsl:text></i>
+                            <i class="fa fa-chevron-up"><xsl:text>&#160;</xsl:text></i>
                         </xsl:when>
                         <xsl:when test="contains(@rend, 'reorder-down')">
-                            <i class="icon-chevron-down"><xsl:text>&#160;</xsl:text></i>
+                            <i class="fa fa-chevron-down"><xsl:text>&#160;</xsl:text></i>
                         </xsl:when>
                     </xsl:choose>
 
