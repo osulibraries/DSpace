@@ -337,9 +337,9 @@ public class UploadLicenseStep extends AbstractProcessingStep
      */
     public int getNumberOfPages(HttpServletRequest request, SubmissionInfo subInfo) throws ServletException
     {
-        Context context = null;
         try {
-            context = new Context();
+            Context context = subInfo.getContext();
+
             Collection submittedCollection = (Collection) HandleManager.resolveToObject(context, subInfo.getCollectionHandle());
             Group adminGroup = submittedCollection.getAdministrators();
             Boolean isCollAdmin = false;
@@ -366,10 +366,6 @@ public class UploadLicenseStep extends AbstractProcessingStep
         } catch (SQLException ex) {
             log.error(ex);
             return 0;
-        } finally {
-            if(context != null && context.isValid()) {
-                context.abort();
-            }
         }
     }
 
@@ -459,7 +455,7 @@ public class UploadLicenseStep extends AbstractProcessingStep
         boolean formatKnown = true;
         boolean fileOK = false;
         BitstreamFormat bf = null;
-        Bitstream b = null;
+        Bitstream bitstream = null;
 
         //NOTE: File should already be uploaded.
         //Manakin does this automatically via Cocoon.
@@ -511,12 +507,12 @@ public class UploadLicenseStep extends AbstractProcessingStep
                 if (bundles.length < 1)
                 {
                     // set bundle's name to LICENSE
-                    b = item.createSingleBitstream(fileInputStream, PROXY_LICENSE_BUNDLE_NAME);
+                    bitstream = item.createSingleBitstream(fileInputStream, PROXY_LICENSE_BUNDLE_NAME);
                 }
                 else
                 {
                     // we have a bundle already, just add bitstream
-                    b = bundles[0].createBitstream(fileInputStream);
+                    bitstream = bundles[0].createBitstream(fileInputStream);
                 }
 
                 // Strip all but the last filename. It would be nice
@@ -533,22 +529,22 @@ public class UploadLicenseStep extends AbstractProcessingStep
                     noPath = noPath.substring(noPath.indexOf('\\') + 1);
                 }
 
-                b.setName(noPath);
-                b.setSource(filePath);
-                b.setDescription(fileDescription);
+                bitstream.setName(noPath);
+                bitstream.setSource(filePath);
+                bitstream.setDescription(fileDescription);
 
                 // Identify the format
-                bf = FormatIdentifier.guessFormat(context, b);
-                b.setFormat(bf);
+                bf = FormatIdentifier.guessFormat(context, bitstream);
+                bitstream.setFormat(bf);
 
                 // Update to DB
-                b.update();
+                bitstream.update();
                 item.update();
 
                 if ((bf != null) && (bf.isInternal()))
                 {
                     log.warn("Attempt to upload file format marked as internal system use only");
-                    backoutBitstream(subInfo, b, item);
+                    backoutBitstream(subInfo, bitstream, item);
                     return STATUS_UPLOAD_ERROR;
                 }
 
@@ -562,7 +558,7 @@ public class UploadLicenseStep extends AbstractProcessingStep
 
                 // save this bitstream to the submission info, as the
                 // bitstream we're currently working with
-                subInfo.setBitstream(b);
+                subInfo.setBitstream(bitstream);
 
                 //if format was not identified
                 if (bf == null)
