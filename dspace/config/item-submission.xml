@@ -267,6 +267,15 @@
 		<workflow-editable>false</workflow-editable>
       </step>
 
+       <!--Step 7 will be to Upload the proxy license item-->
+       <step>
+           <heading>submit.progressbar.proxy-license</heading>
+           <processing-class>org.dspace.submit.step.UploadLicenseStep</processing-class>
+           <jspui-binding></jspui-binding>
+           <xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.UploadLicenseStep</xmlui-binding>
+           <workflow-editable>false</workflow-editable>
+       </step>
+
 
      
    </submission-process>
