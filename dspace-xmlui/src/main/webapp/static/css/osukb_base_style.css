@@ -1359,3 +1359,7 @@ border-radius: 5px;
   color: #225d62 !important;
   font-weight: bold;
 }
+
+.ds-trail-link.first-link.last-link.last.first {
+    display: none;
+}
