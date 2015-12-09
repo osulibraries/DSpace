@@ -1350,14 +1350,21 @@ border-radius: 5px;
     opacity: 1;
 }
 
+/* /community-list collection */
 .something + a {
     color: #3d473c !important;
     font-weight: bold;
 }
 
+/* /community-list communities */
 .collapsed + span > a, .expanded + span > a {
   color: #225d62 !important;
   font-weight: bold;
+}
+
+span.something:not(.collapsed):not(.expanded) + span.bold > a {
+    color: #225d62 !important;
+    font-weight: bold;
 }
 
 .ds-trail-link.first-link.last-link.last.first {
