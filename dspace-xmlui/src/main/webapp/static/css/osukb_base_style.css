@@ -1370,3 +1370,9 @@ span.something:not(.collapsed):not(.expanded) + span.bold > a {
 .ds-trail-link.first-link.last-link.last.first {
     display: none;
 }
+
+.recentSubmissionViewMore {
+    position: relative;
+    top: 10px;
+    padding-bottom: 10px;
+}
