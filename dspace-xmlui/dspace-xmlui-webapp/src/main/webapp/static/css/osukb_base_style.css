@@ -1378,6 +1378,6 @@ border-radius: 5px;
   font-size: 1.1em;    
 }
 
-#homepage-body2 ul.ds-artifact-list {
-    padding-left: 10px;
+#homepage-body2 li.ds-artifact-item {
+    text-indent: 10px;
 }
