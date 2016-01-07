@@ -1371,8 +1371,11 @@ span.something:not(.collapsed):not(.expanded) + span.bold > a {
     display: none;
 }
 
+.recent-submission ul.ds-artifact-list {
+    overflow: auto;
+}
+
 .recentSubmissionViewMore {
-    position: relative;
-    top: 10px;
     padding-bottom: 10px;
+    padding-top: 10px;
 }
