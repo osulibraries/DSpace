@@ -684,12 +684,18 @@ p.copyright-text {
 div.ds-logo-wrapper {
   float: right;
   padding: 10px 5px 10px 5px;
-  clear: both;
-  margin-top: -200px; }
-div.detail-view-news {
-  /* 'Related links' */
-  clear: both;
-  /* sit below the logo, if any */
+  }
+
+p.intro-text {
+    clear: left;
+}
+
+.ds-static-div.secondary.search-browse {
+    float: left;
+}
+
+div.detail-view-news {/* 'Related links' */
+  clear: right;/* sit below the logo, if any */
   float: right;
   border-left: 1px solid #aaaaaa;
   border-right: 1px solid #aaaaaa;
@@ -697,7 +703,8 @@ div.detail-view-news {
   width: 200px;
   font-size: 0.8em;
   padding: 4px;
-  margin: 4px; }
+  margin: 4px;
+  }
 div.detail-view-rights-and-license {
   font-size: 0.75em;
   font-style: italic;

@@ -839,21 +839,23 @@
     </xsl:template>
     
     <!-- Generate the info about the collection from the metadata section -->
-    <xsl:template match="dim:dim" mode="collectionDetailView-DIM"> 
+    <xsl:template match="dim:dim" mode="collectionDetailView-DIM">
+        <!-- OSUKB move side news/links above intro-text -->
+        <xsl:if test="string-length(dim:field[@element='description'][@qualifier='tableofcontents'])&gt;0">
+            <div class="detail-view-news">
+                <p class="news-text">
+                    <xsl:copy-of select="dim:field[@element='description'][@qualifier='tableofcontents']/node()"/>
+                </p>
+            </div>
+        </xsl:if>
+
         <xsl:if test="string-length(dim:field[@element='description'][not(@qualifier)])&gt;0">
             <p class="intro-text">
                 <xsl:copy-of select="dim:field[@element='description'][not(@qualifier)]/node()"/>
             </p>
         </xsl:if>
         
-        <xsl:if test="string-length(dim:field[@element='description'][@qualifier='tableofcontents'])&gt;0">
-        	<div class="detail-view-news">
-        		<h3><i18n:text>xmlui.dri2xhtml.METS-1.0.news</i18n:text></h3>
-        		<p class="news-text">
-        			<xsl:copy-of select="dim:field[@element='description'][@qualifier='tableofcontents']/node()"/>
-        		</p>
-        	</div>
-        </xsl:if>
+
         
         <xsl:if test="string-length(dim:field[@element='rights'][not(@qualifier)])&gt;0">
         	<div class="detail-view-rights-and-license">
@@ -984,21 +986,23 @@
     </xsl:template>
     
     <!-- Generate the info about the community from the metadata section -->
-    <xsl:template match="dim:dim" mode="communityDetailView-DIM"> 
+    <xsl:template match="dim:dim" mode="communityDetailView-DIM">
+        <!-- OSUKB, move side news/links above intro-text -->
+        <xsl:if test="string-length(dim:field[@element='description'][@qualifier='tableofcontents'])&gt;0">
+            <div class="detail-view-news">
+                <p class="news-text">
+                    <xsl:copy-of select="dim:field[@element='description'][@qualifier='tableofcontents']/node()"/>
+                </p>
+            </div>
+        </xsl:if>
+
         <xsl:if test="string-length(dim:field[@element='description'][not(@qualifier)])&gt;0">
             <p class="intro-text">
                 <xsl:copy-of select="dim:field[@element='description'][not(@qualifier)]/node()"/>
             </p>
         </xsl:if>
         
-        <xsl:if test="string-length(dim:field[@element='description'][@qualifier='tableofcontents'])&gt;0">
-        	<div class="detail-view-news">
-        		<h3><i18n:text>xmlui.dri2xhtml.METS-1.0.news</i18n:text></h3>
-        		<p class="news-text">
-        			<xsl:copy-of select="dim:field[@element='description'][@qualifier='tableofcontents']/node()"/>
-        		</p>
-        	</div>
-        </xsl:if>
+
         
         <xsl:if test="string-length(dim:field[@element='rights'][not(@qualifier)])&gt;0">
         	<div class="detail-view-rights-and-license">
