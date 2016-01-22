@@ -39,8 +39,6 @@ import org.dspace.identifier.IdentifierService;
 import org.dspace.storage.rdbms.DatabaseManager;
 import org.dspace.storage.rdbms.TableRow;
 import org.dspace.storage.rdbms.TableRowIterator;
-import org.dspace.submit.step.LicenseStep;
-import org.dspace.submit.step.UploadLicenseStep;
 import org.dspace.utils.DSpace;
 import org.dspace.versioning.VersioningService;
 import org.dspace.workflow.WorkflowItem;
@@ -1562,11 +1560,6 @@ public class Item extends DSpaceObject
         Bundle[] bunds = getBundles();
         for (int i = 0; i < bunds.length; i++){
             Bundle mybundle = bunds[i];
-
-            if(mybundle.getName().equals(UploadLicenseStep.PROXY_LICENSE_BUNDLE_NAME) || mybundle.getName().equals("LICENSE")) {
-                log.info("Skipping setting default permissions on bundle:" + mybundle.getName());
-                continue;
-            }
 
             // if come from InstallItem: remove all submission/workflow policies
             AuthorizeManager.removeAllPoliciesByDSOAndType(ourContext, mybundle, ResourcePolicy.TYPE_SUBMISSION);
