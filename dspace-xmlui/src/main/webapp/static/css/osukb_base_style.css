@@ -1387,6 +1387,6 @@ span.something:not(.collapsed):not(.expanded) + span.bold > a {
     padding-top: 10px;
 }
 
-#aspect_artifactbrowser_CollectionViewer_div_collection-view {
+#aspect_artifactbrowser_CollectionViewer_div_collection-view p.ds-paragraph {
   clear:left;
 }
