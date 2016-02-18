@@ -691,7 +691,8 @@ p.intro-text {
 }
 
 .ds-static-div.secondary.search-browse {
-    float: left;
+    /* Add space for Recent Submissions */
+    /* float: left; */
 }
 
 div.detail-view-news {/* 'Related links' */
