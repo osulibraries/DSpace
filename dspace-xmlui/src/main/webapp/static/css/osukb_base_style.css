@@ -1386,3 +1386,7 @@ span.something:not(.collapsed):not(.expanded) + span.bold > a {
     padding-bottom: 10px;
     padding-top: 10px;
 }
+
+#aspect_artifactbrowser_CollectionViewer_div_collection-view {
+  clear:left;
+}
