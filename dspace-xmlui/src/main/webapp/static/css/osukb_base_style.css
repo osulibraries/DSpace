@@ -690,9 +690,8 @@ p.intro-text {
     clear: left;
 }
 
-.ds-static-div.secondary.search-browse {
-    /* Add space for Recent Submissions */
-    /* float: left; */
+.ds-static-div.secondary.search-browse {/* Add space for Recent Submissions */
+    float: left;
 }
 
 div.detail-view-news {/* 'Related links' */
@@ -1390,4 +1389,8 @@ span.something:not(.collapsed):not(.expanded) + span.bold > a {
 
 #aspect_artifactbrowser_CollectionViewer_div_collection-view p.ds-paragraph {
   clear:left;
+}
+
+#aspect_artifactbrowser_CollectionViewer_div_collection-home h2.ds-div-head {
+  padding-top: 15px;
 }
