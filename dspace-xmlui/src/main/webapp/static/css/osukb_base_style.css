@@ -403,9 +403,10 @@ tr.ds-table-row.even {
   background: linear-gradient(to bottom, #edeaea 0%, #edeaea 46%, #e2dfdf 54%, #e2dfdf 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#edeaea', endColorstr='#e2dfdf',GradientType=0 );
   text-align: right;
-  height: 3em;
+  height: 2em;
   padding: 0.75em 0.5em;
-  border-bottom: 1px solid #999999; }
+  border-bottom: 1px solid #999999;
+  }
 
 #ds-global-search {
   color: black;
