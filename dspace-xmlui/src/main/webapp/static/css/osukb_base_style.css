@@ -689,6 +689,7 @@ div.ds-logo-wrapper {
 
 p.intro-text {
     clear: left;
+    padding-top: 5px;
 }
 
 .ds-static-div.secondary.search-browse {/* Add space for Recent Submissions */
@@ -696,7 +697,7 @@ p.intro-text {
 }
 
 div.detail-view-news {/* 'Related links' */
-  clear: right;/* sit below the logo, if any */
+  clear: both;/* sit below the logo, if any */
   float: right;
   border-left: 1px solid #aaaaaa;
   border-right: 1px solid #aaaaaa;
@@ -705,6 +706,7 @@ div.detail-view-news {/* 'Related links' */
   font-size: 0.8em;
   padding: 4px;
   margin: 4px;
+  padding-left: 6px;
   }
 div.detail-view-rights-and-license {
   font-size: 0.75em;
