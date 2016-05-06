@@ -6,8 +6,8 @@ set -e
 site="OSU Mockup"
 configDir="/dspace/config"
 sourceDir="/dspace-source/osulibrariesDSpace"
-tomcatStop="sudo /etc/init.d/tomcat6 stop"
-tomcatStart="sudo /etc/init.d/tomcat6 start"
+tomcatStop="sudo /sbin/service tomcat6 stop"
+tomcatStart="sudo /sbin/service tomcat6 start"
 mavenCommand="/opt/apache-maven-3.3.3/bin/mvn"
 
 echo "Rebuild and Redeploy $site"
