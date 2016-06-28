@@ -1683,6 +1683,169 @@ public class Collection extends DSpaceObject
         return itemcount;
      }
 
+    /**
+     * counts items in this collection
+     *
+     * @return  total items
+     */
+    public Integer countItemsBeforeDate(String date)
+    {
+        String query = "SELECT count(*)::integer as count FROM collection2item, item, metadatavalue WHERE "
+                + "collection2item.collection_id =  ? "
+                + "AND collection2item.item_id = item.item_id "
+                + "AND in_archive = true AND item.withdrawn=false "
+                + "AND metadatavalue.item_id = item.item_id "
+                + "AND metadatavalue.metadata_field_id = 12 "
+                + "AND metadatavalue.text_value < '"+date+"' ";
+
+        try {
+            log.info(query + this.getID() + date);
+            TableRow row = DatabaseManager.querySingle(ourContext, query, this.getID());
+            return row.getIntColumn("count");
+
+        } catch (Exception e) {
+            log.error("Error getting countItemsBeforeDate: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Determine how many bitstreams are contained within this collection.
+     * @param bundleName (Optional) Specify a bundle name to restrict the search to just those within this bundle
+     * @return Number of bitstreams in this collection
+     */
+    public int countBitstreams(String bundleName) {
+        String query = "SELECT count(*) FROM public.collection2item,public.item2bundle,public.bundle2bitstream, public.bitstream,public.bundle, public.item, metadatafieldregistry, metadatavalue" +
+                " WHERE item2bundle.bundle_id = bundle2bitstream.bundle_id" +
+                " AND item2bundle.item_id = collection2item.item_id" +
+                " AND item.item_id = collection2item.item_id" +
+                " AND item.in_archive = true" +
+                " AND item.withdrawn = false" +
+                " AND bundle2bitstream.bitstream_id = bitstream.bitstream_id" +
+                " AND bundle.bundle_id = item2bundle.bundle_id" +
+                " AND collection2item.collection_id = ?";
+
+
+        // If bundle is specified, then we need to limit our search to just those within the bundle.
+        if (bundleName.length() > 0) {
+            query = query.concat(" and metadatafieldregistry.metadata_schema_id = 1 and metadatafieldregistry.element = 'title' and metadatafieldregistry.metadata_field_id = metadatavalue.metadata_field_id and metadatavalue.text_value = '?' and metadatavalue.resource_type_id = 1 and metadatavalue.resource_id = bundle.bundle_id");
+        }
+
+        int bitstreamCount = 0;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+
+        try {
+            statement = ourContext.getDBConnection().prepareStatement(query);
+            statement.setInt(1, getID());
+            log.info("Query: "+query);
+            if(bundleName.length() > 0) {
+                statement.setString(2, bundleName);
+            }
+            log.info("Query2: "+query);
+
+            rs = statement.executeQuery();
+            if (rs != null) {
+                rs.next();
+                bitstreamCount = rs.getInt(1);
+            }
+        } catch (SQLException sqlE) {
+            log.error(sqlE.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+
+        } finally
+        {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqle) {
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException sqle) {
+                }
+            }
+        }
+        return bitstreamCount;
+    }
+
+    /**
+     * Determine how many bitstreams are contained within this collection.
+     * @param bundleName (Optional) Specify a bundle name to restrict the search to just those within this bundle
+     * @return Number of bitstreams in this collection
+     */
+    public int countBitstreamsBeforeDate(String bundleName, String date) {
+        String query = "SELECT count(*) FROM public.collection2item,public.item2bundle,public.bundle2bitstream, public.bitstream,public.bundle, public.item, public.metadatafieldregistry as itemmetadatafieldregistry, metadatavalue as itemmetadatavalue, metadatafieldregistry as bundlemetadatafieldregistry, metadatavalue as bundlemetadatavalue" +
+                "                 WHERE item2bundle.bundle_id = bundle2bitstream.bundle_id " +
+                "                 AND item2bundle.item_id = collection2item.item_id " +
+                "                 AND item.item_id = collection2item.item_id " +
+                "                 AND item.in_archive = true " +
+                "                 AND item.withdrawn = false " +
+                "                 AND bundle2bitstream.bitstream_id = bitstream.bitstream_id " +
+                "                 AND bundle.bundle_id = item2bundle.bundle_id " +
+                "                 AND collection2item.collection_id = ? " +
+                "                 AND itemmetadatavalue.resource_id = item.item_id" +
+                "                 and itemmetadatavalue.resource_type_id = 2  " +
+                "                 AND itemmetadatafieldregistry.element = 'date' " +
+                "                 and itemmetadatafieldregistry.qualifier = 'available'" +
+                "                 and itemmetadatafieldregistry.metadata_field_id = itemmetadatavalue.metadata_field_id  " +
+                "                 and itemmetadatavalue.text_value < '" + date + "' ";
+
+        // If bundle is specified, then we need to limit our search to just those within the bundle.
+        if (bundleName.length() > 0) {
+            query = query.concat(" and bundlemetadatafieldregistry.element = 'title'" +
+                    " and bundlemetadatafieldregistry.metadata_field_id = bundlemetadatavalue.metadata_field_id" +
+                    " and bundlemetadatavalue.resource_type_id = 1" +
+                    " and bundlemetadatavalue.resource_id = bundle.bundle_id" +
+                    " and bundlemetadatavalue.text_value = '?'");
+        }
+
+        int bitstreamCount = 0;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+
+        try {
+            statement = ourContext.getDBConnection().prepareStatement(query);
+            statement.setInt(1, getID());
+            log.info("Query: "+query);
+            if(bundleName.length() > 0) {
+                statement.setString(2, bundleName);
+            }
+            log.info("Query2: "+query);
+
+            rs = statement.executeQuery();
+            if (rs != null) {
+                rs.next();
+                bitstreamCount = rs.getInt(1);
+            }
+        } catch (SQLException sqlE) {
+            log.error(sqlE.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+
+        } finally
+        {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqle) {
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException sqle) {
+                }
+            }
+        }
+        return bitstreamCount;
+    }
+
     public DSpaceObject getAdminObject(int action) throws SQLException
     {
         DSpaceObject adminObject = null;
@@ -1771,45 +1934,45 @@ public class Collection extends DSpaceObject
 
     public static Collection[] findGroup2GroupMapped(Context context, int actionID) throws SQLException {
         TableRowIterator tri = DatabaseManager.query(context,
-                "SELECT \n" +
-                        "  * \n" +
-                        "FROM \n" +
-                        "  public.eperson, \n" +
-                        "  public.epersongroup2eperson, \n" +
-                        "  public.epersongroup, \n" +
-                        "  public.group2group, \n" +
-                        "  public.resourcepolicy rp_parent, \n" +
-                        "  public.collection\n" +
-                        "WHERE \n" +
-                        "  epersongroup2eperson.eperson_id = eperson.eperson_id AND\n" +
-                        "  epersongroup.eperson_group_id = epersongroup2eperson.eperson_group_id AND\n" +
-                        "  group2group.child_id = epersongroup.eperson_group_id AND\n" +
-                        "  rp_parent.epersongroup_id = group2group.parent_id AND\n" +
-                        "  collection.collection_id = rp_parent.resource_id AND\n" +
-                        "  eperson.eperson_id = ? AND \n" +
-                        "  (rp_parent.action_id = 3 OR \n" +
-                        "  rp_parent.action_id = 11  \n" +
+                "SELECT " +
+                        "  * " +
+                        "FROM " +
+                        "  public.eperson, " +
+                        "  public.epersongroup2eperson, " +
+                        "  public.epersongroup, " +
+                        "  public.group2group, " +
+                        "  public.resourcepolicy rp_parent, " +
+                        "  public.collection" +
+                        "WHERE " +
+                        "  epersongroup2eperson.eperson_id = eperson.eperson_id AND" +
+                        "  epersongroup.eperson_group_id = epersongroup2eperson.eperson_group_id AND" +
+                        "  group2group.child_id = epersongroup.eperson_group_id AND" +
+                        "  rp_parent.epersongroup_id = group2group.parent_id AND" +
+                        "  collection.collection_id = rp_parent.resource_id AND" +
+                        "  eperson.eperson_id = ? AND " +
+                        "  (rp_parent.action_id = 3 OR " +
+                        "  rp_parent.action_id = 11  " +
                         "  )  AND rp_parent.resource_type_id = 3;", context.getCurrentUser().getID());
         return produceCollectionsFromQuery(context, tri);
     }
 
     public static Collection[] findGroup2CommunityMapped(Context context) throws SQLException {
         TableRowIterator tri = DatabaseManager.query(context,
-                "SELECT \n" +
-                        "  * \n" +
-                        "FROM \n" +
-                        "  public.eperson, \n" +
-                        "  public.epersongroup2eperson, \n" +
-                        "  public.epersongroup, \n" +
-                        "  public.community, \n" +
-                        "  public.resourcepolicy\n" +
-                        "WHERE \n" +
-                        "  epersongroup2eperson.eperson_id = eperson.eperson_id AND\n" +
-                        "  epersongroup.eperson_group_id = epersongroup2eperson.eperson_group_id AND\n" +
-                        "  resourcepolicy.epersongroup_id = epersongroup.eperson_group_id AND\n" +
-                        "  resourcepolicy.resource_id = community.community_id AND\n" +
-                        " ( resourcepolicy.action_id = 3 OR \n" +
-                        "  resourcepolicy.action_id = 11) AND \n" +
+                "SELECT " +
+                        "  * " +
+                        "FROM " +
+                        "  public.eperson, " +
+                        "  public.epersongroup2eperson, " +
+                        "  public.epersongroup, " +
+                        "  public.community, " +
+                        "  public.resourcepolicy" +
+                        "WHERE " +
+                        "  epersongroup2eperson.eperson_id = eperson.eperson_id AND" +
+                        "  epersongroup.eperson_group_id = epersongroup2eperson.eperson_group_id AND" +
+                        "  resourcepolicy.epersongroup_id = epersongroup.eperson_group_id AND" +
+                        "  resourcepolicy.resource_id = community.community_id AND" +
+                        " ( resourcepolicy.action_id = 3 OR " +
+                        "  resourcepolicy.action_id = 11) AND " +
                         "  resourcepolicy.resource_type_id = 4 AND eperson.eperson_id = ?", context.getCurrentUser().getID());
 
         return produceCollectionsFromCommunityQuery(context, tri);
