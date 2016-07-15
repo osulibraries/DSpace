@@ -168,7 +168,7 @@ public class DashboardViewer extends AbstractDSpaceTransformer
     {
         String query = "SELECT to_char(date_trunc('month', t1.ts), 'YYYY-MM') AS yearmo, count(*) as countitem " +
             "FROM ( SELECT to_timestamp(text_value, 'YYYY-MM-DD') AS ts FROM metadatavalue, item " +
-            "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true	) t1 " +
+            "WHERE metadata_field_id = 12 AND metadatavalue.resource_id = item.item_id AND metadatavalue.resource_type_id = 2 and item.in_archive=true	) t1 " +
             "GROUP BY date_trunc('month', t1.ts) order by yearmo asc;";
         TableRowIterator tri = DatabaseManager.query(context, query);
         List itemStatRows = tri.toList();
@@ -244,8 +244,8 @@ public class DashboardViewer extends AbstractDSpaceTransformer
     {
         String query = "SELECT to_char(date_trunc('month', t1.ts), 'YYYY-MM') AS yearmo, community_id," +
             "count(*) as numitems FROM 	(	SELECT to_timestamp(text_value, 'YYYY-MM-DD') AS ts, community2item.community_id " +
-            "FROM metadatavalue, community2item, item	WHERE metadata_field_id = 12 AND community2item.item_id = metadatavalue.item_id " +
-            "AND metadatavalue.item_id = item.item_id AND item.in_archive=true 	) t1 GROUP BY date_trunc('month', t1.ts), " +
+            "FROM metadatavalue, community2item, item	WHERE metadata_field_id = 12 AND community2item.item_id = metadatavalue.resource_id and metadatavalue.resource_type_id = 2 " +
+            "AND metadatavalue.resource_id = item.item_id AND item.in_archive=true 	) t1 GROUP BY date_trunc('month', t1.ts), " +
             "community_id order by community_id asc, yearmo desc;";
         TableRowIterator tri = DatabaseManager.query(context, query);
         List itemStatRows = tri.toList();
@@ -359,45 +359,21 @@ public class DashboardViewer extends AbstractDSpaceTransformer
         }
     }
 
-    public void mimetypeReport(Division division) {
-        String query = "SELECT \n" +
-                "  bitstreamformatregistry.mimetype,\n" +
-                "  count(*) as count\n" +
-                "FROM \n" +
-                "  public.bitstream, \n" +
-                "  public.item, \n" +
-                "  public.bundle, \n" +
-                "  public.bundle2bitstream, \n" +
-                "  public.item2bundle, \n" +
-                "  public.bitstreamformatregistry\n" +
-                "WHERE \n" +
-                "  item.item_id = item2bundle.item_id AND\n" +
-                "  bundle.bundle_id = bundle2bitstream.bundle_id AND\n" +
-                "  bundle2bitstream.bitstream_id = bitstream.bitstream_id AND\n" +
-                "  item2bundle.bundle_id = bundle.bundle_id AND\n" +
-                "  bitstreamformatregistry.bitstream_format_id = bitstream.bitstream_format_id AND\n" +
-                "  bundle.\"name\" = 'ORIGINAL' AND \n" +
-                "  item.in_archive = true\n" +
-                "Group by mimetype\n" +
-                "order by count desc\n" +
-                "\n" +
-                "  ;";
-    }
-
     /*
     Look for Items in a weird state where they have a CC-LICENSE bundle, but no CC metadata.
      */
     public void addCCBundlesWithoutLicenseMetadata(Division division) throws SQLException, WingException {
-        String query = "SELECT \n" +
-                "  distinct(item.item_id) \n" +
+        String query = "SELECT " +
+                "  distinct(item.item_id) " +
                 "FROM \n" +
-                "  public.item, \n" +
-                "  public.item2bundle, \n" +
-                "  public.bundle\n" +
+                "  public.item, " +
+                "  public.item2bundle, " +
+                "  public.bundle, metadatavalue " +
                 "WHERE \n" +
                 "  item.item_id = item2bundle.item_id AND\n" +
-                "  item2bundle.bundle_id = bundle.bundle_id AND\n" +
-                "  bundle.name = 'CC-LICENSE';";
+                "  item2bundle.bundle_id = bundle.bundle_id AND " +
+                "  metadatavalue.resource_type_id = 1 and metadatavalue.resource_id = bundle.bundle_id" +
+                " and metadatavalue.metadata_field_id = 64 and metadatavalue.text_value = 'CC-LICENSE';";
 
         TableRowIterator tri = DatabaseManager.query(context, query);
 

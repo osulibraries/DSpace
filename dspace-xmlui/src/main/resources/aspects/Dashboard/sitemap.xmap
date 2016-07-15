@@ -49,9 +49,8 @@ The Dashboard Aspect is responsible providing a dashboard for statistical inquir
 
         <map:transformers>
             <map:transformer name="Dashboard" src="org.dspace.app.xmlui.aspect.dashboard.DashboardViewer"/>
-            <map:transformer name="ElasticSearchStatsViewer" src="org.dspace.app.xmlui.aspect.statisticsElasticSearch.ElasticSearchStatsViewer"/>
             <map:transformer name="RestrictedItem" src="org.dspace.app.xmlui.aspect.artifactbrowser.RestrictedItem"/>
-            <map:transformer name="Navigation" src="org.dspace.app.xmlui.aspect.statistics.Navigation"/>
+            <map:transformer name="Navigation" src="org.dspace.app.xmlui.aspect.dashboard.Navigation"/>
         </map:transformers>
 
         <map:matchers default="wildcard">
@@ -68,25 +67,9 @@ The Dashboard Aspect is responsible providing a dashboard for statistical inquir
 
     <map:pipelines>
         <map:pipeline>
-
-
-            <!--<map:match pattern="collection-info">
-                <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
-                    <map:transform type="CollectionInfo"/>
-                    <map:serialize type="xml"/>
-                </map:match>
-            </map:match>
-
-            <map:match pattern="community-info">
-                <map:match type="StatisticsAuthorizedMatcher" pattern="READ">
-                    <map:transform type="CommunityInfo"/>
-                    <map:serialize type="xml"/>
-                </map:match>
-            </map:match>-->
-
-
-
             <map:generate/>
+
+            <map:transform type="Navigation"/>
 
             <map:match pattern="dashboard">
                 <map:match type="StatisticsAuthorizedMatcher" pattern="READ">

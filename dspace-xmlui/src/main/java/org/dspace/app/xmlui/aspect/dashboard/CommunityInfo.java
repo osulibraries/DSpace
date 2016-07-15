@@ -90,10 +90,10 @@ public class CommunityInfo extends AbstractReader implements Recyclable
     protected TableRowIterator itemGrowth() throws SQLException {
         Context context = new Context();
 
-        String query = "SELECT community.\"name\", community.community_id, handle.handle, community_item_count.count " +
-                "FROM public.community, public.handle, public.community_item_count " +
-                "WHERE community.community_id = community_item_count.community_id AND handle.resource_id = community.community_id AND handle.resource_type_id = 4 " +
-                "order by community.community_id asc;";
+        String query = "SELECT metadatavalue.text_value as name, communityItemCount.community_id, handle.handle, communityItemCount.count\n" +
+                "from (select community_id, count(*) from community2item group by community_id order by community_id asc) communityItemCount, metadatavalue, handle\n" +
+                "where communityItemCount.community_id = metadatavalue.resource_id and metadatavalue.resource_type_id = 4 and metadatavalue.metadata_field_id = 64\n" +
+                "  and handle.resource_type_id = 4 and handle.resource_id = communityItemCount.community_id";
 
         TableRowIterator tri = DatabaseManager.query(context, query);
 

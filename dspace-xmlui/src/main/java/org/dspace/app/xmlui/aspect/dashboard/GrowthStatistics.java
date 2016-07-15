@@ -113,7 +113,7 @@ public class GrowthStatistics extends AbstractReader implements Recyclable
     protected TableRowIterator itemGrowth(Context context) {
         String query = "SELECT to_char(date_trunc('month', t1.ts), 'YYYY-MM') AS yearmo, count(*) as count " +
                 "FROM ( SELECT to_timestamp(text_value, 'YYYY-MM-DD') AS ts FROM metadatavalue, item " +
-                "WHERE metadata_field_id = 12 AND metadatavalue.item_id = item.item_id AND item.in_archive=true	) t1 " +
+                "WHERE metadata_field_id = 12 AND metadatavalue.resource_id = item.item_id AND metadatavalue.resource_type_id = 2 AND item.in_archive=true	) t1 " +
                 "GROUP BY date_trunc('month', t1.ts) order by yearmo asc;";
 
         TableRowIterator tri = null;
@@ -128,12 +128,12 @@ public class GrowthStatistics extends AbstractReader implements Recyclable
 
     protected TableRowIterator bitstreamGrowth(Context context) {
         String query = "select to_char(date_trunc('month', t1.ts), 'YYYY-MM') as yearmo, count(*) as count from\n" +
-                "(SELECT to_timestamp(text_value, 'YYYY-MM-DD') as ts \n" +
-                "FROM public.metadatavalue, public.item, public.item2bundle, public.bundle, public.bitstream, public.bundle2bitstream\n" +
-                "WHERE metadatavalue.item_id = item.item_id AND item.item_id = item2bundle.item_id AND bundle.bundle_id = item2bundle.bundle_id AND\n" +
-                "  bundle.bundle_id = bundle2bitstream.bundle_id AND bundle2bitstream.bitstream_id = bitstream.bitstream_id AND\n" +
-                "  metadatavalue.metadata_field_id = 12 AND bundle.\"name\" = 'ORIGINAL' AND item.in_archive = true\n" +
-                ") t1 group by date_trunc('month', t1.ts) order by yearmo asc;";
+                " (SELECT to_timestamp(metadatavalue.text_value, 'YYYY-MM-DD') as ts  \n" +
+                "   FROM public.metadatavalue, public.item, public.item2bundle, public.bundle, public.bitstream, public.bundle2bitstream, metadatavalue as bundleMetadataValue\n" +
+                "   WHERE metadatavalue.resource_id = item.item_id AND metadatavalue.resource_type_id = 2 AND item.item_id = item2bundle.item_id AND bundle.bundle_id = item2bundle.bundle_id AND \n" +
+                "       bundle.bundle_id = bundle2bitstream.bundle_id AND bundle2bitstream.bitstream_id = bitstream.bitstream_id AND \n" +
+                "       metadatavalue.metadata_field_id = 12 AND bundleMetadataValue.resource_type_id = 1 and bundleMetadataValue.resource_id = bundle.bundle_id and bundleMetadataValue.text_value = 'ORIGINAL' and bundleMetadataValue.metadata_field_id = 64 AND item.in_archive = true \n" +
+                " ) t1 group by date_trunc('month', t1.ts) order by yearmo asc;";
 
         TableRowIterator tri = null;
 
