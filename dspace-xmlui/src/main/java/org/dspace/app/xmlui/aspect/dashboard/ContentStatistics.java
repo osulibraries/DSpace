@@ -135,17 +135,29 @@ public class ContentStatistics extends AbstractReader implements Recyclable
 
             log.debug("Counting, summing bitstreams");
             // Get # bitstreams, and MB
-            row = DatabaseManager.querySingle(context,
-                    "SELECT count(bitstream_id) AS bitstreams," +
-                            " sum(size_bytes)/1048576 AS totalMBytes" +
-                            " FROM bitstream" +
-                    		"  JOIN bundle2bitstream USING(bitstream_id)" +
-                    		"  JOIN bundle USING(bundle_id)" +
-                    		"  JOIN item2bundle USING(bundle_id)" +
-                    		"  JOIN item USING(item_id)" +
-                    		" WHERE NOT withdrawn" +
-                    		"  AND NOT deleted" +
-                    		"  AND bundle.name = 'ORIGINAL';");
+            String query = "SELECT \n" +
+                    "  count(bitstream.bitstream_id) as bitstreams, ceiling(sum(bitstream.size_bytes)/1048576) as totalMBytes \n" +
+                    "FROM \n" +
+                    "  public.metadatavalue, \n" +
+                    "  public.metadatafieldregistry, \n" +
+                    "  public.item, \n" +
+                    "  public.item2bundle, \n" +
+                    "  public.bundle2bitstream, \n" +
+                    "  public.bitstream, \n" +
+                    "  public.bundle\n" +
+                    "WHERE \n" +
+                    "  metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND\n" +
+                    "  item.item_id = item2bundle.item_id AND\n" +
+                    "  bundle2bitstream.bitstream_id = bitstream.bitstream_id AND\n" +
+                    "  bundle.bundle_id = item2bundle.bundle_id AND\n" +
+                    "  bundle.bundle_id = metadatavalue.resource_id AND\n" +
+                    "  bundle.bundle_id = bundle2bitstream.bundle_id AND\n" +
+                    "  metadatavalue.resource_type_id = 1 AND \n" +
+                    "  item.withdrawn = FALSE AND \n" +
+                    "  bitstream.deleted = FALSE AND \n" +
+                    "  item.in_archive = TRUE AND \n" +
+                    "  metadatafieldregistry.element = 'title'";
+            row = DatabaseManager.querySingle(context, query);
             if (null != row)
             {
                 log.debug("Writing count");
@@ -156,20 +168,34 @@ public class ContentStatistics extends AbstractReader implements Recyclable
             }
 
             log.debug("Counting, summing image bitstreams");
-            row = DatabaseManager.querySingle(context,
-                    "SELECT count(bitstream_id) AS images," +
-                    " sum(size_bytes)/1048576 AS imageMBytes" +
-                    " FROM bitstream" +
-                    " JOIN bitstreamformatregistry USING(bitstream_format_id)" +
-                    " JOIN bundle2bitstream USING(bitstream_id)" +
-                    " JOIN bundle USING(bundle_id)" +
-                    " JOIN item2bundle USING(bundle_id)" +
-                    " JOIN item USING(item_id)" +
-                    " WHERE bundle.name = 'ORIGINAL'" +
-                    "  AND mimetype LIKE 'image/%'" +
-                    "  AND NOT deleted" +
-                    "  AND NOT withdrawn;"
-                    );
+            String imageQuery = "SELECT \n" +
+                    "  count(bitstream.bitstream_id) as images, ceiling(sum(size_bytes)/1048576) as imageMBytes\n" +
+                    "FROM \n" +
+                    "  public.metadatavalue, \n" +
+                    "  public.metadatafieldregistry, \n" +
+                    "  public.item, \n" +
+                    "  public.item2bundle, \n" +
+                    "  public.bundle2bitstream, \n" +
+                    "  public.bitstream, \n" +
+                    "  public.bundle, \n" +
+                    "  public.bitstreamformatregistry\n" +
+                    "WHERE \n" +
+                    "  metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND\n" +
+                    "  item.item_id = item2bundle.item_id AND\n" +
+                    "  bundle2bitstream.bitstream_id = bitstream.bitstream_id AND\n" +
+                    "  bundle.bundle_id = item2bundle.bundle_id AND\n" +
+                    "  bundle.bundle_id = metadatavalue.resource_id AND\n" +
+                    "  bundle.bundle_id = bundle2bitstream.bundle_id AND\n" +
+                    "  bitstreamformatregistry.bitstream_format_id = bitstream.bitstream_format_id AND\n" +
+                    "  metadatavalue.resource_type_id = 1 AND \n" +
+                    "  item.withdrawn = FALSE AND \n" +
+                    "  bitstream.deleted = FALSE AND \n" +
+                    "  item.in_archive = TRUE AND \n" +
+                    "  metadatafieldregistry.element = 'title' AND \n" +
+                    "  metadatavalue.text_value = 'ORIGINAL' AND mimetype like 'image/%'";
+
+
+            row = DatabaseManager.querySingle(context, imageQuery);
             if (null != row)
             {
                 xmlData.append(" <statistic name='images'>"+row.getLongColumn("images")+"</statistic>");

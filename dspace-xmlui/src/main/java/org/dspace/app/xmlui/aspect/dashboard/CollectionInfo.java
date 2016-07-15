@@ -83,10 +83,10 @@ public class CollectionInfo extends AbstractReader implements Recyclable
     protected TableRowIterator itemGrowth() throws SQLException {
         Context context = new Context();
 
-        String query = "SELECT collection.\"name\", collection.collection_id, handle.handle, collection_item_count.count " +
-                "FROM public.handle, public.collection, public.collection_item_count "+
-                "WHERE handle.resource_id = collection.collection_id AND collection_item_count.collection_id = collection.collection_id AND handle.resource_type_id = 3 " +
-                "ORDER BY collection.collection_id ASC;";
+        String query = "SELECT metadatavalue.text_value as name, collectionItemCount.collection_id, handle.handle, collectionItemCount.count\n" +
+                "from (select collection_id, count(*) from collection2item group by collection_id order by collection_id asc) collectionItemCount, metadatavalue, handle\n" +
+                "where collectionItemCount.collection_id = metadatavalue.resource_id and metadatavalue.resource_type_id = 3 and metadatavalue.metadata_field_id = 64\n" +
+                "  and handle.resource_type_id = 3 and handle.resource_id = collectionItemCount.collection_id";
 
         TableRowIterator tri = DatabaseManager.query(context, query);
 
