@@ -440,6 +440,40 @@
         </xsl:choose>
     </xsl:template>
 
+    <xsl:template name="itemFieldDisplay.dc.contributor">
+        <xsl:param name="clause" />
+        <xsl:param name="phase" />
+        <xsl:param name="otherPhase" />
+        <xsl:choose>
+
+            <xsl:when test="dim:field[@element='contributor' and not(@qualifier)]">
+                <tr class="ds-table-row {$phase}">
+                    <td class="field-label"><span class="bold"><i18n:text>metadata.dc.contributor</i18n:text>:</span></td>
+                    <td class="field-data">
+                        <xsl:for-each select="dim:field[@element='contributor' and not(@qualifier)]">
+                            <span>
+                                <xsl:copy-of select="node()"/>
+                            </span>
+                            <xsl:if test="count(following-sibling::dim:field[@element='contributor' and not(@qualifier)]) != 0">
+                                <xsl:text>; </xsl:text>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </td>
+                </tr>
+                <xsl:call-template name="itemSummaryView-DIM-fields">
+                    <xsl:with-param name="clause" select="($clause + 1)"/>
+                    <xsl:with-param name="phase" select="$otherPhase"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="itemSummaryView-DIM-fields">
+                    <xsl:with-param name="clause" select="($clause + 1)"/>
+                    <xsl:with-param name="phase" select="$phase"/>
+                </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
 
 
 
