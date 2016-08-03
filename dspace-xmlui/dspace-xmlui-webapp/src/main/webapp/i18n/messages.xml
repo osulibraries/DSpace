@@ -1897,6 +1897,7 @@
         (.* removed from contributor and rights for syntax reasons)
         -->
 
+	<message key="metadata.dc.contributor">Contributors</message><!-- duplicate? -->
 	<message key="metadata.dc.contributor.ALL">Contributors</message>
 	<message key="metadata.dc.contributor.advisor">Advisor</message>
 	<message key="metadata.dc.contributor.author">Authors</message>
