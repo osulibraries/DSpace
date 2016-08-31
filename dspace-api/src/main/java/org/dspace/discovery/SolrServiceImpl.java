@@ -1631,7 +1631,7 @@ public class SolrServiceImpl implements SearchService, IndexingService {
             //Boost so that community/collection appear higher in search results.
             solrQuery.add("defType", "dismax");
             solrQuery.add("bf", "product(search.resourcetype,2)");
-            solrQuery.add("qf", "dc.title^2 searchtext");
+            //solrQuery.add("qf", "dc.title^2 searchtext"); //Causing browse-by jump-to issues
 		}
 
         solrQuery.setQuery(query);
