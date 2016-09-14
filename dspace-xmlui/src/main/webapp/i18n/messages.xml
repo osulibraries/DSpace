@@ -303,6 +303,16 @@
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.search_scope">Search Scope</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.full_text_search">Full Text Search</message>
 
+		<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.abstract">Abstract</message>
+		<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.series">Series</message>
+		<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.sponsor">Sponsor</message>
+		<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.identifier">Identifier</message>
+		<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.description">Description</message>
+		<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.languageiso">Language (ISO)</message>
+		<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.place">Place</message>
+		<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.type">Type</message>
+
+
 	<!-- org.dspace.app.xmlui.artifactbrowser.RestrictedItem.java -->
 	<message key="xmlui.ArtifactBrowser.RestrictedItem.title">This resource is restricted</message>
 	<message key="xmlui.ArtifactBrowser.RestrictedItem.trail">Restricted</message>
