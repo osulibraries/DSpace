@@ -1197,39 +1197,44 @@ ul.horizontal {
     background-color: white;
     color: black; }
 
-div.pagination {
+.pagination {
   clear: both;
   margin: 0 auto 16px;
   padding: 8px 0;
   width: 540px;
   text-align: center;
   display: block; }
-div.pagination-masked {
+.pagination-masked {
   clear: both;
-  margin: 0 auto 36px;
-  padding: 8px 0;
+  margin-left: 15%;
+  margin-right: 15%;
   width: 540px;
+  height: 22px;
   text-align: center;
   display: block; }
-div.previous-page-link {
+.previous-page-link {
   position: relative;
   margin: 0;
   float: left;
-  width: 110px; }
-div.pagination-info {
+  width: 110px;
+  padding-top:5px;
+}
+.pagination-info {
   margin: 0;
   padding: 0;
   position: relative;
   float: left;
   width: 320px; }
-  div.pagination-info p {
+.pagination-info p {
     margin: 0;
     padding: 0; }
-div.next-page-link {
+.next-page-link {
   position: relative;
   margin: 0;
   float: left;
-  width: 110px; }
+  width: 110px;
+  padding-top:5px;
+}
 
 ul.pagination-links {
   position: relative;
