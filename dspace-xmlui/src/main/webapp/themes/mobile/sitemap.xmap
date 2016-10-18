@@ -68,7 +68,7 @@
                     <!-- Internet explorer 6 -->
                     <map:when test="explorer6">
                         <map:transform type="IncludePageMeta">
-                            <map:parameter name="stylesheet.screen#1" value="lib/style.css"/>
+                            <map:parameter name="stylesheet.screen#1" value="../template/lib/style.css"/>
                             <map:parameter name="stylesheet.screen#2" value="lib/style-ie6.css"/>
 
                             <map:parameter name="theme.path" value="{global:theme-path}"/>
@@ -78,7 +78,7 @@
                     <!-- The theme has been tested with firefox 2.0 & i.e. 7.0 -->
                     <map:otherwise>
                         <map:transform type="IncludePageMeta">
-                            <map:parameter name="stylesheet.screen" value="lib/style.css"/>
+                            <map:parameter name="stylesheet.screen" value="../template/lib/style.css"/>
 
                             <map:parameter name="theme.path" value="{global:theme-path}"/>
                             <map:parameter name="theme.name" value="{global:theme-name}"/>
