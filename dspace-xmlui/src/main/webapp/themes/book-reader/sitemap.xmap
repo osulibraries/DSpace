@@ -121,7 +121,7 @@
 				<map:select type="browser">
 					<map:when test="explorer6">
 						<map:transform type="IncludePageMeta">
-							<map:parameter name="stylesheet.screen#1" value="lib/style.css"/>
+							<map:parameter name="stylesheet.screen#1" value="../template/lib/style.css"/>
 							<map:parameter name="stylesheet.screen#2" value="lib/style-ie.css"/>
 							<map:parameter name="stylesheet.screen#3" value="lib/style-ie6.css"/>
 
@@ -131,7 +131,7 @@
 					</map:when>
 					<map:when test="explorer">
 						<map:transform type="IncludePageMeta">
-							<map:parameter name="stylesheet.screen#1" value="lib/style.css"/>
+							<map:parameter name="stylesheet.screen#1" value="../template/lib/style.css"/>
 							<map:parameter name="stylesheet.screen#2" value="lib/style-ie.css"/>
 
 							<map:parameter name="theme.path" value="{global:theme-path}"/>
@@ -140,7 +140,7 @@
 					</map:when>
 					<map:otherwise>
 						<map:transform type="IncludePageMeta">
-							<map:parameter name="stylesheet.screen#1" value="lib/style.css"/>
+							<map:parameter name="stylesheet.screen#1" value="../template/lib/style.css"/>
                                                         <map:parameter name="stylesheet.screen#2" value="lib/fancybox/jquery.fancybox-1.2.5.css"/>
                                                         <map:parameter name="stylesheet.screen#3" value="lib/jqpuzzle/jquery.jqpuzzle.css"/>
                                                         <map:parameter name="stylesheet.screen#4" value="lib/BookReader/BookReader.css"/>
