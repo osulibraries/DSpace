@@ -130,11 +130,11 @@
 						<map:transform type="IncludePageMeta">
                             <map:parameter name="theme.path" value="{global:theme-path}"/>
 							<map:parameter name="theme.name" value="{global:theme-name}"/>
-
-                            <map:parameter name="stylesheet.screen#1" value="../gallery/lib/gallery.css"/>
-                            <map:parameter name="stylesheet.screen#2" value="../gallery/lib/thickbox/thickbox.css"/>
-                            <map:parameter name="stylesheet.screen#3" value="../gallery/lib/jquerytools/scrollable-horizontal.css"/>
-                            <map:parameter name="stylesheet.screen#4" value="../gallery/lib/jquerytools/scrollable-buttons.css"/>
+							<map:parameter name="stylesheet.screen#1" value="../template/lib/style.css"/>
+                            <map:parameter name="stylesheet.screen#2" value="../gallery/lib/gallery.css"/>
+                            <map:parameter name="stylesheet.screen#3" value="../gallery/lib/thickbox/thickbox.css"/>
+                            <map:parameter name="stylesheet.screen#4" value="../gallery/lib/jquerytools/scrollable-horizontal.css"/>
+                            <map:parameter name="stylesheet.screen#5" value="../gallery/lib/jquerytools/scrollable-buttons.css"/>
 
                             <map:parameter name="javascript#1" value="../gallery/lib/gallery.js"/>
                             <map:parameter name="javascript#2" value="../gallery/lib/thickbox/thickbox.js"/>
@@ -147,11 +147,11 @@
 						<map:transform type="IncludePageMeta">
                             <map:parameter name="theme.path" value="{global:theme-path}"/>
 							<map:parameter name="theme.name" value="{global:theme-name}"/>
-
-                            <map:parameter name="stylesheet.screen#1" value="../gallery/lib/gallery.css"/>
-                            <map:parameter name="stylesheet.screen#2" value="../gallery/lib/thickbox/thickbox.css"/>
-                            <map:parameter name="stylesheet.screen#3" value="../gallery/lib/jquerytools/scrollable-horizontal.css"/>
-                            <map:parameter name="stylesheet.screen#4" value="../gallery/lib/jquerytools/scrollable-buttons.css"/>
+							<map:parameter name="stylesheet.screen#1" value="../template/lib/style.css"/>
+                            <map:parameter name="stylesheet.screen#2" value="../gallery/lib/gallery.css"/>
+                            <map:parameter name="stylesheet.screen#3" value="../gallery/lib/thickbox/thickbox.css"/>
+                            <map:parameter name="stylesheet.screen#4" value="../gallery/lib/jquerytools/scrollable-horizontal.css"/>
+                            <map:parameter name="stylesheet.screen#5" value="../gallery/lib/jquerytools/scrollable-buttons.css"/>
 
                             <map:parameter name="javascript#1" value="../gallery/lib/gallery.js"/>
                             <map:parameter name="javascript#2" value="../gallery/lib/thickbox/thickbox.js"/>
