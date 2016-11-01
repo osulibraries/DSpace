@@ -68,7 +68,47 @@
         From: General-Handler.xsl
         Blanking out default action.
         -->
-	<xsl:template match="mets:fileSec" mode="artifact-preview"></xsl:template>
+	<xsl:template match="mets:fileSec" mode="artifact-preview">
+        <div class="artifact-preview">
+            <img class="thumbnail">
+                <!-- bds: title attribute gives mouse-over -->
+                <xsl:attribute name="title">
+                    <xsl:value-of select="dim:field[@element='title'][1]/node()"/>
+                </xsl:attribute>
+                <xsl:attribute name="alt">
+                    <xsl:text>Thumbnail of </xsl:text>
+                    <xsl:value-of select="dim:field[@element='title'][1]/node()"/>
+                </xsl:attribute>
+                <xsl:choose>
+                    <xsl:when test="//mets:fileGrp[@USE='THUMBNAIL']">
+
+                        <!-- Determine the thumbnail related to the primary bitstream -->
+                        <xsl:variable name="primary_FILEID">group_<xsl:value-of select="/mets:METS/mets:structMap/mets:div[@TYPE='DSpace Item']/mets:fptr/@FILEID" /></xsl:variable>
+                        <xsl:variable name="GROUPID">
+                            <xsl:choose>
+                                <xsl:when test="//mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=$primary_FILEID]">
+                                    <xsl:value-of select="$primary_FILEID" />
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="//mets:fileGrp[@USE='THUMBNAIL']/mets:file/@GROUPID" />
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:variable>
+
+                        <xsl:attribute name="src">
+                            <xsl:value-of select="//mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=$GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href" />
+                        </xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:attribute name="src">
+                            <xsl:value-of select="$themePath"/>
+                            <xsl:text>lib/nothumbnail.png</xsl:text>
+                        </xsl:attribute>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </img>
+        </div>
+    </xsl:template>
 
 	<!--
         From DIM-Handler.xsl
@@ -97,45 +137,7 @@
                 </xsl:choose>
             </xsl:attribute>
 
-            <div class="artifact-preview">
-                <img class="thumbnail">
-                    <!-- bds: title attribute gives mouse-over -->
-                    <xsl:attribute name="title">
-                        <xsl:value-of select="dim:field[@element='title'][1]/node()"/>
-                    </xsl:attribute>
-                    <xsl:attribute name="alt">
-                        <xsl:text>Thumbnail of </xsl:text>
-                        <xsl:value-of select="dim:field[@element='title'][1]/node()"/>
-                    </xsl:attribute>
-                    <xsl:choose>
-                        <xsl:when test="//mets:fileGrp[@USE='THUMBNAIL']">
-
-                            <!-- Determine the thumbnail related to the primary bitstream -->
-                            <xsl:variable name="primary_FILEID">group_<xsl:value-of select="/mets:METS/mets:structMap/mets:div[@TYPE='DSpace Item']/mets:fptr/@FILEID" /></xsl:variable>
-                            <xsl:variable name="GROUPID">
-                                <xsl:choose>
-                                    <xsl:when test="//mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=$primary_FILEID]">
-                                        <xsl:value-of select="$primary_FILEID" />
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="//mets:fileGrp[@USE='THUMBNAIL']/mets:file/@GROUPID" />
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:variable>
-
-                            <xsl:attribute name="src">
-                                <xsl:value-of select="//mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=$GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href" />
-                            </xsl:attribute>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:attribute name="src">
-                                <xsl:value-of select="$themePath"/>
-                                <xsl:text>lib/nothumbnail.png</xsl:text>
-                            </xsl:attribute>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </img>
-            </div>
+            <xsl:apply-templates select="ancestor::mets:METS/mets:fileSec" mode="artifact-preview"/>
         </a>
 
 
