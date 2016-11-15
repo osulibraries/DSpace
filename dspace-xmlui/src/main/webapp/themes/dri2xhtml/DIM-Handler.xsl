@@ -86,9 +86,40 @@
     <!-- An item rendered in the summaryList pattern. Commonly encountered in various browse-by pages
         and search results. -->
     <xsl:template name="itemSummaryList-DIM">
-        <!-- bds: moving thumbnail first so that the CSS floats work right -->
-        <!-- Generate the thunbnail, if present, from the file section -->
-        <xsl:apply-templates select="./mets:fileSec" mode="artifact-preview"/>
+        <xsl:variable name="itemWithdrawn" select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/@withdrawn" />
+        <xsl:variable name="href">
+            <xsl:choose>
+                <xsl:when test="mets:fileSec/mets:fileGrp[@USE='THUMBNAIL']">
+                    <xsl:variable name="primary_FILEID">group_<xsl:value-of select="mets:structMap/mets:div[@TYPE='DSpace Item']/mets:fptr/@FILEID" /></xsl:variable>
+                    <xsl:variable name="GROUPID">
+                        <xsl:choose>
+                            <xsl:when test="mets:fileSec/mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=$primary_FILEID]">
+                                <xsl:value-of select="$primary_FILEID" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="mets:fileSec/mets:fileGrp[@USE='THUMBNAIL']/mets:file/@GROUPID" />
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
+                    <xsl:value-of select="mets:fileSec/mets:fileGrp[@USE='CONTENT']/mets:file[@GROUPID=$GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:choose>
+                        <xsl:when test="$itemWithdrawn">
+                            <xsl:value-of select="@OBJEDIT"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="@OBJID"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
+        <xsl:apply-templates select="./mets:fileSec" mode="artifact-preview">
+            <xsl:with-param name="href" select="$href"/>
+        </xsl:apply-templates>
+
         <!-- Generate the info about the item from the metadata section -->
         <xsl:apply-templates select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim"
             mode="itemSummaryList-DIM"/>
@@ -300,7 +331,22 @@
         mode="itemSummaryList-DIM"/>
         
         <!-- Generate the thunbnail, if present, from the file section -->
-        <xsl:apply-templates select="./mets:fileSec" mode="artifact-preview"/>
+        <xsl:variable name="itemWithdrawn" select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/@withdrawn" />
+
+        <xsl:variable name="href">
+            <xsl:choose>
+                <xsl:when test="$itemWithdrawn">
+                    <xsl:value-of select="@OBJEDIT"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@OBJID"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
+        <xsl:apply-templates select="./mets:fileSec" mode="artifact-preview">
+            <xsl:with-param name="href" select="$href"/>
+        </xsl:apply-templates>
     </xsl:template>
     
     

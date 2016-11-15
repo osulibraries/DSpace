@@ -86,7 +86,7 @@
     <xsl:param name="externalMetadataUrl"/>
 
     <xsl:variable name="metsDoc" select="document($externalMetadataUrl)"/>
-               
+
         <xsl:apply-templates select="$metsDoc/mets:METS/mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim"
                              mode="itemSummaryList-DIM"/>
     </xsl:template>
