@@ -146,9 +146,9 @@
     <message key="xmlui.Discovery.RelatedItems.head">Related items</message>
     <message key="xmlui.Discovery.RelatedItems.help">Showing items related by title, author, creator and subject.</message>
 
-    <message key="xmlui.Discovery.AbstractSearch.head1_community">Showing {0} out of a total of {1} results for community: {2}. <span class="searchTime">({3} seconds)</span></message>
-   	<message key="xmlui.Discovery.AbstractSearch.head1_collection">Showing {0} out of a total of {1} results for collection: {2}. <span class="searchTime">({3} seconds)</span></message>
-   	<message key="xmlui.Discovery.AbstractSearch.head1_none">Showing {0} out of a total of {1} results. <span class="searchTime">({2} seconds)</span></message>
+    <message key="xmlui.Discovery.AbstractSearch.head1_community">Search Results</message>
+   	<message key="xmlui.Discovery.AbstractSearch.head1_collection">Search Results</message>
+   	<message key="xmlui.Discovery.AbstractSearch.head1_none">Search Results</message>
 
     <message key="xmlui.Discovery.AbstractSearch.head2">Communities or Collections matching your query</message>
    	<message key="xmlui.Discovery.AbstractSearch.head3">Items matching your query</message>

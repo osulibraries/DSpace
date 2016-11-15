@@ -484,3 +484,7 @@ ul.gear-selection li.gear-option a {
 ul.gear-selection {
     text-align:left;
 }
+
+.visible {
+    visibility: visible;
+}

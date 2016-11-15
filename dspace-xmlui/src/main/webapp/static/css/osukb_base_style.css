@@ -1477,3 +1477,7 @@ div.controls-gear-wrapper {
 .sort-options-menu {
   display: none;
 }
+
+.searchTime {
+  display: none;
+}
