@@ -1,3 +1,12 @@
+<!--
+
+    The contents of this file are subject to the license and copyright
+    detailed in the LICENSE and NOTICE files at the root of the source
+    tree and available online at
+
+    http://www.dspace.org/license/
+
+-->
 
 <!--
     Templates to cover the attribute calls.
@@ -22,6 +31,78 @@
 	exclude-result-prefixes="i18n dri mets xlink xsl dim xhtml mods dc">
 
     <xsl:output indent="yes"/>
+
+    <!-- The last thing in the structural elements section are the templates to cover the attribute calls.
+        Although, by default, XSL only parses elements and text, an explicit call to apply the attributes
+        of children tags can still be made. This, in turn, requires templates that handle specific attributes,
+        like the kind you see below. The chief amongst them is the pagination attribute contained by divs,
+        which creates a new div element to display pagination information. -->
+
+
+    <!-- A quick helper function used by the @pagination template for repetitive tasks -->
+    <!-- checkbox and radio fields type uses this attribute -->
+    <xsl:template match="@returnValue">
+        <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <!-- used for image buttons -->
+    <xsl:template match="@source">
+        <xsl:attribute name="src"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <!-- size and maxlength used by text, password, and textarea inputs -->
+    <xsl:template match="@size">
+        <xsl:attribute name="size"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <!-- used by select element -->
+    <xsl:template match="@evtbehavior">
+        <xsl:param name="behavior" select="."/>
+        <xsl:if test="normalize-space($behavior)='submitOnChange'">
+            <xsl:attribute name="onchange">this.form.submit();</xsl:attribute>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="@maxlength">
+        <xsl:attribute name="maxlength"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <!-- "multiple" attribute is used by the <select> input method -->
+    <xsl:template match="@multiple[.='yes']">
+        <xsl:attribute name="multiple">multiple</xsl:attribute>
+    </xsl:template>
+
+    <!-- rows and cols attributes are used by textarea input -->
+    <xsl:template match="@rows">
+        <xsl:attribute name="rows"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <xsl:template match="@cols">
+        <xsl:attribute name="cols"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <!-- Add the HTML5 autofocus attribute to the input field -->
+    <xsl:template match="@autofocus">
+        <xsl:attribute name="autofocus"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
+
+    <!-- The general "catch-all" template for attributes matched, but not handled above -->
+    <xsl:template match="@*"></xsl:template>
+
+    <xsl:template match="dri:div[@n = 'masked-page-control']">
+        <!--Do not render this division, this is handled by the xsl-->
+    </xsl:template>
+
+    <xsl:template match="dri:div[@n ='search-controls-gear']">
+        <xsl:param name="position"/>
+        <div>
+            <xsl:call-template name="standardAttributes">
+                <xsl:with-param name="class"><xsl:value-of select="$position"/></xsl:with-param>
+            </xsl:call-template>
+
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
 
     <xsl:template match="@pagination">
         <xsl:param name="position"/>
@@ -92,7 +173,7 @@
                     <xsl:variable name="prev-page" select="parent::node()/@previousPage"/>
                     <xsl:variable name="next-page" select="parent::node()/@nextPage"/>
                     <xsl:if test="not($position = 'top') and ($prev-page or $next-page)">
-                        <ul class="pagination pagination-lg">
+                        <ul class="pagination">
                             <li>
                                 <xsl:attribute name="class">
                                     <xsl:text>previous</xsl:text>
@@ -105,7 +186,7 @@
                                     <xsl:attribute name="href">
                                         <xsl:value-of select="$prev-page"/>
                                     </xsl:attribute>
-                                    <xsl:text>&#171; Previous</xsl:text>
+                                    <xsl:text>&#171;</xsl:text>
                                 </a>
                             </li>
                             <li>
@@ -120,7 +201,7 @@
                                     <xsl:attribute name="href">
                                         <xsl:value-of select="$next-page"/>
                                     </xsl:attribute>
-                                    <xsl:text>Next &#187;</xsl:text>
+                                    <xsl:text>&#187;</xsl:text>
                                 </a>
                             </li>
                         </ul>
@@ -343,7 +424,7 @@
                             <a href="#" data-returnvalue="{@returnValue}" data-name="{../@n}">
                                 <span aria-hidden="true">
                                     <xsl:attribute name="class">
-                                        <xsl:text>glyphicon glyphicon-ok btn-xs</xsl:text>
+                                        <xsl:text>glyphicon glyphicon-ok btn-xs whynot</xsl:text>
                                         <xsl:choose>
                                             <xsl:when test="@returnValue = ../dri:value/@option">
                                                 <xsl:text> active</xsl:text>
@@ -354,15 +435,16 @@
                                         </xsl:choose>
                                     </xsl:attribute>
                                 </span>
-                                <xsl:choose>
-                                    <xsl:when test="i18n:text">
-                                        <xsl:apply-templates select="i18n:text"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="."/>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-
+                                <span class="visible">
+                                    <xsl:choose>
+                                        <xsl:when test="i18n:text">
+                                            <xsl:apply-templates select="i18n:text"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:value-of select="."/>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </span>
 
                             </a>
                         </li>

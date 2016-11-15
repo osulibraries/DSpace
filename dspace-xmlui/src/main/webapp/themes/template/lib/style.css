@@ -58,7 +58,7 @@ input.ds-password-field.error {
     visibility:hidden;
 }
 
-
+/*
 .pagination,
 .pagination-masked {
     padding: 7px;
@@ -78,7 +78,7 @@ input.ds-password-field.error {
     display: inline;
     padding-left: 2px;
     padding-right: 2px;
-}
+}*/
 
 .current-page-link {
     font-weight: bold;
@@ -88,7 +88,7 @@ input.ds-password-field.error {
 .current-page-link a{
     color: #1F3F5E;
 }
-
+/*
 .pagination-info {
     float: left;
     margin:0;
@@ -103,7 +103,7 @@ input.ds-password-field.error {
     position:relative;
     top:10px;
     height:20px;
-}
+}*/
 
 
 #aspect_artifactbrowser_CommunityBrowser_div_comunity-browser .short-description, #aspect_discovery_SiteRecentSubmissions_div_site-home .short-description {
@@ -246,20 +246,22 @@ input.search-icon{
 }*/
 
 /* Hide the 1, 2, 3 .., 100 because the box got distorted */
+/*
 .pagination-links {
     display: none;
 }
 
 .pagination, .pagination-masked {
     padding: 5px 3px 2px 6px;
-}
+}*/
 
+/*
 div.controls-gear-wrapper {
     position:relative;
     left:100px;
     top:-23px;
     margin-bottom:0px;
-}
+}*/
 
 
 table.discovery-filters{
