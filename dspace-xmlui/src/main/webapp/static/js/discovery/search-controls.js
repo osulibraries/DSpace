@@ -85,6 +85,7 @@
             var filtersForm = $('form#aspect_discovery_SimpleSearch_div_search-filters');
             filtersForm.show();
             filtersForm.css('visibility', 'visible');
+            filtersForm.removeClass("hidden");
             $(this).hide();
             return false;
         });
