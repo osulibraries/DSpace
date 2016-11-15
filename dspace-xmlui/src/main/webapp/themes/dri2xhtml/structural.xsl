@@ -4306,7 +4306,7 @@ Disable Choice
                     <xsl:value-of select="$metsDoc/mets:METS/mets:fileGrp[@USE='CONTENT']/mets:file[@GROUPID=$GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:value-of select="concat($context-path, '/handle/', $handle)/NOOO"/>
+                    <xsl:value-of select="concat($context-path, '/handle/', $handle)"/>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
