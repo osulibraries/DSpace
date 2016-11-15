@@ -777,7 +777,7 @@ ul.ds-artifact-list {
       padding: 0 5px; }
     ul.ds-artifact-list li div.artifact-title {
       float: none;
-      font-weight: bold; }
+      font-weight: 500; }
       ul.ds-artifact-list li div.artifact-title a:link, ul.ds-artifact-list li div.artifact-title a:visited {
         color: inherit; }
     ul.ds-artifact-list li div.artifact-info {
@@ -1480,4 +1480,8 @@ div.controls-gear-wrapper {
 
 .searchTime {
   display: none;
+}
+
+div#aspect_discovery_SimpleSearch_div_search-results .highlight {
+  font-weight: 700;
 }
