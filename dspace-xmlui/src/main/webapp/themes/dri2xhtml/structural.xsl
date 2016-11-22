@@ -4205,36 +4205,8 @@ Disable Choice
             <div class="artifact-info">
                 <span class="author">
                     <xsl:choose>
-                        <xsl:when test="dri:list[@n=(concat($handle, ':dc.contributor.author'))]">
-                            <xsl:for-each select="dri:list[@n=(concat($handle, ':dc.contributor.author'))]/dri:item">
-                                <xsl:variable name="author">
-                                    <xsl:value-of select="."/>
-                                </xsl:variable>
-                                <span>
-                                    <!--Check authority in the mets document-->
-                                    <xsl:if test="$metsDoc/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='contributor' and @qualifier='author' and . = $author]/@authority">
-                                        <xsl:attribute name="class">
-                                            <xsl:text>ds-dc_contributor_author-authority</xsl:text>
-                                        </xsl:attribute>
-                                    </xsl:if>
-                                    <xsl:apply-templates select="."/>
-                                </span>
-
-                                <xsl:if test="count(following-sibling::dri:item) != 0">
-                                    <xsl:text>; </xsl:text>
-                                </xsl:if>
-                            </xsl:for-each>
-                        </xsl:when>
                         <xsl:when test="dri:list[@n=(concat($handle, ':dc.creator'))]">
                             <xsl:for-each select="dri:list[@n=(concat($handle, ':dc.creator'))]/dri:item">
-                                <xsl:apply-templates select="."/>
-                                <xsl:if test="count(following-sibling::dri:item) != 0">
-                                    <xsl:text>; </xsl:text>
-                                </xsl:if>
-                            </xsl:for-each>
-                        </xsl:when>
-                        <xsl:when test="dri:list[@n=(concat($handle, ':dc.contributor'))]">
-                            <xsl:for-each select="dri:list[@n=(concat($handle, ':dc.contributor'))]/dri:item">
                                 <xsl:apply-templates select="."/>
                                 <xsl:if test="count(following-sibling::dri:item) != 0">
                                     <xsl:text>; </xsl:text>
@@ -4247,15 +4219,9 @@ Disable Choice
                     </xsl:choose>
                 </span>
                 <xsl:text> </xsl:text>
-                <xsl:if test="dri:list[@n=(concat($handle, ':dc.date.issued'))] or dri:list[@n=(concat($handle, ':dc.publisher'))]">
+                <xsl:if test="dri:list[@n=(concat($handle, ':dc.date.issued'))]]">
                     <span class="publisher-date">
                         <xsl:text>(</xsl:text>
-                        <xsl:if test="dri:list[@n=(concat($handle, ':dc.publisher'))]">
-                            <span class="publisher">
-                                <xsl:apply-templates select="dri:list[@n=(concat($handle, ':dc.publisher'))]/dri:item"/>
-                            </span>
-                            <xsl:text>, </xsl:text>
-                        </xsl:if>
                         <span class="date">
                             <xsl:value-of
                                     select="substring(dri:list[@n=(concat($handle, ':dc.date.issued'))]/dri:item,1,10)"/>
