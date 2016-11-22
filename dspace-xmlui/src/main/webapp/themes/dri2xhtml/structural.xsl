@@ -4219,7 +4219,7 @@ Disable Choice
                     </xsl:choose>
                 </span>
                 <xsl:text> </xsl:text>
-                <xsl:if test="dri:list[@n=(concat($handle, ':dc.date.issued'))]]">
+                <xsl:if test="dri:list[@n=(concat($handle, ':dc.date.issued'))]">
                     <span class="publisher-date">
                         <xsl:text>(</xsl:text>
                         <span class="date">
