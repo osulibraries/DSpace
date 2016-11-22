@@ -320,11 +320,7 @@
                         </img>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:call-template name="getFileFormatIcon">
-                            <xsl:with-param name="mimetype">
-                                <xsl:value-of select="mets:fileGrp[@USE='CONTENT']/mets:file/@MIMETYPE"/>
-                            </xsl:with-param>
-                        </xsl:call-template>
+                        <xsl:value-of select="mets:fileGrp[@USE='THUMBNAIL']/mets:file/@GROUPID" />
                     </xsl:otherwise>
                 </xsl:choose>
             </a>
