@@ -201,30 +201,32 @@
 
     <xsl:template match="mets:fileSec" mode="artifact-preview">
         <xsl:param name="href"/>
-        <div class="thumbnail artifact-preview">
-            <a class="image-link" href="{$href}">
-                <xsl:choose>
-                    <xsl:when test="mets:fileGrp[@USE='THUMBNAIL']">
-                        <img alt="Thumbnail">
-                            <xsl:attribute name="src">
-                                <xsl:value-of
-                                        select="mets:fileGrp[@USE='THUMBNAIL']/mets:file/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
-                            </xsl:attribute>
-                            <xsl:attribute name="class">
-                                <xsl:text>img-responsive</xsl:text>
-                            </xsl:attribute>
-                        </img>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:call-template name="getFileFormatIcon">
-                            <xsl:with-param name="mimetype">
-                                <xsl:value-of select="mets:fileGrp[@USE='CONTENT']/mets:file/@MIMETYPE"/>
-                            </xsl:with-param>
-                        </xsl:call-template>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </a>
-        </div>
+        <xsl:if test="mets:fileGrp[@USE='THUMBNAIL']">
+            <div class="thumbnail artifact-preview">
+                <a class="image-link" href="{$href}">
+                    <xsl:choose>
+                        <xsl:when test="mets:fileGrp[@USE='THUMBNAIL']">
+                            <img alt="Thumbnail">
+                                <xsl:attribute name="src">
+                                    <xsl:value-of
+                                            select="mets:fileGrp[@USE='THUMBNAIL']/mets:file/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
+                                </xsl:attribute>
+                                <xsl:attribute name="class">
+                                    <xsl:text>img-responsive</xsl:text>
+                                </xsl:attribute>
+                            </img>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:call-template name="getFileFormatIcon">
+                                <xsl:with-param name="mimetype">
+                                    <xsl:value-of select="mets:fileGrp[@USE='CONTENT']/mets:file/@MIMETYPE"/>
+                                </xsl:with-param>
+                            </xsl:call-template>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </a>
+            </div>
+        </xsl:if>
     </xsl:template>
 
 
