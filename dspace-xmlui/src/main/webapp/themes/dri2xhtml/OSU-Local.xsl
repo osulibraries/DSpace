@@ -301,13 +301,14 @@
             </xsl:if>
         </div>
     </xsl:template>
-
+    
     <xsl:template match="mets:fileSec" mode="artifact-preview">
         <xsl:param name="href"/>
 
-        <xsl:if test="mets:fileGrp[@USE='THUMBNAIL']">
-            <div class="thumbnail artifact-preview">
-                <a class="image-link" href="{$href}">
+
+        <xsl:if test="mets:fileGrp[@USE='THUMBNAIL'] and not(contains(mets:fileGrp[@USE='THUMBNAIL']/mets:file/mets:FLocat[@LOCTYPE='URL']/@xlink:href,'isAllowed=n'))">
+            <div class="thumbnail artifact-preview osulocal-318">
+                <a class="image-link osu-319" href="{$href}">
                     <img alt="Thumbnail">
                         <xsl:attribute name="src">
                             <xsl:value-of

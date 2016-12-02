@@ -33,9 +33,6 @@
 
     <xsl:output indent="yes"/>
     
-
-    
-    
     <!-- Generate the thunbnail, if present, from the file section -->
     <!-- bds: Overridden in OSU-Local -->
     <xsl:template match="mets:fileSec" mode="artifact-preview">
@@ -165,9 +162,9 @@
             </td>
             <td>
                 <xsl:choose>
-                    <xsl:when test="$context/mets:fileSec/mets:fileGrp[@USE='THUMBNAIL']/
-                        mets:file[@GROUPID=current()/@GROUPID]">
-                        <a class="image-link">
+                    <xsl:when test="$context/mets:fileSec/mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=current()/@GROUPID]
+                                    and not(contains($context/mets:fileSec/mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=current()/@GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href,'isAllowed=n'))">
+                        <a class="image-link gh-176">
                             <xsl:attribute name="href">
                                 <xsl:value-of select="mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
                             </xsl:attribute>
