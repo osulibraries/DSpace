@@ -117,7 +117,7 @@
                         <xsl:when test="$position = 'top' and $gear">
                             <div class="row">
                                 <div class="col-xs-10">
-                                    <p class="pagination-info">
+                                    <p class="pagination-info l120">
                                         <i18n:translate>
                                             <xsl:choose>
                                                 <xsl:when test="parent::node()/@itemsTotal = -1">
@@ -146,7 +146,7 @@
                             </div>
                         </xsl:when>
                         <xsl:when test="$position = 'top'">
-                            <p class="pagination-info">
+                            <p class="pagination-info l149">
                                 <i18n:translate>
                                     <xsl:choose>
                                         <xsl:when test="parent::node()/@itemsTotal = -1">
@@ -217,7 +217,7 @@
                         <xsl:when test="$position = 'top' and $gear">
                             <div class="row">
                                 <div class="col-xs-9">
-                                    <p class="pagination-info">
+                                    <p class="pagination-info l220">
                                         <i18n:translate>
                                             <xsl:choose>
                                                 <xsl:when test="parent::node()/@itemsTotal = -1">
@@ -246,7 +246,7 @@
                             </div>
                         </xsl:when>
                         <xsl:when test="$position = 'top'">
-                            <p class="pagination-info">
+                            <p class="pagination-info l249">
                                 <i18n:translate>
                                     <xsl:choose>
                                         <xsl:when test="parent::node()/@itemsTotal = -1">

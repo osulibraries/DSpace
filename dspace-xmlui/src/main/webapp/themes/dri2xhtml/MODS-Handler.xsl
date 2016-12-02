@@ -88,7 +88,7 @@
                     </xsl:choose>
                 </a>
             </div>
-            <div class="artifact-info">
+            <div class="artifact-info MODS-Handler">
                 <span class="author">
                     <xsl:choose>
                         <xsl:when test="mods:name[mods:role/mods:roleTerm/text()='author']/mods:namePart/node()">

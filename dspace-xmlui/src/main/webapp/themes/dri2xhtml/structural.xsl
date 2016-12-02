@@ -817,6 +817,36 @@
                             </xsl:attribute>
                         </input>
 
+                        <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='container']">
+                            <div class="radio">
+                                <label>
+                                    <input id="ds-search-form-scope-all" type="radio" name="scope" value=""
+                                           checked="checked"/>
+                                    <i18n:text>xmlui.dri2xhtml.structural.search</i18n:text>
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input id="ds-search-form-scope-container" type="radio" name="scope">
+                                        <xsl:attribute name="value">
+                                            <xsl:value-of
+                                                    select="substring-after(/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='container'],':')"/>
+                                        </xsl:attribute>
+                                    </input>
+                                    <xsl:choose>
+                                        <xsl:when
+                                                test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='containerType']/text() = 'type:community'">
+                                            <i18n:text>xmlui.dri2xhtml.structural.search-in-community</i18n:text>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <i18n:text>xmlui.dri2xhtml.structural.search-in-collection</i18n:text>
+                                        </xsl:otherwise>
+
+                                    </xsl:choose>
+                                </label>
+                            </div>
+                        </xsl:if>
+
 
                     </fieldset>
                 </form>
@@ -3013,6 +3043,16 @@ Disable Choice
                         <xsl:when test="$position = 'top' and $gear">
                             <div class="row">
                                 <div class="col-xs-9">
+                                    <div class="previous-page-link">
+                                        <xsl:if test="parent::node()/@previousPage">
+                                            <a>
+                                                <xsl:attribute name="href">
+                                                    <xsl:value-of select="parent::node()/@previousPage"/>
+                                                </xsl:attribute>
+                                                <i18n:text>xmlui.dri2xhtml.structural.pagination-previous</i18n:text>
+                                            </a>
+                                        </xsl:if><xsl:text>&#160;</xsl:text>
+                                    </div>
                                     <p class="pagination-info">
                                         <i18n:translate>
                                             <xsl:choose>
@@ -3035,6 +3075,16 @@ Disable Choice
                                             </i18n:param>
                                         </i18n:translate>
                                     </p>
+                                    <div class="next-page-link">
+                                        <xsl:if test="parent::node()/@nextPage">
+                                            <a>
+                                                <xsl:attribute name="href">
+                                                    <xsl:value-of select="parent::node()/@nextPage"/>
+                                                </xsl:attribute>
+                                                <i18n:text>xmlui.dri2xhtml.structural.pagination-next</i18n:text>
+                                            </a>
+                                        </xsl:if><xsl:text>&#160;</xsl:text>
+                                    </div>
                                 </div>
                                 <div class="col-xs-3">
                                     <xsl:apply-templates select="$gear"/>
@@ -4164,6 +4214,7 @@ Disable Choice
 
     </xsl:template>
 
+    <!-- Title, dc.creator, dc.date.issued, dc.description.abstract -->
     <xsl:template name="itemSummaryList">
         <xsl:param name="handle"/>
         <xsl:param name="externalMetadataUrl"/>
@@ -4220,7 +4271,7 @@ Disable Choice
                 </span>
                 <xsl:text> </xsl:text>
                 <xsl:if test="dri:list[@n=(concat($handle, ':dc.date.issued'))]">
-                    <span class="publisher-date">
+                    <span class="publisher-date structural4273">
                         <xsl:text>(</xsl:text>
                         <span class="date">
                             <xsl:value-of

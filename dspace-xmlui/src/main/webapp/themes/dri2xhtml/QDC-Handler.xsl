@@ -83,7 +83,7 @@
                     </xsl:choose>
                 </a>
             </div>
-            <div class="artifact-info">
+            <div class="artifact-info QDC-Handler">
                 <!-- Put down the author -->
                 <span class="author">
                     <xsl:choose>

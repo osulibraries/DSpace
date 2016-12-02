@@ -28,6 +28,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:xalan="http://xml.apache.org/xalan" 
     xmlns:encoder="xalan://java.net.URLEncoder"
+    xmlns:util="org.dspace.app.xmlui.utils.XSLUtils"
     exclude-result-prefixes="i18n dri mets dim xlink xsl oreatom ore atom xalan encoder ">
         <!-- bds: added oreatom ore atom to above exclusions, not currently used, was causing display errors -->
     <!--  
@@ -163,24 +164,10 @@
                 </xsl:if>
 
            </div>
-            <div class="artifact-info">
+            <div class="artifact-info DIM-Handler">
                 <span class="author">
                     <!-- bds: replacing authors in item browse with our own version, including linkify to author browse -->
-                    <!-- PMBMD: Disable dc.contributor.* and dc.contributor.author from being in browse list, as per metadata people (don't want to list photographer...) -->
                     <xsl:choose>
-                        <!--<xsl:when test="dim:field[@element='contributor'][@qualifier='author']">
-                          -  <xsl:for-each select="dim:field[@element='contributor'][@qualifier='author']">
-                          -      <span>
-                          -        <xsl:if test="@authority">
-                          -          <xsl:attribute name="class"><xsl:text>ds-dc_contributor_author-authority</xsl:text></xsl:attribute>
-                          -        </xsl:if>
-                          -        <xsl:copy-of select="node()"/>
-                          -      </span>
-                          -      <xsl:if test="count(following-sibling::dim:field[@element='contributor'][@qualifier='author']) != 0">
-                          -          <xsl:text>; </xsl:text>
-                          -      </xsl:if>
-                          -  </xsl:for-each>
-                          -</xsl:when>-->
                         <xsl:when test="dim:field[@element='creator']">
                             <xsl:for-each select="dim:field[@element='creator']">
                                 <!-- bds: link to author browse magic -->
@@ -198,14 +185,6 @@
                                 </xsl:if>
                             </xsl:for-each>
                         </xsl:when>
-                        <!--<xsl:when test="dim:field[@element='contributor']">
-                          -  <xsl:for-each select="dim:field[@element='contributor']">
-                          -      <xsl:copy-of select="node()"/>
-                          -      <xsl:if test="count(following-sibling::dim:field[@element='contributor']) != 0">
-                          -          <xsl:text>; </xsl:text>
-                          -      </xsl:if>
-                          -  </xsl:for-each>
-                          -</xsl:when>-->
                         <xsl:otherwise>
                             <i18n:text>xmlui.dri2xhtml.METS-1.0.no-author</i18n:text>
                         </xsl:otherwise>
@@ -215,7 +194,7 @@
                 <xsl:choose>
                     <!-- PMBMD: When it is browse by date accessioned, use the date-accessioned date in browselist, otherwise use date.issued.-->
                     <xsl:when test="$browseMode = '3'"> <!-- 3 = date.accessioned -->
-                        <span class="publisher-date">
+                        <span class="publisher-date DIM218">
                             <xsl:text>(accessioned </xsl:text>
                             <span class="date">
                                 <xsl:value-of select="substring(dim:field[@element='date' and @qualifier='accessioned']/node(),1,10)"/>
@@ -225,24 +204,23 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:if test="dim:field[@element='date' and @qualifier='issued']">
-                            <span class="publisher-date">
+                            <span class="publisher-date h4">  <small>
                                 <xsl:text>(</xsl:text>
-                                <!--PMBMD: Don't want to show publisher.
-                                  -<xsl:if test="dim:field[@element='publisher']">
-                                  -  <span class="publisher">
-                                  -      <xsl:copy-of select="dim:field[@element='publisher']/node()"/>
-                                  -  </span>
-                                  -  <xsl:text>, </xsl:text>
-                                  -</xsl:if>-->
                                 <span class="date">
                                     <xsl:value-of select="substring(dim:field[@element='date' and @qualifier='issued']/node(),1,10)"/>
                                 </span>
                                 <xsl:text>)</xsl:text>
-                            </span>
+                            </small></span>
                         </xsl:if>
                     </xsl:otherwise>
                 </xsl:choose>
             </div>
+            <xsl:if test="dim:field[@element = 'description' and @qualifier='abstract']">
+                <xsl:variable name="abstract" select="dim:field[@element = 'description' and @qualifier='abstract']/node()"/>
+                <div class="artifact-abstract">
+                    <xsl:value-of select="util:shortenString($abstract, 220, 10)"/>
+                </div>
+            </xsl:if>
         </div>
     </xsl:template>
     

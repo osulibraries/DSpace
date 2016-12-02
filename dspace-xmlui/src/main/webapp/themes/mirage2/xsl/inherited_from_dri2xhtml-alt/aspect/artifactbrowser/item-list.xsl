@@ -23,6 +23,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:xalan="http://xml.apache.org/xalan"
     xmlns:encoder="xalan://java.net.URLEncoder"
+    xmlns:util="org.dspace.app.xmlui.utils.XSLUtils"
     exclude-result-prefixes="xalan encoder i18n dri mets dim  xlink xsl">
 
     <xsl:output indent="yes"/>
@@ -87,7 +88,7 @@
                 </span>
                 <xsl:text> </xsl:text>
                 <xsl:if test="dim:field[@element='date' and @qualifier='issued']">
-	                <span class="publisher-date">
+	                <span class="publisher-date mirage2-inherit-item-list-91">
 	                    <xsl:text>(</xsl:text>
 	                    <span class="date">
 	                        <xsl:value-of select="substring(dim:field[@element='date' and @qualifier='issued']/node(),1,10)"/>
@@ -96,6 +97,12 @@
 	                </span>
                 </xsl:if>
             </div>
+            <xsl:if test="dim:field[@element = 'description' and @qualifier='abstract']">
+                <xsl:variable name="abstract" select="dim:field[@element = 'description' and @qualifier='abstract']/node()"/>
+                <div class="artifact-abstract">
+                    <xsl:value-of select="util:shortenString($abstract, 220, 10)"/>
+                </div>
+            </xsl:if>
         </div>
     </xsl:template>
 
