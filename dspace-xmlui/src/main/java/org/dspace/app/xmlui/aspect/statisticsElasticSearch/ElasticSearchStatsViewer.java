@@ -58,10 +58,10 @@ public class ElasticSearchStatsViewer extends AbstractDSpaceTransformer {
 
     protected static TermFilterBuilder justOriginals = FilterBuilders.termFilter("bundleName", "ORIGINAL");
 
-    protected static FacetBuilder facetTopCountries = FacetBuilders.termsFacet("top_countries").field("country.untouched").size(150)
+    protected static FacetBuilder facetTopCountries = FacetBuilders.termsFacet("top_countries").field("countryCode.untouched").size(150)
             .facetFilter(FilterBuilders.andFilter(
                 justOriginals,
-                FilterBuilders.notFilter(FilterBuilders.termFilter("country.untouched", "")))
+                FilterBuilders.notFilter(FilterBuilders.termFilter("countryCode.untouched", "")))
             );
 
     protected static FacetBuilder facetMonthlyDownloads = FacetBuilders.dateHistogramFacet("monthly_downloads").field("time").interval("month")
