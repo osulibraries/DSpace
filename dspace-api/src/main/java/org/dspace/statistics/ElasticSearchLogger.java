@@ -135,6 +135,8 @@ public class ElasticSearchLogger {
 
                 if (healthResponse.isTimedOut() || healthResponse.getStatus() == ClusterHealthStatus.RED) {
                     throw new IllegalStateException("cluster not ready due to health: " + healthResponse.toString());
+                } else {
+                    log.info("HealthResponse: " + healthResponse.toString());
                 }
 
                 log.info("DS ES Checking if index exists");
@@ -541,7 +543,7 @@ public class ElasticSearchLogger {
     }
 
     // Transport Client will talk to server on 9300
-    public void createTransportClient() {
+    public Client createTransportClient() {
         // Configurable values for all elasticsearch connection constants
         // Can't guarantee that these values are already loaded, since this can be called by a different JVM
         clusterName = getConfigurationStringWithFallBack("elastic-search-statistics", "clusterName", clusterName);
@@ -553,7 +555,7 @@ public class ElasticSearchLogger {
         log.info("Creating TransportClient to [Address:" + address + "] [Port:" + port + "] [cluster.name:" + clusterName + "]");
 
         Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName).build();
-        client = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(address, port));
+        return new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(address, port));
     }
 
     public Client getClient() {
@@ -561,13 +563,13 @@ public class ElasticSearchLogger {
             String defaultClientType = getConfigurationStringWithFallBack("elastic-search-statistics", "clientType", ClientType.NODE.name());
 
             if(defaultClientType.equalsIgnoreCase(ClientType.LOCAL.name())) {
-                createNodeClient(ClientType.LOCAL);
+                client = createNodeClient(ClientType.LOCAL);
             } else if(defaultClientType.equalsIgnoreCase(ClientType.TRANSPORT.name())) {
                 //tp client
-                createTransportClient();
+                client = createTransportClient();
             }  else {
                 //Get an available client, otherwise new default is NODE.
-                createNodeClient(ClientType.NODE);
+                client = createNodeClient(ClientType.NODE);
             }
         }
 
@@ -580,17 +582,17 @@ public class ElasticSearchLogger {
     //   - Node Client, must discover a master within ES cluster
     //   - Transport Client, specify IP address of server running ES.
     public Client getClient(ClientType clientType) {
-        if(client == null) {
+        if(client != null) {
+            return client;
+        } else {
             log.error("getClient reports null client");
 
             if(clientType == ClientType.TRANSPORT) {
-                createTransportClient();
+                return createTransportClient();
             } else {
-                createNodeClient(clientType);
+                return createNodeClient(clientType);
             }
         }
-
-        return client;
     }
 
     // Node Client will discover other ES nodes running in local JVM
@@ -610,9 +612,8 @@ public class ElasticSearchLogger {
 
         Node node = nodeBuilder.node();
         log.info("Got node");
-        client = node.client();
         log.info("Created new node client");
-        return client;
+        return node.client();
     }
     
     public String getConfigurationStringWithFallBack(String module, String configurationKey, String defaultFallbackValue) {
