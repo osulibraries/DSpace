@@ -555,10 +555,23 @@ public class ElasticSearchLogger {
         Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName).build();
         client = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(address, port));
     }
-    
+
     public Client getClient() {
-        //Get an available client, otherwise new default is NODE.
-        return getClient(ClientType.NODE);
+        if(client == null) {
+            String defaultClientType = getConfigurationStringWithFallBack("elastic-search-statistics", "clientType", ClientType.NODE.name());
+
+            if(defaultClientType.equalsIgnoreCase(ClientType.LOCAL.name())) {
+                createNodeClient(ClientType.LOCAL);
+            } else if(defaultClientType.equalsIgnoreCase(ClientType.TRANSPORT.name())) {
+                //tp client
+                createTransportClient();
+            }  else {
+                //Get an available client, otherwise new default is NODE.
+                createNodeClient(ClientType.NODE);
+            }
+        }
+
+        return client;
     }
 
     // Get the already available client, otherwise we will create a new client.
