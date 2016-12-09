@@ -348,12 +348,14 @@ public class CitationDocument {
             contentStream.fillRect(xpos, ypos, xwidth, 1);
             contentStream.closeAndStroke();
 
-            String[][] content3 = {{getOwningCommunity(item), getOwningCollection(item)}};
-            drawTable(coverPage, contentStream, ypos, xpos, content3, fontHelvetica, 9, false);
-            ypos -=ygap;
+            //KB-835 Remove community/collection name
+            //String[][] content3 = {{getOwningCommunity(item), getOwningCollection(item)}};
+            //drawTable(coverPage, contentStream, ypos, xpos, content3, fontHelvetica, 9, false);
+            //ypos -=ygap;
+            //
+            //contentStream.fillRect(xpos, ypos, xwidth, 1);
+            //contentStream.closeAndStroke();
 
-            contentStream.fillRect(xpos, ypos, xwidth, 1);
-            contentStream.closeAndStroke();
             ypos -=(ygap*2);
 
             for(String field : fields) {
@@ -373,7 +375,7 @@ public class CitationDocument {
                     ypos -=(ygap);
 
                 } else if(StringUtils.isNotEmpty(item.getMetadata(field))) {
-                    ypos = drawStringWordWrap(coverPage, contentStream, item.getMetadata(field), xpos, ypos, font, fontSize);
+                    ypos = drawStringWordWrap(coverPage, contentStream, getAllMetadataSeparated(item, field), xpos, ypos, font, fontSize);
                 }
 
                 if(field.contains("title")) {
