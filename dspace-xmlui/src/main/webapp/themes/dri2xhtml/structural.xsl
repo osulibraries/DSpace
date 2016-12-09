@@ -825,37 +825,39 @@
                             </xsl:attribute>
                         </input>
 
-                        <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='container']">
-                            <div class="radio">
+                        <div id="ds-global-search-scope">
+                            <xsl:if test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='container']">
                                 <label>
-                                    <input id="ds-search-form-scope-all" type="radio" name="scope" value=""
-                                           checked="checked"/>
+                                    <input id="ds-search-form-scope-all" type="radio" name="scope" value="" checked="checked"/>
                                     <i18n:text>xmlui.dri2xhtml.structural.search</i18n:text>
                                 </label>
-                            </div>
-                            <div class="radio">
                                 <label>
                                     <input id="ds-search-form-scope-container" type="radio" name="scope">
                                         <xsl:attribute name="value">
-                                            <xsl:value-of
-                                                    select="substring-after(/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='container'],':')"/>
+                                            <xsl:value-of select="substring-after(/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='container'],':')"/>
                                         </xsl:attribute>
                                     </input>
                                     <xsl:choose>
-                                        <xsl:when
-                                                test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='containerType']/text() = 'type:community'">
-                                            <i18n:text>xmlui.dri2xhtml.structural.search-in-community</i18n:text>
-                                        </xsl:when>
+                                        <!-- bds : temporary hack to get container type [community|collection], since the following test is broken (not found in DRI)
+                                        <xsl:when test="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='focus'][@qualifier='containerType']/text() = 'type:community'">
+                                        -->                       <xsl:when test="/dri:document/dri:options/dri:list[@n='browse']/dri:list[@n='context']/dri:head/i18n:text/text() = 'xmlui.ArtifactBrowser.Navigation.head_this_community'">
+                                        <i18n:text>xmlui.dri2xhtml.structural.search-in-community</i18n:text>
+                                    </xsl:when>
                                         <xsl:otherwise>
                                             <i18n:text>xmlui.dri2xhtml.structural.search-in-collection</i18n:text>
                                         </xsl:otherwise>
 
                                     </xsl:choose>
                                 </label>
-                            </div>
-                        </xsl:if>
-
-
+                            </xsl:if>
+                            <a>
+                                <xsl:attribute name="href">
+                                    <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='search'][@qualifier='advancedURL']"/>
+                                </xsl:attribute>
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true">&#160;</span>
+                                <i18n:text>xmlui.dri2xhtml.structural.search-advanced</i18n:text>
+                            </a>
+                        </div>
                     </fieldset>
                 </form>
             </div>
