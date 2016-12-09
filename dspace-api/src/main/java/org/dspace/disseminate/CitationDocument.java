@@ -386,7 +386,8 @@ public class CitationDocument {
             contentStream.beginText();
             contentStream.setFont(fontHelveticaOblique, 11);
             contentStream.moveTextPositionByAmount(xpos, ypos);
-            contentStream.drawString(footer);
+            //KB-835 Comment out footer
+            //contentStream.drawString(footer);
             contentStream.endText();
         } finally {
             contentStream.close();
