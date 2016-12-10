@@ -1942,7 +1942,7 @@ public class Collection extends DSpaceObject
                         "  public.epersongroup, " +
                         "  public.group2group, " +
                         "  public.resourcepolicy rp_parent, " +
-                        "  public.collection" +
+                        "  public.collection " +
                         "WHERE " +
                         "  epersongroup2eperson.eperson_id = eperson.eperson_id AND" +
                         "  epersongroup.eperson_group_id = epersongroup2eperson.eperson_group_id AND" +
@@ -1965,7 +1965,7 @@ public class Collection extends DSpaceObject
                         "  public.epersongroup2eperson, " +
                         "  public.epersongroup, " +
                         "  public.community, " +
-                        "  public.resourcepolicy" +
+                        "  public.resourcepolicy " +
                         "WHERE " +
                         "  epersongroup2eperson.eperson_id = eperson.eperson_id AND" +
                         "  epersongroup.eperson_group_id = epersongroup2eperson.eperson_group_id AND" +
