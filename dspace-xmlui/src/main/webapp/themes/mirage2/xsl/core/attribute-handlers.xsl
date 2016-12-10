@@ -212,6 +212,7 @@
             </xsl:when>
             <xsl:when test=". = 'masked'">
                 <div class="pagination-masked clearfix {$position}">
+                    <xsl:text>&#160;</xsl:text>
                     <xsl:variable name="gear"
                                   select="parent::node()/dri:div[@n = 'masked-page-control']/dri:div[@rend='controls-gear-wrapper' and @n='search-controls-gear']"/>
                     <xsl:choose>
