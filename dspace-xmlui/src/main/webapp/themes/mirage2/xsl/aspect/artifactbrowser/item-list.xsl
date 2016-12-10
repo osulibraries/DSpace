@@ -177,8 +177,8 @@
     <xsl:template match="mets:fileSec" mode="artifact-preview">
         <xsl:param name="href"/>
         <xsl:if test="mets:fileGrp[@USE='THUMBNAIL']">
-            <div class="thumbnail artifact-preview">
-                <a class="image-link" href="{$href}">
+            <div class="thumbnail artifact-preview m2-il-187">
+                <a class="image-link m2-188" href="{$href}">
                     <xsl:choose>
                         <xsl:when test="mets:fileGrp[@USE='THUMBNAIL']">
                             <img alt="Thumbnail">

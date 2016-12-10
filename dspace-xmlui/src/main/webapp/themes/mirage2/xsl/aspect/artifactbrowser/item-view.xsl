@@ -810,7 +810,7 @@
         <div class="file-wrapper row">
             <div class="col-xs-6 col-sm-3">
                 <div class="thumbnail">
-                    <a class="image-link">
+                    <a class="image-link m2-813">
                         <xsl:attribute name="href">
                             <xsl:value-of select="mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
                         </xsl:attribute>
