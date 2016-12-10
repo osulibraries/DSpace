@@ -331,6 +331,23 @@ tr.ds-table-row.even {
   font-size: 0.9em;
   /*width: 65%;
   float: left;*/ }
+
+  #homepage-body2 .carousel-caption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 15px;
+    background: #333333;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    text-align: left;
+    z-index: 5;
+  }
+  #homepage-body2 .carousel-control.left {
+    margin-bottom: 67px;
+  }
+
   #homepage-body h1 {
     padding: 0 !important;
     margin: 4px 0 12px 0 !important; }
