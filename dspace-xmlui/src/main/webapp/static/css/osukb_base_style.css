@@ -1527,3 +1527,7 @@ div#aspect_discovery_SimpleSearch_div_search-results .highlight {
 .pagination>li>a, .pagination>li>span {
   color: #656565;
 }
+
+.pagination-masked.clearfix {
+  clear: both;
+}
