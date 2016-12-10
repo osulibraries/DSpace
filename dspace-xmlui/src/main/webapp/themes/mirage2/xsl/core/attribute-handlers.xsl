@@ -109,6 +109,7 @@
         <xsl:choose>
             <xsl:when test=". = 'simple'">
                 <div class="pagination-simple clearfix {$position}">
+                    <xsl:text>&#160;</xsl:text>
                     <xsl:variable name="gear"
                                   select="//dri:div[@id='aspect.artifactbrowser.ConfigurableBrowse.div.browse-controls'
                                   or @id='aspect.administrative.WithdrawnItems.div.browse-controls'
