@@ -274,7 +274,9 @@ tr.ds-table-row.even {
         height: 21px;
         line-height: 21px;
         overflow: hidden;
-        float: left; }
+        float: left;
+        font-size: 12px;
+      }
       .breadCrumb ul li.last {
         background: none;
         margin-right: 0;
@@ -555,7 +557,9 @@ tr.ds-table-row.even {
   margin: 0px;
   color: black; }
 #ds-body li {
-  line-height: 1.3em; }
+  line-height: 1.3em;
+  font-size: 12px;
+}
 
 .ds-option-set {
   padding: 0;
@@ -577,7 +581,8 @@ tr.ds-table-row.even {
   background: linear-gradient(to bottom, #e6e2e2 0%, #d8d6d6 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e6e2e2', endColorstr='#d8d6d6',GradientType=0 );
   border-bottom: 1px solid #b3afaf;
-  font-size: 1.2em;
+  font-size: 14px;
+  font-weight: bold;
   color: #1e231e;
   text-shadow: 0 1px 1px white;
   margin: 0;
