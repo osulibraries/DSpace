@@ -272,15 +272,29 @@
     <!-- Overrides GeneralHandler
         bds: this template completely replaces original to display CC-license info, logo, with links, and to NOT display other licenses -->
     <xsl:template match="mets:fileGrp[@USE='CC-LICENSE' or @USE='LICENSE']">
-        <div class="clearfix">
-            <xsl:if test="@USE='CC-LICENSE'">
-                <xsl:variable name="ccLicenseName"
+        <xsl:if test="@USE='CC-LICENSE'">
+            <xsl:variable name="ccLicenseName"
                               select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='cc']" />
-                <xsl:variable name="ccLicenseUri"
+            <xsl:variable name="ccLicenseUri"
                               select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='rights'][@qualifier='ccuri']" />
-                <span class="span2">
+            <xsl:variable name="handleUri">
+                <xsl:for-each select="/mets:METS/mets:dmdSec/mets:mdWrap/mets:xmlData/dim:dim/dim:field[@element='identifier' and @qualifier='uri']">
+                    <a>
+                        <xsl:attribute name="href">
+                            <xsl:copy-of select="./node()"/>
+                        </xsl:attribute>
+                        <xsl:copy-of select="./node()"/>
+                    </a>
+                    <xsl:if test="count(following-sibling::dim:field[@element='identifier' and @qualifier='uri']) != 0">
+                        <xsl:text>, </xsl:text>
+                    </xsl:if>
+                </xsl:for-each>
+            </xsl:variable>
+
+            <div about="{$handleUri}" class="row">
+                <div class="col-sm-3 col-xs-12">
                     <a rel="license" href="{$ccLicenseUri}" alt="{$ccLicenseName}" title="{$ccLicenseName}">
-                        <img>
+                        <img class="img-responsive">
                             <xsl:attribute name="src">
                                 <xsl:value-of select="concat($context-path,'/static/images/cc-ship.gif')"/>
                             </xsl:attribute>
@@ -289,17 +303,18 @@
                             </xsl:attribute>
                         </img>
                     </a>
-                </span>
-                <span class="span6">
-                    <i18n:text>xmlui.dri2xhtml.METS-1.0.cc-license-text</i18n:text><br />
-                    <a rel="license" href="{$ccLicenseUri}" alt="{$ccLicenseName}" title="{$ccLicenseName}">
-                        <xsl:value-of select="$ccLicenseName"/>
-                        &#160;
-                    </a>
-                </span>
-
-            </xsl:if>
-        </div>
+                </div>
+                <div class="col-sm-8">
+                    <span>
+                        <i18n:text>xmlui.dri2xhtml.METS-1.0.cc-license-text</i18n:text><br />
+                        <a rel="license" href="{$ccLicenseUri}" alt="{$ccLicenseName}" title="{$ccLicenseName}">
+                            <xsl:value-of select="$ccLicenseName"/>
+                            &#160;
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="mets:fileSec" mode="artifact-preview">
