@@ -1508,3 +1508,11 @@ div.controls-gear-wrapper {
 div#aspect_discovery_SimpleSearch_div_search-results .highlight {
   font-weight: 700;
 }
+
+/*
+ * Overrides of colors from latest bootstrap
+ */
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+  background-color: #bed2d3;
+  border-color: #bed2d3;
+}
