@@ -348,6 +348,10 @@ tr.ds-table-row.even {
     margin-bottom: 67px;
   }
 
+  #homepage-body2 #myCarousel {
+    margin-bottom: 20px;
+  }
+
   #homepage-body h1 {
     padding: 0 !important;
     margin: 4px 0 12px 0 !important; }
