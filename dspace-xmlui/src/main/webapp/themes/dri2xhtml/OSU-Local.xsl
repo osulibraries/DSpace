@@ -301,7 +301,7 @@
             </xsl:if>
         </div>
     </xsl:template>
-    
+
     <xsl:template match="mets:fileSec" mode="artifact-preview">
         <xsl:param name="href"/>
 

@@ -956,7 +956,7 @@
         <xsl:choose>
             <xsl:when test="not ($rights_context/@CONTEXTCLASS = 'GENERAL PUBLIC') and ($rights_context/rights:Permissions/@DISPLAY = 'true')">
                 <a href="{mets:FLocat[@LOCTYPE='URL']/@xlink:href}">
-                    <img width="64" height="64" src="{concat($theme-path,'/images/Crystal_Clear_action_lock3_64px.png')}" title="Read access available for {$users}"/>
+                    <img width="64" height="64" src="{concat($theme-path,'../template/images/Crystal_Clear_action_lock3_64px.png')}" title="Read access available for {$users}"/>
                     <!-- icon source: http://commons.wikimedia.org/wiki/File:Crystal_Clear_action_lock3.png -->
                 </a>
             </xsl:when>
