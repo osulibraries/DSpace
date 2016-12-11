@@ -597,23 +597,32 @@ public class ElasticSearchLogger {
 
     // Node Client will discover other ES nodes running in local JVM
     public Client createNodeClient(ClientType clientType) {
-        String dspaceDir = ConfigurationManager.getProperty("dspace.dir");
-        Settings settings = ImmutableSettings.settingsBuilder().put("path.data", dspaceDir + "/elasticsearch/").build();
-
-        NodeBuilder nodeBuilder = NodeBuilder.nodeBuilder().clusterName(clusterName).data(true).settings(settings);
-
         if(clientType == ClientType.LOCAL) {
             log.info("Create a Local Node.");
+            String dspaceDir = ConfigurationManager.getProperty("dspace.dir");
+            Settings settings = ImmutableSettings.settingsBuilder().put("path.data", dspaceDir + "/elasticsearch/").build();
+            NodeBuilder nodeBuilder = NodeBuilder.nodeBuilder().clusterName(clusterName).settings(settings).client(true);
             nodeBuilder = nodeBuilder.local(true);
+            Node node = nodeBuilder.node();
+            log.info("Got node");
+            log.info("Created new node client");
+            return node.client();
         } else if(clientType == ClientType.NODE) {
             log.info("Create a nodeClient, allows transport clients to connect");
+            Settings settings = ImmutableSettings.settingsBuilder()
+                    .put("node.master", false)
+                    .put("node.data", false)
+                    .put("discovery.zen.ping.unicast.hosts", address)
+                    .build();
+            NodeBuilder nodeBuilder = NodeBuilder.nodeBuilder().clusterName(clusterName).settings(settings).client(true);
             nodeBuilder = nodeBuilder.local(false);
+            Node node = nodeBuilder.node();
+            log.info("Got node");
+            log.info("Created new node client");
+            return node.client();
         }
 
-        Node node = nodeBuilder.node();
-        log.info("Got node");
-        log.info("Created new node client");
-        return node.client();
+        return null;
     }
     
     public String getConfigurationStringWithFallBack(String module, String configurationKey, String defaultFallbackValue) {
