@@ -14,9 +14,9 @@
 #aspect_artifactbrowser_CommunityBrowser_list_comunity-browser span.something {
 	color:#999;
 	font-family:"Courier New", Courier, monospace;
-        font-size: 1.2em;
-        font-weight: bold;
-        cursor:default;
+    font-size: 17.856px;
+    font-weight: bold;
+    cursor:default;
 }
 #aspect_artifactbrowser_CommunityBrowser_list_comunity-browser span.expanded, #aspect_artifactbrowser_CommunityBrowser_list_comunity-browser span.collapsed {
 	cursor:pointer;
