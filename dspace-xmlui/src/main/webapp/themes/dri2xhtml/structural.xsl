@@ -4233,6 +4233,34 @@ Disable Choice
 
         <xsl:variable name="metsDoc" select="document($externalMetadataUrl)"/>
 
+        <!--Generates thumbnails (if present)-->
+        <!-- Browse list links to Bitstream -->
+        <xsl:variable name="href">
+            <xsl:choose>
+                <xsl:when test="$metsDoc/mets:METS/mets:fileGrp[@USE='THUMBNAIL']">
+                    <xsl:variable name="primary_FILEID">group_<xsl:value-of select="$metsDoc/mets:METS/mets:structMap/mets:div[@TYPE='DSpace Item']/mets:fptr/@FILEID" /></xsl:variable>
+                    <xsl:variable name="GROUPID">
+                        <xsl:choose>
+                            <xsl:when test="$metsDoc/mets:METS/mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=$primary_FILEID]">
+                                <xsl:value-of select="$primary_FILEID" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="$metsDoc/mets:METS/mets:fileGrp[@USE='THUMBNAIL']/mets:file/@GROUPID" />
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
+                    <xsl:value-of select="$metsDoc/mets:METS/mets:fileGrp[@USE='CONTENT']/mets:file[@GROUPID=$GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="concat($context-path, '/handle/', $handle)"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
+        <xsl:apply-templates select="$metsDoc/mets:METS/mets:fileSec" mode="artifact-preview">
+            <xsl:with-param name="href" select="$href"/>
+        </xsl:apply-templates>
+
         <div class="artifact-description">
             <div class="artifact-title">
                 <xsl:element name="a">
@@ -4316,33 +4344,7 @@ Disable Choice
             </div>
         </div>
 
-        <!--Generates thumbnails (if present)-->
-        <!-- Browse list links to Bitstream -->
-        <xsl:variable name="href">
-            <xsl:choose>
-                <xsl:when test="$metsDoc/mets:METS/mets:fileGrp[@USE='THUMBNAIL']">
-                    <xsl:variable name="primary_FILEID">group_<xsl:value-of select="$metsDoc/mets:METS/mets:structMap/mets:div[@TYPE='DSpace Item']/mets:fptr/@FILEID" /></xsl:variable>
-                    <xsl:variable name="GROUPID">
-                        <xsl:choose>
-                            <xsl:when test="$metsDoc/mets:METS/mets:fileGrp[@USE='THUMBNAIL']/mets:file[@GROUPID=$primary_FILEID]">
-                                <xsl:value-of select="$primary_FILEID" />
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:value-of select="$metsDoc/mets:METS/mets:fileGrp[@USE='THUMBNAIL']/mets:file/@GROUPID" />
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:variable>
-                    <xsl:value-of select="$metsDoc/mets:METS/mets:fileGrp[@USE='CONTENT']/mets:file[@GROUPID=$GROUPID]/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="concat($context-path, '/handle/', $handle)"/>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
 
-        <xsl:apply-templates select="$metsDoc/mets:METS/mets:fileSec" mode="artifact-preview">
-            <xsl:with-param name="href" select="$href"/>
-        </xsl:apply-templates>
 
     </xsl:template>
     
