@@ -109,7 +109,6 @@
         <xsl:choose>
             <xsl:when test=". = 'simple'">
                 <div class="pagination-simple clearfix {$position}">
-                    <xsl:text>&#160;</xsl:text>
                     <xsl:variable name="gear"
                                   select="//dri:div[@id='aspect.artifactbrowser.ConfigurableBrowse.div.browse-controls'
                                   or @id='aspect.administrative.WithdrawnItems.div.browse-controls'
@@ -169,6 +168,9 @@
                                 </i18n:translate>
                             </p>
                         </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:text>&#160;</xsl:text>
+                        </xsl:otherwise>
                     </xsl:choose>
 
                     <xsl:variable name="prev-page" select="parent::node()/@previousPage"/>
@@ -212,7 +214,6 @@
             </xsl:when>
             <xsl:when test=". = 'masked'">
                 <div class="pagination-masked clearfix {$position}">
-                    <xsl:text>&#160;</xsl:text>
                     <xsl:variable name="gear"
                                   select="parent::node()/dri:div[@n = 'masked-page-control']/dri:div[@rend='controls-gear-wrapper' and @n='search-controls-gear']"/>
                     <xsl:choose>
@@ -270,6 +271,9 @@
                                 </i18n:translate>
                             </p>
                         </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:text>&#160;</xsl:text>
+                        </xsl:otherwise>
                     </xsl:choose>
 
                     <xsl:variable name="is-first-page"

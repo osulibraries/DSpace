@@ -3048,23 +3048,23 @@ Disable Choice
             </xsl:when>
             <xsl:when test=". = 'masked'">
                 <div class="pagination-masked clearfix {$position}">
-                    <xsl:text>&#160;</xsl:text>
                     <xsl:variable name="gear"
                                   select="parent::node()/dri:div[@n = 'masked-page-control']/dri:div[@rend='controls-gear-wrapper' and @n='search-controls-gear']"/>
                     <xsl:choose>
                         <xsl:when test="$position = 'top' and $gear">
                             <div class="row">
                                 <div class="col-xs-9">
-                                    <div class="previous-page-link">
-                                        <xsl:if test="parent::node()/@previousPage">
+                                    <xsl:if test="parent::node()/@previousPage">
+                                        <div class="previous-page-link">
                                             <a>
                                                 <xsl:attribute name="href">
                                                     <xsl:value-of select="parent::node()/@previousPage"/>
                                                 </xsl:attribute>
                                                 <i18n:text>xmlui.dri2xhtml.structural.pagination-previous</i18n:text>
                                             </a>
-                                        </xsl:if><xsl:text>&#160;</xsl:text>
-                                    </div>
+                                        </div>
+                                    </xsl:if>
+
                                     <p class="pagination-info">
                                         <i18n:translate>
                                             <xsl:choose>
@@ -3087,16 +3087,18 @@ Disable Choice
                                             </i18n:param>
                                         </i18n:translate>
                                     </p>
-                                    <div class="next-page-link">
-                                        <xsl:if test="parent::node()/@nextPage">
+
+                                    <xsl:if test="parent::node()/@nextPage">
+                                        <div class="next-page-link">
                                             <a>
                                                 <xsl:attribute name="href">
                                                     <xsl:value-of select="parent::node()/@nextPage"/>
                                                 </xsl:attribute>
                                                 <i18n:text>xmlui.dri2xhtml.structural.pagination-next</i18n:text>
                                             </a>
-                                        </xsl:if><xsl:text>&#160;</xsl:text>
-                                    </div>
+                                        </div>
+                                    </xsl:if>
+
                                 </div>
                                 <div class="col-xs-3">
                                     <xsl:apply-templates select="$gear"/>
@@ -3126,6 +3128,9 @@ Disable Choice
                                 </i18n:translate>
                             </p>
                         </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:text>&#160;</xsl:text>
+                        </xsl:otherwise>
                     </xsl:choose>
 
                     <xsl:variable name="is-first-page"

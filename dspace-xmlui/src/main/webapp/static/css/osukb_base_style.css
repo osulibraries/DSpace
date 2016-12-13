@@ -823,7 +823,9 @@ ul.ds-artifact-list {
     ul.ds-artifact-list li span.publisher {
       font-style: italic; }
     ul.ds-artifact-list li div.artifact-preview {
-      float: right; }
+      float: right;
+      margin-left: 10px;
+    }
     .artifact-info > .abstract, .artifact-description > .artifact-abstract {
       padding-top: 3px;
     }
@@ -1506,6 +1508,7 @@ div.controls-gear-wrapper {
   position: relative;
   float: right;
   cursor: pointer;
+  margin-bottom: 0px;
 }
 
 .pull-right {
