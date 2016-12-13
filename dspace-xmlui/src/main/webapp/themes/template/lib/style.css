@@ -228,6 +228,9 @@ ul.gear-selection li.gear-option-selected{
 
 input#aspect_discovery_SimpleSearch_field_query{
     width: 565px;
+    height: 33px;
+    padding-left: 3px;
+    margin-left: 7px;
 }
 
 input.search-icon{
