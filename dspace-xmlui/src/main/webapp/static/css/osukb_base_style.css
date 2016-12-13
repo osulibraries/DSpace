@@ -817,13 +817,19 @@ ul.ds-artifact-list {
     }
       ul.ds-artifact-list li div.artifact-title a:link, ul.ds-artifact-list li div.artifact-title a:visited {
         color: inherit; }
-    ul.ds-artifact-list li div.artifact-info {
+    ul.ds-artifact-list li div.artifact-info, ul.ds-artifact-list li div.artifact-abstract {
       float: none;
       margin-left: 15px; }
     ul.ds-artifact-list li span.publisher {
       font-style: italic; }
     ul.ds-artifact-list li div.artifact-preview {
       float: right; }
+    .artifact-info > .abstract, .artifact-description > .artifact-abstract {
+      padding-top: 3px;
+    }
+    .artifact-description > .artifact-title{
+      font-size: 14.88px;
+    }
 
 #recent-submissions{
   font-size:1em !important;
